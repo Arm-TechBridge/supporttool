@@ -10,15 +10,48 @@
     * { margin:0; padding:0; box-sizing:border-box; }
     body {
       font-family: 'Roboto', sans-serif;
-      background:#f8fafc;
-      color:#1e293b;
+      color:#e2e8f0;
       min-height:100vh;
+      overflow-x:hidden;
     }
+
+    /* Modern Tech Background */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.3) 0%, transparent 50%);
+      z-index: -2;
+    }
+    body {
+      background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+      position: relative;
+    }
+    body::after {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        linear-gradient(45deg, transparent 49%, rgba(255,255,255,0.02) 50%, transparent 51%, transparent 99%),
+        linear-gradient(-45deg, transparent 49%, rgba(255,255,255,0.02) 50%, transparent 51%, transparent 99%);
+      background-size: 20px 20px;
+      z-index: -1;
+      opacity: 0.5;
+    }
+
     .hidden { display:none !important; }
 
     /* Login */
     #loginPage {
-      background: linear-gradient(135deg, #e0e7ff, #c7d2fe);
       height:100vh;
       display:flex;
       align-items:center;
@@ -26,57 +59,72 @@
       padding:20px;
     }
     .login-card {
-      background:white;
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.2);
       padding:40px 32px;
-      border-radius:12px;
-      box-shadow:0 10px 30px rgba(0,0,0,0.15);
+      border-radius:16px;
+      box-shadow:0 8px 32px rgba(0,0,0,0.3);
       width:100%;
       max-width:420px;
       text-align:center;
     }
+    .login-card h1 { color:#fff; margin-bottom:8px; }
     .login-card input, .login-card button {
       width:100%;
       padding:14px;
       margin:12px 0;
-      border-radius:6px;
+      border-radius:8px;
       font-size:1rem;
+      background: rgba(255,255,255,0.1);
+      border:1px solid rgba(255,255,255,0.2);
+      color:#fff;
     }
-    .login-card input { border:1px solid #d1d5db; }
+    .login-card input::placeholder { color:#ccc; }
     .login-card button {
-      background:#4f46e5;
-      color:white;
+      background: linear-gradient(135deg, #4f46e5, #7c3aed);
+      color:#fff;
       border:none;
       cursor:pointer;
       font-weight:500;
+      transition: transform 0.2s;
     }
-    .login-card button:hover { background:#4338ca; }
-    .error { color:#dc2626; margin-top:12px; }
+    .login-card button:hover { transform: translateY(-1px); }
+    .error { color:#ff6b6b; margin-top:12px; }
 
     /* Sidebar */
     #sidebar {
       width:240px;
-      background: linear-gradient(135deg, #4f46e5, #7c3aed);
-      color:white;
+      background: rgba(15,15,35,0.95);
+      backdrop-filter: blur(10px);
+      border-right: 1px solid rgba(255,255,255,0.1);
+      color:#e2e8f0;
       padding:24px 16px;
       position:fixed;
       height:100%;
     }
-    #sidebar h2 { margin-bottom:32px; text-align:center; }
+    #sidebar h2 { margin-bottom:32px; text-align:center; color:#fff; }
     #sidebar ul { list-style:none; }
     #sidebar a {
-      color:white;
+      color:#e2e8f0;
       text-decoration:none;
       display:block;
       padding:12px 16px;
-      border-radius:6px;
+      border-radius:8px;
       margin:4px 0;
+      transition:0.2s;
     }
-    #sidebar a:hover, #sidebar a.active { background:rgba(255,255,255,0.18); }
+    #sidebar a:hover, #sidebar a.active { 
+      background: rgba(79,70,229,0.2); 
+      color:#fff;
+    }
 
     /* Main content */
     #mainContent {
       margin-left:240px;
       padding:32px;
+      background: rgba(26,26,46,0.8);
+      min-height:100vh;
     }
     .stats-grid {
       display:grid;
@@ -85,50 +133,71 @@
       margin:32px 0;
     }
     .card {
-      background:white;
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.1);
       padding:24px;
-      border-radius:10px;
-      box-shadow:0 4px 12px rgba(0,0,0,0.08);
+      border-radius:12px;
       text-align:center;
     }
-    .card h3 { color:#64748b; margin-bottom:8px; }
+    .card h3 { color:#94a3b8; margin-bottom:8px; }
     .card span { font-size:2.4rem; font-weight:700; color:#4f46e5; }
 
     .create-ticket-section, .manage-users-section {
-      background:white;
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.1);
       padding:28px;
-      border-radius:10px;
+      border-radius:12px;
       margin-top:32px;
-      box-shadow:0 4px 12px rgba(0,0,0,0.08);
     }
     form { display:flex; flex-direction:column; gap:16px; }
     input, textarea, button {
       padding:14px;
-      border:1px solid #d1d5db;
-      border-radius:6px;
+      border-radius:8px;
       font-size:1rem;
+      background: rgba(255,255,255,0.1);
+      border:1px solid rgba(255,255,255,0.2);
+      color:#fff;
     }
+    input::placeholder, textarea::placeholder { color:#ccc; }
     button {
-      background:#4f46e5;
-      color:white;
+      background: linear-gradient(135deg, #4f46e5, #7c3aed);
+      color:#fff;
       border:none;
       cursor:pointer;
+      transition: transform 0.2s;
     }
-    button.danger { background:#ef4444; }
+    button:hover { transform: translateY(-1px); }
+    button.danger { background: linear-gradient(135deg, #ef4444, #dc2626); }
 
     .ticket-item {
-      background:white;
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.1);
       padding:20px;
       margin:16px 0;
-      border-radius:10px;
-      box-shadow:0 2px 10px rgba(0,0,0,0.07);
+      border-radius:12px;
       display:flex;
       justify-content:space-between;
       gap:20px;
       flex-wrap:wrap;
     }
+    .ticket-item h3 { color:#fff; margin-bottom:8px; }
+    .ticket-item p { color:#cbd5e1; line-height:1.5; }
+    .meta {
+      margin-top:12px;
+      font-size:0.9rem;
+      color:#94a3b8;
+    }
     .actions { display:flex; gap:12px; flex-wrap:wrap; align-items:center; }
-    .actions select { padding:8px 12px; border-radius:6px; }
+    .actions select { 
+      padding:8px 12px; 
+      border-radius:6px; 
+      background: rgba(255,255,255,0.1);
+      border:1px solid rgba(255,255,255,0.2);
+      color:#fff;
+    }
 
     @media (max-width: 840px) {
       #sidebar { width:100%; height:auto; position:static; }
@@ -143,13 +212,14 @@
   <div id="loginPage">
     <div class="login-card">
       <h1>IT Helpdesk</h1>
-      <p style="color:#666; margin:12px 0 24px;">
-        Admin: <strong>admin / admin</strong><br>
-        User: <strong>user1 / pass</strong>
+      <p style="color:#94a3b8; margin:12px 0 24px;">
+        Login with your email and password<br>
+        Admin: <strong>admin@techbridge.com / admin</strong><br>
+        User: <strong>user1@techbridge.com / pass</strong>
       </p>
       <form id="loginForm">
-        <input type="text" id="username" placeholder="Username" required autocomplete="off">
-        <input type="password" id="password" placeholder="Password" required autocomplete="off">
+        <input type="email" id="email" placeholder="Email Address" required autocomplete="email">
+        <input type="password" id="password" placeholder="Password" required autocomplete="current-password">
         <button type="submit">Login</button>
       </form>
       <p id="loginError" class="error"></p>
@@ -165,7 +235,7 @@
       <div id="dashboardPage" class="page">
         <h1 id="dashboardTitle">Dashboard</h1>
         <div class="stats-grid">
-          <div class="card"><h3>Total</h3><span id="statTotal">0</span></div>
+          <div class="card"><h3>Total Tickets</h3><span id="statTotal">0</span></div>
           <div class="card"><h3>Open</h3><span id="statOpen">0</span></div>
           <div class="card"><h3>In Progress</h3><span id="statInProgress">0</span></div>
           <div class="card"><h3>Closed</h3><span id="statClosed">0</span></div>
@@ -176,7 +246,12 @@
           <h2>Create New Ticket</h2>
           <form id="createTicketForm">
             <input type="text" id="ticketTitle" placeholder="Ticket Title" required>
-            <textarea id="ticketDesc" placeholder="Describe the issue..." required rows="5"></textarea>
+            <textarea id="ticketDesc" placeholder="Describe the issue in detail..." required rows="5"></textarea>
+            <select id="ticketPriority">
+              <option value="Low">Priority: Low</option>
+              <option value="Medium">Priority: Medium</option>
+              <option value="High">Priority: High</option>
+            </select>
             <button type="submit">Submit Ticket</button>
           </form>
         </div>
@@ -185,7 +260,7 @@
         <div id="manageUsersSection" class="manage-users-section hidden">
           <h2>Manage Users</h2>
           <form id="addUserForm" style="display:flex; gap:12px; flex-wrap:wrap; margin:20px 0;">
-            <input type="text" id="newUsername" placeholder="Username" required style="flex:1; min-width:160px;">
+            <input type="email" id="newEmail" placeholder="Email" required style="flex:1; min-width:160px;">
             <input type="password" id="newPassword" placeholder="Password" required style="flex:1; min-width:160px;">
             <button type="submit">Add User</button>
           </form>
@@ -196,7 +271,7 @@
       <!-- Tickets Page -->
       <div id="ticketsPage" class="page hidden">
         <h1 id="ticketsTitle">Tickets</h1>
-        <input type="text" id="searchInput" placeholder="Search title or description..." style="width:100%; max-width:500px; padding:12px; margin:16px 0; border:1px solid #d1d5db; border-radius:6px;">
+        <input type="text" id="searchInput" placeholder="Search by title, description, or email..." style="width:100%; max-width:500px; padding:12px; margin:16px 0; border:1px solid rgba(255,255,255,0.2); border-radius:8px; background:rgba(255,255,255,0.1); color:#fff;">
         <div id="ticketsList"></div>
       </div>
 
@@ -209,8 +284,8 @@
     // ────────────────────────────────────────────────
 
     const defaultUsers = [
-      { id:1, username:'admin',  password:'admin',  role:'admin' },
-      { id:2, username:'user1',  password:'pass',   role:'user'  }
+      { id:1, email:'admin@techbridge.com',  password:'admin',  role:'admin' },
+      { id:2, email:'user1@techbridge.com',  password:'pass',   role:'user'  }
     ];
 
     function initStorage() {
@@ -229,8 +304,8 @@
 
     let currentUser = null;
 
-    function login(username, password) {
-      const user = getUsers().find(u => u.username === username && u.password === password);
+    function login(email, password) {
+      const user = getUsers().find(u => u.email === email && u.password === password);
       if (user) {
         currentUser = user;
         localStorage.setItem('currentUser', JSON.stringify(user));
@@ -252,12 +327,10 @@
     // ────────────────────────────────────────────────
 
     function showPage(page) {
+      // Hide all
+      document.querySelectorAll('.page, .create-ticket-section, .manage-users-section').forEach(el => el.classList.add('hidden'));
       document.getElementById('loginPage').classList.add('hidden');
       document.getElementById('appLayout').classList.add('hidden');
-      document.getElementById('dashboardPage').classList.add('hidden');
-      document.getElementById('ticketsPage').classList.add('hidden');
-      document.getElementById('createTicketSection').classList.add('hidden');
-      document.getElementById('manageUsersSection').classList.add('hidden');
 
       if (page === 'login') {
         document.getElementById('loginPage').classList.remove('hidden');
@@ -265,7 +338,7 @@
         document.getElementById('appLayout').classList.remove('hidden');
         document.getElementById('dashboardPage').classList.remove('hidden');
 
-        // Sidebar
+        // Dynamic Sidebar
         document.getElementById('sidebar').innerHTML = `
           <h2>IT Helpdesk</h2>
           <ul>
@@ -282,9 +355,7 @@
           renderTickets();
         } else if (page === 'dashboard') {
           updateDashboard();
-          if (isAdmin()) {
-            // Admin sees nothing extra by default on dashboard
-          } else {
+          if (!isAdmin()) {
             document.getElementById('createTicketSection').classList.remove('hidden');
           }
         }
@@ -303,7 +374,6 @@
 
     function updateDashboard() {
       const tickets = getTickets().filter(t => !isAdmin() ? t.createdBy === currentUser.id : true);
-
       const total   = tickets.length;
       const open    = tickets.filter(t=>t.status==='Open').length;
       const inProg  = tickets.filter(t=>t.status==='In Progress').length;
@@ -331,21 +401,24 @@
       if (query) {
         tickets = tickets.filter(t =>
           t.title.toLowerCase().includes(query) ||
-          t.desc.toLowerCase().includes(query)
+          t.desc.toLowerCase().includes(query) ||
+          t.createdByEmail.toLowerCase().includes(query)
         );
       }
 
       document.getElementById('ticketsTitle').textContent = isAdmin() ? 'All Tickets' : 'My Tickets';
 
       document.getElementById('ticketsList').innerHTML = tickets.length === 0
-        ? '<p style="padding:20px; color:#64748b;">No tickets found.</p>'
+        ? '<p style="padding:20px; color:#94a3b8; text-align:center;">No tickets found. Older tickets are stored and searchable.</p>'
         : tickets.map(t => `
           <div class="ticket-item">
             <div style="flex:1;">
               <h3>${t.title}</h3>
-              <p style="margin:8px 0; color:#475569;">${t.desc}</p>
-              <div style="margin-top:10px; font-size:0.9rem; color:#64748b;">
-                Status: <strong>${t.status}</strong> • Priority: <strong>${t.priority}</strong> •
+              <p style="margin:8px 0; color:#cbd5e1;">${t.desc}</p>
+              <div class="meta">
+                Status: <strong>${t.status}</strong> • 
+                Priority: <strong>${t.priority}</strong> • 
+                Created by: <strong>${t.createdByEmail}</strong> • 
                 ${new Date(t.createdAt).toLocaleString()}
               </div>
             </div>
@@ -374,13 +447,15 @@
         ticket[field] = value;
         saveTickets(tickets);
         renderTickets();
+        if (page === 'dashboard') updateDashboard(); // Refresh stats if on dashboard
       }
     }
 
     function deleteTicket(id) {
-      if (!confirm('Delete ticket?')) return;
+      if (!confirm('Delete this ticket permanently? All history will be lost.')) return;
       saveTickets(getTickets().filter(t => t.id !== id));
       renderTickets();
+      updateDashboard();
     }
 
     // ────────────────────────────────────────────────
@@ -405,12 +480,12 @@
       // Login form
       document.getElementById('loginForm').addEventListener('submit', e => {
         e.preventDefault();
-        const un = document.getElementById('username').value.trim();
+        const email = document.getElementById('email').value.trim();
         const pw = document.getElementById('password').value;
-        if (login(un, pw)) {
+        if (login(email, pw)) {
           showPage('dashboard');
         } else {
-          document.getElementById('loginError').textContent = 'Invalid username or password';
+          document.getElementById('loginError').textContent = 'Invalid email or password';
         }
       });
 
@@ -419,6 +494,7 @@
         e.preventDefault();
         const title = document.getElementById('ticketTitle').value.trim();
         const desc = document.getElementById('ticketDesc').value.trim();
+        const priority = document.getElementById('ticketPriority').value;
         if (!title || !desc) return alert('Title and description required');
 
         const tickets = getTickets();
@@ -426,30 +502,31 @@
           id: Date.now(),
           title, desc,
           status: 'Open',
-          priority: 'Low',
+          priority,
           createdBy: currentUser.id,
+          createdByEmail: currentUser.email,
           createdAt: new Date().toISOString()
         });
         saveTickets(tickets);
         e.target.reset();
-        alert('Ticket created');
+        alert('Ticket created successfully. It will be stored with your email for tracking.');
         updateDashboard();
       });
 
       // Add user (admin only)
       document.getElementById('addUserForm')?.addEventListener('submit', e => {
         e.preventDefault();
-        const un = document.getElementById('newUsername').value.trim();
+        const email = document.getElementById('newEmail').value.trim();
         const pw = document.getElementById('newPassword').value;
-        if (!un || !pw) return alert('Username and password required');
+        if (!email || !pw) return alert('Email and password required');
 
         const users = getUsers();
-        if (users.some(u => u.username === un)) return alert('Username already exists');
+        if (users.some(u => u.email === email)) return alert('Email already exists');
 
         const id = Math.max(...users.map(u=>u.id), 0) + 1;
-        users.push({ id, username:un, password:pw, role:'user' });
+        users.push({ id, email, password:pw, role:'user' });
         saveUsers(users);
-        alert('User added');
+        alert('User added successfully');
         loadUsersList();
         e.target.reset();
       });
@@ -461,17 +538,17 @@
     function loadUsersList() {
       const users = getUsers().filter(u => u.role === 'user');
       document.getElementById('usersList').innerHTML = users.length === 0
-        ? '<p>No users yet.</p>'
+        ? '<p style="color:#94a3b8;">No users yet.</p>'
         : users.map(u => `
-          <div style="background:#f8fafc; padding:12px; margin:10px 0; border-radius:8px; display:flex; justify-content:space-between; align-items:center;">
-            <span>${u.username}</span>
+          <div style="background:rgba(255,255,255,0.05); padding:12px; margin:10px 0; border-radius:8px; display:flex; justify-content:space-between; align-items:center; border:1px solid rgba(255,255,255,0.1);">
+            <span>${u.email}</span>
             <button class="danger" onclick="deleteUser(${u.id})">Delete</button>
           </div>
         `).join('');
     }
 
     function deleteUser(id) {
-      if (!confirm('Delete user?')) return;
+      if (!confirm('Delete this user? All their tickets will remain but won\'t be editable.')) return;
       saveUsers(getUsers().filter(u => u.id !== id));
       loadUsersList();
     }
