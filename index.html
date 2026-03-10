@@ -152,7 +152,7 @@
       margin-top:32px;
     }
     form { display:flex; flex-direction:column; gap:16px; }
-    input, textarea, button {
+    input, textarea, select, button {
       padding:14px;
       border-radius:8px;
       font-size:1rem;
@@ -213,12 +213,12 @@
     <div class="login-card">
       <h1>IT Helpdesk</h1>
       <p style="color:#94a3b8; margin:12px 0 24px;">
-        Login with your email and password<br>
-        Admin: <strong>admin@techbridge.com / admin</strong><br>
-        User: <strong>user1@techbridge.com / pass</strong>
+        Login with your username and password<br><br>
+        Admin: <strong>admin / admin</strong><br>
+        User: <strong>user1 / pass</strong>
       </p>
       <form id="loginForm">
-        <input type="email" id="email" placeholder="Email Address" required autocomplete="email">
+        <input type="text" id="username" placeholder="Username" required autocomplete="username">
         <input type="password" id="password" placeholder="Password" required autocomplete="current-password">
         <button type="submit">Login</button>
       </form>
@@ -260,7 +260,7 @@
         <div id="manageUsersSection" class="manage-users-section hidden">
           <h2>Manage Users</h2>
           <form id="addUserForm" style="display:flex; gap:12px; flex-wrap:wrap; margin:20px 0;">
-            <input type="email" id="newEmail" placeholder="Email" required style="flex:1; min-width:160px;">
+            <input type="text" id="newUsername" placeholder="Username" required style="flex:1; min-width:160px;">
             <input type="password" id="newPassword" placeholder="Password" required style="flex:1; min-width:160px;">
             <button type="submit">Add User</button>
           </form>
@@ -271,7 +271,7 @@
       <!-- Tickets Page -->
       <div id="ticketsPage" class="page hidden">
         <h1 id="ticketsTitle">Tickets</h1>
-        <input type="text" id="searchInput" placeholder="Search by title, description, or email..." style="width:100%; max-width:500px; padding:12px; margin:16px 0; border:1px solid rgba(255,255,255,0.2); border-radius:8px; background:rgba(255,255,255,0.1); color:#fff;">
+        <input type="text" id="searchInput" placeholder="Search by title or description..." style="width:100%; max-width:500px; padding:12px; margin:16px 0; border:1px solid rgba(255,255,255,0.2); border-radius:8px; background:rgba(255,255,255,0.1); color:#fff;">
         <div id="ticketsList"></div>
       </div>
 
@@ -284,8 +284,8 @@
     // ────────────────────────────────────────────────
 
     const defaultUsers = [
-      { id:1, email:'admin@techbridge.com',  password:'admin',  role:'admin' },
-      { id:2, email:'user1@techbridge.com',  password:'pass',   role:'user'  }
+      { id:1, username:'admin',  password:'admin',  role:'admin' },
+      { id:2, username:'user1',  password:'pass',   role:'user'  }
     ];
 
     function initStorage() {
@@ -304,8 +304,8 @@
 
     let currentUser = null;
 
-    function login(email, password) {
-      const user = getUsers().find(u => u.email === email && u.password === password);
+    function login(username, password) {
+      const user = getUsers().find(u => u.username === username && u.password === password);
       if (user) {
         currentUser = user;
         localStorage.setItem('currentUser', JSON.stringify(user));
@@ -401,15 +401,14 @@
       if (query) {
         tickets = tickets.filter(t =>
           t.title.toLowerCase().includes(query) ||
-          t.desc.toLowerCase().includes(query) ||
-          t.createdByEmail.toLowerCase().includes(query)
+          t.desc.toLowerCase().includes(query)
         );
       }
 
       document.getElementById('ticketsTitle').textContent = isAdmin() ? 'All Tickets' : 'My Tickets';
 
       document.getElementById('ticketsList').innerHTML = tickets.length === 0
-        ? '<p style="padding:20px; color:#94a3b8; text-align:center;">No tickets found. Older tickets are stored and searchable.</p>'
+        ? '<p style="padding:20px; color:#94a3b8; text-align:center;">No tickets found.</p>'
         : tickets.map(t => `
           <div class="ticket-item">
             <div style="flex:1;">
@@ -418,8 +417,7 @@
               <div class="meta">
                 Status: <strong>${t.status}</strong> • 
                 Priority: <strong>${t.priority}</strong> • 
-                Created by: <strong>${t.createdByEmail}</strong> • 
-                ${new Date(t.createdAt).toLocaleString()}
+                Created: ${new Date(t.createdAt).toLocaleString()}
               </div>
             </div>
             ${isAdmin() ? `
@@ -447,12 +445,12 @@
         ticket[field] = value;
         saveTickets(tickets);
         renderTickets();
-        if (page === 'dashboard') updateDashboard(); // Refresh stats if on dashboard
+        updateDashboard();
       }
     }
 
     function deleteTicket(id) {
-      if (!confirm('Delete this ticket permanently? All history will be lost.')) return;
+      if (!confirm('Delete this ticket permanently?')) return;
       saveTickets(getTickets().filter(t => t.id !== id));
       renderTickets();
       updateDashboard();
@@ -480,12 +478,12 @@
       // Login form
       document.getElementById('loginForm').addEventListener('submit', e => {
         e.preventDefault();
-        const email = document.getElementById('email').value.trim();
+        const username = document.getElementById('username').value.trim();
         const pw = document.getElementById('password').value;
-        if (login(email, pw)) {
+        if (login(username, pw)) {
           showPage('dashboard');
         } else {
-          document.getElementById('loginError').textContent = 'Invalid email or password';
+          document.getElementById('loginError').textContent = 'Invalid username or password';
         }
       });
 
@@ -504,27 +502,26 @@
           status: 'Open',
           priority,
           createdBy: currentUser.id,
-          createdByEmail: currentUser.email,
           createdAt: new Date().toISOString()
         });
         saveTickets(tickets);
         e.target.reset();
-        alert('Ticket created successfully. It will be stored with your email for tracking.');
+        alert('Ticket created successfully');
         updateDashboard();
       });
 
       // Add user (admin only)
       document.getElementById('addUserForm')?.addEventListener('submit', e => {
         e.preventDefault();
-        const email = document.getElementById('newEmail').value.trim();
+        const username = document.getElementById('newUsername').value.trim();
         const pw = document.getElementById('newPassword').value;
-        if (!email || !pw) return alert('Email and password required');
+        if (!username || !pw) return alert('Username and password required');
 
         const users = getUsers();
-        if (users.some(u => u.email === email)) return alert('Email already exists');
+        if (users.some(u => u.username === username)) return alert('Username already exists');
 
         const id = Math.max(...users.map(u=>u.id), 0) + 1;
-        users.push({ id, email, password:pw, role:'user' });
+        users.push({ id, username, password:pw, role:'user' });
         saveUsers(users);
         alert('User added successfully');
         loadUsersList();
@@ -541,14 +538,14 @@
         ? '<p style="color:#94a3b8;">No users yet.</p>'
         : users.map(u => `
           <div style="background:rgba(255,255,255,0.05); padding:12px; margin:10px 0; border-radius:8px; display:flex; justify-content:space-between; align-items:center; border:1px solid rgba(255,255,255,0.1);">
-            <span>${u.email}</span>
+            <span>${u.username}</span>
             <button class="danger" onclick="deleteUser(${u.id})">Delete</button>
           </div>
         `).join('');
     }
 
     function deleteUser(id) {
-      if (!confirm('Delete this user? All their tickets will remain but won\'t be editable.')) return;
+      if (!confirm('Delete this user?')) return;
       saveUsers(getUsers().filter(u => u.id !== id));
       loadUsersList();
     }
