@@ -3,9 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>WorldTech ServiceDesk - AI Powered ITSM</title>
+  <title>WorldTech ServiceDesk - Ultimate AI ITSM</title>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.css">
 
   <style>
     * { margin:0; padding:0; box-sizing:border-box; }
@@ -28,7 +29,7 @@
 
     .hidden { display: none !important; }
 
-    /* ─── LOGIN ─── */
+    /* LOGIN */
     #loginPage {
       min-height: 100vh;
       display: flex;
@@ -79,7 +80,7 @@
 
     .error { color: #ff6b6b; margin-top: 14px; font-size: 1rem; }
 
-    /* ─── LAYOUT ─── */
+    /* LAYOUT */
     #appLayout { display: flex; min-height: 100vh; }
 
     #sidebar {
@@ -114,8 +115,7 @@
       transition: all 0.2s;
     }
 
-    #sidebar a:hover,
-    #sidebar a.active {
+    #sidebar a:hover, #sidebar a.active {
       background: rgba(99,102,241,0.3);
       color: white;
     }
@@ -217,36 +217,54 @@
       color: #fff;
     }
 
-    .kanban-board {
-      display: flex;
-      gap: 24px;
-      overflow-x: auto;
-      padding: 20px 0;
-    }
-
-    .kanban-column {
-      background: rgba(255,255,255,0.05);
-      border-radius: 12px;
-      padding: 20px;
-      min-width: 300px;
-      flex: 1;
-    }
-
-    .kanban-column h3 { color: white; margin-bottom: 16px; }
-
-    .kanban-card {
+    .calendar-section {
       background: rgba(255,255,255,0.06);
-      padding: 16px;
-      margin-bottom: 12px;
-      border-radius: 8px;
+      border-radius: 16px;
+      padding: 24px;
+      margin: 36px 0;
+    }
+
+    #calendar { background: rgba(0,0,0,0.3); border-radius: 12px; }
+
+    .search-chat {
+      position: relative;
+    }
+
+    .search-chat input {
+      width: 100%;
+      padding: 16px 50px 16px 20px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.18);
+      color: white;
+    }
+
+    .search-chat button {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: #6366f1;
+      cursor: pointer;
+      font-size: 1.2rem;
+    }
+
+    .chat-response {
+      margin-top: 16px;
+      padding: 20px;
+      background: rgba(99,102,241,0.1);
+      border-radius: 12px;
       border-left: 4px solid #6366f1;
+      white-space: pre-wrap;
+      line-height: 1.6;
     }
 
     @media (max-width: 900px) {
       #sidebar { width: 100%; height: auto; position: static; padding: 28px 20px; }
       #mainContent { margin-left: 0; padding: 28px; }
       .ticket-item { flex-direction: column; }
-      .kanban-board { flex-direction: column; }
     }
   </style>
 </head>
@@ -257,7 +275,7 @@
     <div class="login-card">
       <h1>WorldTech ServiceDesk</h1>
       <p style="color:#94a3b8; margin:24px 0 36px; line-height:1.6;">
-        Advanced ITSM like Jira & ServiceNow<br><br>
+        Advanced AI-Powered ITSM<br><br>
         <strong>admin / admin</strong> → Admin<br>
         <strong>user1 / pass</strong> → User
       </p>
@@ -296,7 +314,7 @@
           <form id="createTicketForm">
             <input type="text" id="ticketTitle" placeholder="Title" required>
             <textarea id="ticketDesc" placeholder="Describe issue..." rows="4" required></textarea>
-            <button type="button" class="ai-btn" onclick="aiSuggestPriority()">AI Suggest</button>
+            <button type="button" class="ai-btn" onclick="aiSuggestPriority()">AI Suggest Priority</button>
             <select id="ticketPriority">
               <option value="Low">Low</option>
               <option value="Medium">Medium</option>
@@ -323,34 +341,25 @@
           <div id="usersList"></div>
         </div>
 
-        <!-- Knowledge Base -->
+        <!-- Self-Service Portal (KB with AI Chat) -->
         <div class="section-card">
           <h2>Self-Service Portal</h2>
-          <input type="text" id="kbSearch" placeholder="Search knowledge..." style="margin-bottom:24px;">
+          <div class="search-chat">
+            <input type="text" id="kbSearch" placeholder="Ask about any issue (AI will respond step-by-step like ChatGPT)...">
+            <button onclick="aiChatResponse()" type="button"><i class="fas fa-robot"></i></button>
+          </div>
+          <div id="chatResponse" class="chat-response hidden"></div>
           <div id="knowledgeList"></div>
         </div>
 
-        <!-- Kanban Board -->
-        <div class="section-card">
-          <h2>Kanban Board</h2>
-          <div class="kanban-board">
-            <div class="kanban-column">
-              <h3>To Do</h3>
-              <div id="kanban-todo"></div>
-            </div>
-            <div class="kanban-column">
-              <h3>In Progress</h3>
-              <div id="kanban-progress"></div>
-            </div>
-            <div class="kanban-column">
-              <h3>Done</h3>
-              <div id="kanban-done"></div>
-            </div>
-          </div>
+        <!-- Online Calendar -->
+        <div class="calendar-section">
+          <h2>Service Calendar</h2>
+          <div id="calendar"></div>
         </div>
       </div>
 
-      <!-- Tickets List -->
+      <!-- Tickets -->
       <div id="ticketsPage" class="section-card hidden">
         <h1 id="ticketsTitle">Tickets</h1>
         <input type="text" id="searchInput" placeholder="Search..." style="margin-bottom:24px;">
@@ -359,10 +368,11 @@
     </div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
   <script>
     // ─── CONFIG ─────────────────────────────────────────────
 
-    const GROQ_KEY = 'gsk_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'; // REPLACE WITH YOUR GROQ KEY
+    const GROQ_KEY = 'gsk_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'; // REPLACE WITH YOUR KEY
 
     // ─── DATA ───────────────────────────────────────────────
 
@@ -372,9 +382,9 @@
     ];
 
     const defaultKB = [
-      { title:"Slow PC", text:"Close apps • Clean disk • Update drivers • Scan malware" },
-      { title:"No Wi-Fi", text:"Restart router • Forget network • Renew IP • Check signal" },
-      { title:"Printer Issue", text:"Check connection • Clear queue • Update driver • Troubleshoot" }
+      { title:"Slow PC", text:"Step 1: Close apps\nStep 2: Clean disk\nStep 3: Update drivers" },
+      { title:"No Wi-Fi", text:"Step 1: Restart router\nStep 2: Renew IP\nStep 3: Check signal" },
+      { title:"Printer Issue", text:"Step 1: Check connection\nStep 2: Clear queue\nStep 3: Update driver" }
     ];
 
     // ─── STORAGE ────────────────────────────────────────────
@@ -432,10 +442,9 @@
           <i class="fas fa-tachometer-alt"></i> Dashboard
         </a>
         <a ${view==='tickets'?'class="active"':''} onclick="showView('tickets');return false">
-          <i class="fas fa-ticket-alt"></i> ${isAdmin()?'All Tickets':'My Tickets'}
+          <i class="fas fa-ticket-alt"></i> Tickets
         </a>
         ${isAdmin() ? '<a onclick="showManageUsers();return false"><i class="fas fa-users"></i> Users</a>' : ''}
-        <a onclick="showView('kanban');return false"><i class="fas fa-columns"></i> Kanban</a>
         <a onclick="logout();return false"><i class="fas fa-sign-out-alt"></i> Logout</a>
       `;
 
@@ -455,11 +464,6 @@
       renderUserList();
     }
 
-    function showKanban() {
-      showView('dashboard');
-      renderKanban();
-    }
-
     // ─── RENDER ─────────────────────────────────────────────
 
     function updateDashboard() {
@@ -469,6 +473,9 @@
       document.getElementById('statInProgress').textContent = tickets.filter(t=>t.status==='In Progress').length;
       document.getElementById('statClosed').textContent = tickets.filter(t=>t.status==='Closed').length;
       document.getElementById('dashboardTitle').textContent = isAdmin() ? 'Admin Dashboard' : 'My Dashboard';
+
+      renderKnowledgeBase();
+      initCalendar();
     }
 
     function renderTickets() {
@@ -503,12 +510,6 @@
                 <option ${t.priority==='Medium'?'selected':''}>Medium</option>
                 <option ${t.priority==='High'?'selected':''}>High</option>
               </select>
-              <select onchange="updateTicket(${t.id}, 'category', this.value)">
-                <option ${t.category==='Hardware'?'selected':''}>Hardware</option>
-                <option ${t.category==='Software'?'selected':''}>Software</option>
-                <option ${t.category==='Network'?'selected':''}>Network</option>
-                <option ${t.category==='Other'?'selected':''}>Other</option>
-              </select>
               <button class="ai-btn" onclick="aiFix(${t.id})">AI Fix</button>
               <button class="danger" onclick="deleteTicket(${t.id})">Delete</button>
             </div>` : ''}
@@ -540,39 +541,39 @@
       `).join('') || '<p style="color:#94a3b8; text-align:center;">No results</p>';
     }
 
-    function renderKanban() {
-      const tickets = getTickets().filter(t => isAdmin() || t.createdBy === currentUser.id);
-      const todo = tickets.filter(t => t.status === 'Open');
-      const progress = tickets.filter(t => t.status === 'In Progress');
-      const done = tickets.filter(t => t.status === 'Closed');
+    // ─── CALENDAR ───────────────────────────────────────────
 
-      document.getElementById('kanban-todo').innerHTML = todo.map(t => `
-        <div class="kanban-card">
-          <strong>${t.title}</strong><br>
-          <small>${t.priority} • ${new Date(t.createdAt).toLocaleDateString()}</small>
-        </div>
-      `).join('') || '<p style="color:#94a3b8;">No tasks</p>';
+    let calendar;
 
-      document.getElementById('kanban-progress').innerHTML = progress.map(t => `
-        <div class="kanban-card">
-          <strong>${t.title}</strong><br>
-          <small>${t.priority} • ${new Date(t.createdAt).toLocaleDateString()}</small>
-        </div>
-      `).join('') || '<p style="color:#94a3b8;">No tasks</p>';
+    function initCalendar() {
+      const calendarEl = document.getElementById('calendar');
+      if (calendar) calendar.destroy();
 
-      document.getElementById('kanban-done').innerHTML = done.map(t => `
-        <div class="kanban-card">
-          <strong>${t.title}</strong><br>
-          <small>${t.priority} • ${new Date(t.createdAt).toLocaleDateString()}</small>
-        </div>
-      `).join('') || '<p style="color:#94a3b8;">No tasks</p>';
+      calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        headerToolbar: {
+          left: 'prev,next today',
+          center: 'title',
+          right: 'dayGridMonth,timeGridWeek'
+        },
+        events: [
+          { title: 'Ticket Review', date: '2026-03-15' },
+          { title: 'System Update', date: '2026-03-20' },
+          { title: 'Team Meeting', date: '2026-03-25' }
+        ],
+        eventColor: '#6366f1',
+        editable: true,
+        selectable: true,
+        selectMirror: true
+      });
+      calendar.render();
     }
 
     // ─── AI INTEGRATION ─────────────────────────────────────
 
-    async function callAI(prompt, system = "You are an expert IT support AI. Be concise and helpful.") {
+    async function callAI(prompt, system = "You are WorldTech AI assistant. Provide step-by-step troubleshooting like ChatGPT. Be concise, numbered, and actionable.") {
       if (!GROQ_KEY || GROQ_KEY.includes('xxxx')) {
-        return "API key not set. Add your Groq key in code.";
+        return "Set your Groq API key in code to enable real AI.";
       }
 
       try {
@@ -580,32 +581,32 @@
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${GROQ_KEY}` },
           body: JSON.stringify({
-            model: 'llama3-8b-8192', // Fast & free
+            model: 'llama3-8b-8192',
             messages: [{ role: 'system', content: system }, { role: 'user', content: prompt }],
             temperature: 0.7,
-            max_tokens: 400
+            max_tokens: 500
           })
         });
 
-        if (!res.ok) throw new Error(`Error ${res.status}`);
+        if (!res.ok) throw new Error(`API error ${res.status}`);
 
         const data = await res.json();
         return data.choices[0].message.content.trim();
       } catch (e) {
         console.error(e);
-        return "AI unavailable. Try again later.";
+        return "AI service temporarily unavailable. Try again.";
       }
     }
 
     async function aiSuggestPriority() {
       const desc = document.getElementById('ticketDesc').value.trim();
-      if (!desc) return alert("Describe the issue first.");
+      if (!desc) return alert("Describe the issue.");
 
-      const response = await callAI(`Classify priority (Low/Medium/High) for this IT issue: ${desc}`);
+      const response = await callAI(`Suggest priority (Low/Medium/High) for IT issue: ${desc}. Explain briefly.`);
       const prio = response.match(/Low|Medium|High/i)?.[0] || 'Medium';
 
       document.getElementById('ticketPriority').value = prio;
-      alert(`AI: Priority ${prio}`);
+      alert(response);
     }
 
     async function aiFix(ticketId) {
@@ -616,7 +617,19 @@
       container.classList.remove('hidden');
       container.textContent = 'AI analyzing...';
 
-      const response = await callAI(`Provide 3-5 step-by-step fixes for this IT ticket:\nTitle: ${ticket.title}\nDescription: ${ticket.description}`);
+      const response = await callAI(`Provide step-by-step fix for IT ticket:\nTitle: ${ticket.title}\nDescription: ${ticket.description}`);
+      container.textContent = response;
+    }
+
+    async function aiChatResponse() {
+      const query = document.getElementById('kbSearch').value.trim();
+      if (!query) return alert("Enter your issue.");
+
+      const container = document.getElementById('chatResponse');
+      container.classList.remove('hidden');
+      container.textContent = 'AI responding...';
+
+      const response = await callAI(`User asked about IT issue: ${query}. Give step-by-step troubleshooting guide like ChatGPT.`);
       container.textContent = response;
     }
 
@@ -629,7 +642,7 @@
       const prio = document.getElementById('ticketPriority').value;
       const cat = document.getElementById('ticketCategory').value;
 
-      if (!title || !desc) return alert("Complete title & description.");
+      if (!title || !desc) return alert("Complete required fields.");
 
       const tickets = getTickets();
       tickets.push({
@@ -645,7 +658,6 @@
       e.target.reset();
       alert("Ticket created!");
       updateDashboard();
-      renderKanban();
     });
 
     document.getElementById('addUserForm')?.addEventListener('submit', e => {
@@ -674,7 +686,6 @@
         saveTickets(tickets);
         renderTickets();
         updateDashboard();
-        renderKanban();
       }
     }
 
@@ -683,7 +694,6 @@
       saveTickets(getTickets().filter(t => t.id !== id));
       renderTickets();
       updateDashboard();
-      renderKanban();
     }
 
     function deleteUser(id) {
@@ -697,7 +707,7 @@
     document.addEventListener('DOMContentLoaded', () => {
       init();
 
-      // Resume
+      // Resume session
       try {
         const stored = localStorage.currentUser;
         if (stored) {
@@ -719,7 +729,7 @@
         if (login(un, pw)) {
           showView('dashboard');
         } else {
-          document.getElementById('loginError').textContent = 'Invalid credentials';
+          document.getElementById('loginError').textContent = 'Invalid login';
         }
       });
 
