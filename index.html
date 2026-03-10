@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>IT Helpdesk Ticket System</title>
+  <title>IT Helpdesk Ticket System with AI</title>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 
   <style>
@@ -143,7 +143,7 @@
     .card h3 { color:#94a3b8; margin-bottom:8px; }
     .card span { font-size:2.4rem; font-weight:700; color:#4f46e5; }
 
-    .create-ticket-section, .manage-users-section {
+    .create-ticket-section, .manage-users-section, .knowledge-base-section {
       background: rgba(255,255,255,0.05);
       backdrop-filter: blur(10px);
       border: 1px solid rgba(255,255,255,0.1);
@@ -170,6 +170,22 @@
     }
     button:hover { transform: translateY(-1px); }
     button.danger { background: linear-gradient(135deg, #ef4444, #dc2626); }
+    button.ai-btn { 
+      background: linear-gradient(135deg, #10b981, #059669); 
+      font-size:0.9rem; 
+      padding:10px; 
+      margin:10px 0; 
+    }
+
+    .knowledge-item {
+      background: rgba(255,255,255,0.05);
+      padding:16px;
+      margin:12px 0;
+      border-radius:8px;
+      border-left: 4px solid #4f46e5;
+    }
+    .knowledge-item h4 { color:#fff; margin-bottom:8px; }
+    .knowledge-item p { color:#cbd5e1; line-height:1.5; }
 
     .ticket-item {
       background: rgba(255,255,255,0.05);
@@ -211,7 +227,7 @@
   <!-- Login Page -->
   <div id="loginPage">
     <div class="login-card">
-      <h1>IT Helpdesk</h1>
+      <h1>IT Helpdesk with AI</h1>
       <p style="color:#94a3b8; margin:12px 0 24px;">
         Login with your username and password<br><br>
         Admin: <strong>admin / admin</strong><br>
@@ -246,11 +262,17 @@
           <h2>Create New Ticket</h2>
           <form id="createTicketForm">
             <input type="text" id="ticketTitle" placeholder="Ticket Title" required>
-            <textarea id="ticketDesc" placeholder="Describe the issue in detail..." required rows="5"></textarea>
+            <textarea id="ticketDesc" placeholder="Describe the issue in detail..." required rows="5" id="ticketDesc"></textarea>
+            <button type="button" class="ai-btn" onclick="aiSuggest()">AI Suggest Priority & Status</button>
             <select id="ticketPriority">
               <option value="Low">Priority: Low</option>
               <option value="Medium">Priority: Medium</option>
               <option value="High">Priority: High</option>
+            </select>
+            <select id="ticketStatus">
+              <option value="Open">Status: Open</option>
+              <option value="In Progress">Status: In Progress</option>
+              <option value="Closed">Status: Closed</option>
             </select>
             <button type="submit">Submit Ticket</button>
           </form>
@@ -265,6 +287,15 @@
             <button type="submit">Add User</button>
           </form>
           <div id="usersList"></div>
+        </div>
+
+        <!-- Knowledge Base / Troubleshooting -->
+        <div id="knowledgeBaseSection" class="knowledge-base-section hidden">
+          <h2>Issues & Troubleshooting Methods</h2>
+          <p style="color:#94a3b8; margin-bottom:20px;">Common IT issues and step-by-step troubleshooting methods. All issues are stored and searchable.</p>
+          <div id="knowledgeList">
+            <!-- Populated by JS -->
+          </div>
         </div>
       </div>
 
@@ -288,6 +319,26 @@
       { id:2, username:'user1',  password:'pass',   role:'user'  }
     ];
 
+    const knowledgeBase = [
+      {
+        title: "Slow Computer Performance",
+        description: "Computer running slowly? Try these steps: 1. Close unnecessary apps. 2. Run Disk Cleanup. 3. Update drivers. 4. Scan for malware. If persists, create a ticket."
+      },
+      {
+        title: "Network Connection Issues",
+        description: "Can't connect to Wi-Fi? 1. Restart router. 2. Forget and rejoin network. 3. Check IP settings. 4. Contact ISP if needed."
+      },
+      {
+        title: "Printer Not Responding",
+        description: "Printer offline? 1. Check connections. 2. Restart printer/PC. 3. Update drivers. 4. Run troubleshooter in Windows Settings."
+      },
+      {
+        title: "Email Access Problems",
+        description: "Can't access email? 1. Verify credentials. 2. Clear cache/cookies. 3. Check server status. 4. Reset password if locked."
+      }
+      // Add more issues here as needed
+    ];
+
     function initStorage() {
       if (!localStorage.getItem('users')) {
         localStorage.setItem('users', JSON.stringify(defaultUsers));
@@ -295,12 +346,17 @@
       if (!localStorage.getItem('tickets')) {
         localStorage.setItem('tickets', JSON.stringify([]));
       }
+      if (!localStorage.getItem('knowledgeBase')) {
+        localStorage.setItem('knowledgeBase', JSON.stringify(knowledgeBase));
+      }
     }
 
     function getUsers()          { return JSON.parse(localStorage.getItem('users')   || '[]'); }
     function saveUsers(u)        { localStorage.setItem('users',   JSON.stringify(u)); }
     function getTickets()        { return JSON.parse(localStorage.getItem('tickets') || '[]'); }
     function saveTickets(t)      { localStorage.setItem('tickets', JSON.stringify(t)); }
+    function getKnowledgeBase()  { return JSON.parse(localStorage.getItem('knowledgeBase') || JSON.stringify(knowledgeBase)); }
+    function saveKnowledgeBase(k){ localStorage.setItem('knowledgeBase', JSON.stringify(k)); }
 
     let currentUser = null;
 
@@ -327,8 +383,8 @@
     // ────────────────────────────────────────────────
 
     function showPage(page) {
-      // Hide all
-      document.querySelectorAll('.page, .create-ticket-section, .manage-users-section').forEach(el => el.classList.add('hidden'));
+      // Hide all sections
+      document.querySelectorAll('.page, .create-ticket-section, .manage-users-section, .knowledge-base-section').forEach(el => el.classList.add('hidden'));
       document.getElementById('loginPage').classList.add('hidden');
       document.getElementById('appLayout').classList.add('hidden');
 
@@ -340,11 +396,12 @@
 
         // Dynamic Sidebar
         document.getElementById('sidebar').innerHTML = `
-          <h2>IT Helpdesk</h2>
+          <h2>IT Helpdesk AI</h2>
           <ul>
             <li><a href="#" class="${page==='dashboard'?'active':''}" onclick="showPage('dashboard'); return false;">Dashboard</a></li>
             <li><a href="#" class="${page==='tickets'?'active':''}" onclick="showPage('tickets'); return false;">${isAdmin() ? 'All Tickets' : 'My Tickets'}</a></li>
             ${isAdmin() ? '<li><a href="#" onclick="showManageUsers(); return false;">Manage Users</a></li>' : ''}
+            <li><a href="#" onclick="showKnowledgeBase(); return false;">Troubleshooting</a></li>
             <li><a href="#" onclick="logout(); return false;">Logout</a></li>
           </ul>
         `;
@@ -363,9 +420,15 @@
     }
 
     function showManageUsers() {
-      document.getElementById('createTicketSection').classList.add('hidden');
+      document.querySelectorAll('.create-ticket-section, .knowledge-base-section').forEach(el => el.classList.add('hidden'));
       document.getElementById('manageUsersSection').classList.remove('hidden');
       loadUsersList();
+    }
+
+    function showKnowledgeBase() {
+      document.querySelectorAll('.create-ticket-section, .manage-users-section').forEach(el => el.classList.add('hidden'));
+      document.getElementById('knowledgeBaseSection').classList.remove('hidden');
+      loadKnowledgeBase();
     }
 
     // ────────────────────────────────────────────────
@@ -373,17 +436,49 @@
     // ────────────────────────────────────────────────
 
     function updateDashboard() {
-      const tickets = getTickets().filter(t => !isAdmin() ? t.createdBy === currentUser.id : true);
-      const total   = tickets.length;
-      const open    = tickets.filter(t=>t.status==='Open').length;
-      const inProg  = tickets.filter(t=>t.status==='In Progress').length;
-      const closed  = tickets.filter(t=>t.status==='Closed').length;
+      try {
+        const tickets = getTickets().filter(t => !isAdmin() ? t.createdBy === currentUser.id : true);
+        const total   = tickets.length;
+        const open    = tickets.filter(t=>t.status==='Open').length;
+        const inProg  = tickets.filter(t=>t.status==='In Progress').length;
+        const closed  = tickets.filter(t=>t.status==='Closed').length;
 
-      document.getElementById('statTotal').textContent      = total;
-      document.getElementById('statOpen').textContent       = open;
-      document.getElementById('statInProgress').textContent = inProg;
-      document.getElementById('statClosed').textContent     = closed;
-      document.getElementById('dashboardTitle').textContent = isAdmin() ? 'Admin Dashboard' : 'My Dashboard';
+        document.getElementById('statTotal').textContent      = total;
+        document.getElementById('statOpen').textContent       = open;
+        document.getElementById('statInProgress').textContent = inProg;
+        document.getElementById('statClosed').textContent     = closed;
+        document.getElementById('dashboardTitle').textContent = isAdmin() ? 'Admin Dashboard' : 'My Dashboard';
+      } catch (e) {
+        console.error('Dashboard update error:', e);
+      }
+    }
+
+    // ────────────────────────────────────────────────
+    // AI Features
+    // ────────────────────────────────────────────────
+
+    function aiSuggest() {
+      const desc = document.getElementById('ticketDesc').value.trim().toLowerCase();
+      if (!desc) return alert('Please describe the issue first.');
+
+      // Simple AI-like keyword matching for suggestions
+      let priority = 'Low';
+      let status = 'Open';
+
+      // Keyword-based priority suggestion
+      if (desc.includes('urgent') || desc.includes('critical') || desc.includes('down') || desc.includes('crash')) {
+        priority = 'High';
+      } else if (desc.includes('slow') || desc.includes('error') || desc.includes('issue')) {
+        priority = 'Medium';
+      }
+
+      // Basic status suggestion (always Open for new tickets, but could expand)
+      status = 'Open';
+
+      document.getElementById('ticketPriority').value = priority;
+      document.getElementById('ticketStatus').value = status;
+
+      alert(`AI Suggestion: Priority set to ${priority}. Status: ${status}. (Based on keywords in description.)`);
     }
 
     // ────────────────────────────────────────────────
@@ -391,69 +486,100 @@
     // ────────────────────────────────────────────────
 
     function renderTickets() {
-      const query = document.getElementById('searchInput').value.toLowerCase().trim();
-      let tickets = getTickets();
+      try {
+        const query = document.getElementById('searchInput').value.toLowerCase().trim();
+        let tickets = getTickets();
 
-      if (!isAdmin()) {
-        tickets = tickets.filter(t => t.createdBy === currentUser.id);
-      }
+        if (!isAdmin()) {
+          tickets = tickets.filter(t => t.createdBy === currentUser.id);
+        }
 
-      if (query) {
-        tickets = tickets.filter(t =>
-          t.title.toLowerCase().includes(query) ||
-          t.desc.toLowerCase().includes(query)
-        );
-      }
+        if (query) {
+          tickets = tickets.filter(t =>
+            t.title.toLowerCase().includes(query) ||
+            t.desc.toLowerCase().includes(query)
+          );
+        }
 
-      document.getElementById('ticketsTitle').textContent = isAdmin() ? 'All Tickets' : 'My Tickets';
+        document.getElementById('ticketsTitle').textContent = isAdmin() ? 'All Tickets' : 'My Tickets';
 
-      document.getElementById('ticketsList').innerHTML = tickets.length === 0
-        ? '<p style="padding:20px; color:#94a3b8; text-align:center;">No tickets found.</p>'
-        : tickets.map(t => `
-          <div class="ticket-item">
-            <div style="flex:1;">
-              <h3>${t.title}</h3>
-              <p style="margin:8px 0; color:#cbd5e1;">${t.desc}</p>
-              <div class="meta">
-                Status: <strong>${t.status}</strong> • 
-                Priority: <strong>${t.priority}</strong> • 
-                Created: ${new Date(t.createdAt).toLocaleString()}
+        document.getElementById('ticketsList').innerHTML = tickets.length === 0
+          ? '<p style="padding:20px; color:#94a3b8; text-align:center;">No tickets found.</p>'
+          : tickets.map(t => `
+            <div class="ticket-item">
+              <div style="flex:1;">
+                <h3>${t.title}</h3>
+                <p style="margin:8px 0; color:#cbd5e1;">${t.desc}</p>
+                <div class="meta">
+                  Status: <strong>${t.status}</strong> • 
+                  Priority: <strong>${t.priority}</strong> • 
+                  Created: ${new Date(t.createdAt).toLocaleString()}
+                </div>
               </div>
+              ${isAdmin() ? `
+              <div class="actions">
+                <select onchange="updateTicket(${t.id}, 'status', this.value)">
+                  <option ${t.status==='Open'?'selected':''}>Open</option>
+                  <option ${t.status==='In Progress'?'selected':''}>In Progress</option>
+                  <option ${t.status==='Closed'?'selected':''}>Closed</option>
+                </select>
+                <select onchange="updateTicket(${t.id}, 'priority', this.value)">
+                  <option ${t.priority==='Low'?'selected':''}>Low</option>
+                  <option ${t.priority==='Medium'?'selected':''}>Medium</option>
+                  <option ${t.priority==='High'?'selected':''}>High</option>
+                </select>
+                <button class="danger" onclick="deleteTicket(${t.id})">Delete</button>
+              </div>` : ''}
             </div>
-            ${isAdmin() ? `
-            <div class="actions">
-              <select onchange="updateTicket(${t.id}, 'status', this.value)">
-                <option ${t.status==='Open'?'selected':''}>Open</option>
-                <option ${t.status==='In Progress'?'selected':''}>In Progress</option>
-                <option ${t.status==='Closed'?'selected':''}>Closed</option>
-              </select>
-              <select onchange="updateTicket(${t.id}, 'priority', this.value)">
-                <option ${t.priority==='Low'?'selected':''}>Low</option>
-                <option ${t.priority==='Medium'?'selected':''}>Medium</option>
-                <option ${t.priority==='High'?'selected':''}>High</option>
-              </select>
-              <button class="danger" onclick="deleteTicket(${t.id})">Delete</button>
-            </div>` : ''}
-          </div>
-        `).join('');
+          `).join('');
+      } catch (e) {
+        console.error('Tickets render error:', e);
+        document.getElementById('ticketsList').innerHTML = '<p style="color:#ff6b6b;">Error loading tickets. Please refresh.</p>';
+      }
     }
 
     function updateTicket(id, field, value) {
-      let tickets = getTickets();
-      const ticket = tickets.find(t => t.id === id);
-      if (ticket) {
-        ticket[field] = value;
-        saveTickets(tickets);
-        renderTickets();
-        updateDashboard();
+      try {
+        let tickets = getTickets();
+        const ticket = tickets.find(t => t.id === id);
+        if (ticket) {
+          ticket[field] = value;
+          saveTickets(tickets);
+          renderTickets();
+          updateDashboard();
+        }
+      } catch (e) {
+        alert('Update failed: ' + e.message);
       }
     }
 
     function deleteTicket(id) {
       if (!confirm('Delete this ticket permanently?')) return;
-      saveTickets(getTickets().filter(t => t.id !== id));
-      renderTickets();
-      updateDashboard();
+      try {
+        saveTickets(getTickets().filter(t => t.id !== id));
+        renderTickets();
+        updateDashboard();
+      } catch (e) {
+        alert('Delete failed: ' + e.message);
+      }
+    }
+
+    // ────────────────────────────────────────────────
+    // Knowledge Base
+    // ────────────────────────────────────────────────
+
+    function loadKnowledgeBase() {
+      try {
+        const kb = getKnowledgeBase();
+        document.getElementById('knowledgeList').innerHTML = kb.map(item => `
+          <div class="knowledge-item">
+            <h4>${item.title}</h4>
+            <p>${item.description}</p>
+          </div>
+        `).join('');
+      } catch (e) {
+        console.error('Knowledge base load error:', e);
+      }
     }
 
     // ────────────────────────────────────────────────
@@ -466,10 +592,14 @@
       // Try auto-login from storage
       const stored = localStorage.getItem('currentUser');
       if (stored) {
-        currentUser = JSON.parse(stored);
-        if (getUsers().some(u => u.id === currentUser.id)) {
-          showPage('dashboard');
-          return;
+        try {
+          currentUser = JSON.parse(stored);
+          if (getUsers().some(u => u.id === currentUser.id)) {
+            showPage('dashboard');
+            return;
+          }
+        } catch (e) {
+          localStorage.removeItem('currentUser'); // Clear invalid session
         }
       }
 
@@ -490,42 +620,51 @@
       // Create ticket
       document.getElementById('createTicketForm')?.addEventListener('submit', e => {
         e.preventDefault();
-        const title = document.getElementById('ticketTitle').value.trim();
-        const desc = document.getElementById('ticketDesc').value.trim();
-        const priority = document.getElementById('ticketPriority').value;
-        if (!title || !desc) return alert('Title and description required');
+        try {
+          const title = document.getElementById('ticketTitle').value.trim();
+          const desc = document.getElementById('ticketDesc').value.trim();
+          const priority = document.getElementById('ticketPriority').value;
+          const status = document.getElementById('ticketStatus').value;
+          if (!title || !desc) return alert('Title and description required');
 
-        const tickets = getTickets();
-        tickets.push({
-          id: Date.now(),
-          title, desc,
-          status: 'Open',
-          priority,
-          createdBy: currentUser.id,
-          createdAt: new Date().toISOString()
-        });
-        saveTickets(tickets);
-        e.target.reset();
-        alert('Ticket created successfully');
-        updateDashboard();
+          const tickets = getTickets();
+          tickets.push({
+            id: Date.now(),
+            title, desc,
+            status,
+            priority,
+            createdBy: currentUser.id,
+            createdAt: new Date().toISOString()
+          });
+          saveTickets(tickets);
+          e.target.reset();
+          alert('Ticket created successfully');
+          updateDashboard();
+        } catch (e) {
+          alert('Ticket creation failed: ' + e.message);
+        }
       });
 
       // Add user (admin only)
       document.getElementById('addUserForm')?.addEventListener('submit', e => {
         e.preventDefault();
-        const username = document.getElementById('newUsername').value.trim();
-        const pw = document.getElementById('newPassword').value;
-        if (!username || !pw) return alert('Username and password required');
+        try {
+          const username = document.getElementById('newUsername').value.trim();
+          const pw = document.getElementById('newPassword').value;
+          if (!username || !pw) return alert('Username and password required');
 
-        const users = getUsers();
-        if (users.some(u => u.username === username)) return alert('Username already exists');
+          const users = getUsers();
+          if (users.some(u => u.username === username)) return alert('Username already exists');
 
-        const id = Math.max(...users.map(u=>u.id), 0) + 1;
-        users.push({ id, username, password:pw, role:'user' });
-        saveUsers(users);
-        alert('User added successfully');
-        loadUsersList();
-        e.target.reset();
+          const id = Math.max(...users.map(u=>u.id), 0) + 1;
+          users.push({ id, username, password:pw, role:'user' });
+          saveUsers(users);
+          alert('User added successfully');
+          loadUsersList();
+          e.target.reset();
+        } catch (e) {
+          alert('User addition failed: ' + e.message);
+        }
       });
 
       // Search on tickets page
@@ -533,21 +672,29 @@
     });
 
     function loadUsersList() {
-      const users = getUsers().filter(u => u.role === 'user');
-      document.getElementById('usersList').innerHTML = users.length === 0
-        ? '<p style="color:#94a3b8;">No users yet.</p>'
-        : users.map(u => `
-          <div style="background:rgba(255,255,255,0.05); padding:12px; margin:10px 0; border-radius:8px; display:flex; justify-content:space-between; align-items:center; border:1px solid rgba(255,255,255,0.1);">
-            <span>${u.username}</span>
-            <button class="danger" onclick="deleteUser(${u.id})">Delete</button>
-          </div>
-        `).join('');
+      try {
+        const users = getUsers().filter(u => u.role === 'user');
+        document.getElementById('usersList').innerHTML = users.length === 0
+          ? '<p style="color:#94a3b8;">No users yet.</p>'
+          : users.map(u => `
+            <div style="background:rgba(255,255,255,0.05); padding:12px; margin:10px 0; border-radius:8px; display:flex; justify-content:space-between; align-items:center; border:1px solid rgba(255,255,255,0.1);">
+              <span>${u.username}</span>
+              <button class="danger" onclick="deleteUser(${u.id})">Delete</button>
+            </div>
+          `).join('');
+      } catch (e) {
+        console.error('Users list error:', e);
+      }
     }
 
     function deleteUser(id) {
       if (!confirm('Delete this user?')) return;
-      saveUsers(getUsers().filter(u => u.id !== id));
-      loadUsersList();
+      try {
+        saveUsers(getUsers().filter(u => u.id !== id));
+        loadUsersList();
+      } catch (e) {
+        alert('User deletion failed: ' + e.message);
+      }
     }
   </script>
 </body>
