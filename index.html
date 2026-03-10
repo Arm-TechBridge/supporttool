@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>IT Helpdesk • AI Assisted</title>
+  <title>IT Helpdesk • Real AI Powered</title>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 
   <style>
@@ -192,6 +192,15 @@
 
     .actions { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
 
+    .ai-response {
+      margin-top: 16px;
+      padding: 16px;
+      background: rgba(99,102,241,0.12);
+      border-radius: 10px;
+      border-left: 4px solid #6366f1;
+      white-space: pre-wrap;
+    }
+
     @media (max-width: 900px) {
       #sidebar { width: 100%; height: auto; position: static; padding: 24px 16px; }
       #mainContent { margin-left: 0; padding: 24px; }
@@ -201,14 +210,14 @@
 </head>
 <body>
 
-  <!-- LOGIN SCREEN -->
+  <!-- LOGIN -->
   <div id="loginPage">
     <div class="login-card">
       <h1>IT Helpdesk AI</h1>
       <p style="color:#94a3b8; margin:20px 0 32px; line-height:1.6;">
-        Username + Password login<br><br>
-        <strong>admin / admin</strong>  → Admin<br>
-        <strong>user1 / pass</strong>  → Regular user
+        Username + Password<br><br>
+        <strong>admin / admin</strong> → Admin<br>
+        <strong>user1 / pass</strong> → User
       </p>
 
       <form id="loginForm">
@@ -221,45 +230,44 @@
     </div>
   </div>
 
-  <!-- MAIN APPLICATION -->
+  <!-- MAIN APP -->
   <div id="appLayout" class="hidden">
 
     <div id="sidebar"></div>
 
     <div id="mainContent">
 
-      <!-- ─── DASHBOARD ─── -->
+      <!-- DASHBOARD -->
       <div id="dashboardPage">
         <h1 id="dashboardTitle">Dashboard</h1>
 
         <div class="stats-grid">
-          <div class="card"><h3>Total Tickets</h3><span id="statTotal">—</span></div>
+          <div class="card"><h3>Total</h3><span id="statTotal">—</span></div>
           <div class="card"><h3>Open</h3><span id="statOpen">—</span></div>
           <div class="card"><h3>In Progress</h3><span id="statInProgress">—</span></div>
           <div class="card"><h3>Closed</h3><span id="statClosed">—</span></div>
         </div>
 
-        <!-- User — Create Ticket -->
+        <!-- Create Ticket (User) -->
         <div id="createTicketArea" class="section-card hidden">
           <h2>Create New Ticket</h2>
           <form id="createTicketForm">
             <input type="text" id="ticketTitle" placeholder="Ticket Title" required>
-            <textarea id="ticketDesc" placeholder="Describe your issue in detail..." rows="6" required></textarea>
+            <textarea id="ticketDesc" placeholder="Describe the issue..." rows="5" required></textarea>
 
-            <button type="button" class="ai-btn" onclick="suggestPriority()">AI Suggest Priority</button>
+            <button type="button" class="ai-btn" onclick="aiSuggestPriority()">AI Suggest Priority</button>
 
-            <div style="display:flex; gap:16px; flex-wrap:wrap;">
-              <select id="ticketPriority">
-                <option value="Low">Low</option>
-                <option value="Medium">Medium</option>
-                <option value="High">High</option>
-              </select>
-              <button type="submit">Create Ticket</button>
-            </div>
+            <select id="ticketPriority">
+              <option value="Low">Low</option>
+              <option value="Medium">Medium</option>
+              <option value="High">High</option>
+            </select>
+
+            <button type="submit">Submit Ticket</button>
           </form>
         </div>
 
-        <!-- Admin — Manage Users -->
+        <!-- Manage Users (Admin) -->
         <div id="manageUsersArea" class="section-card hidden">
           <h2>Manage Users</h2>
           <form id="addUserForm" style="display:flex; gap:14px; flex-wrap:wrap; margin:24px 0;">
@@ -270,15 +278,15 @@
           <div id="usersList"></div>
         </div>
 
-        <!-- Troubleshooting / Knowledge Base -->
+        <!-- Troubleshooting -->
         <div class="section-card">
-          <h2>Common Issues & Troubleshooting</h2>
+          <h2>Common Issues & Fixes</h2>
           <input type="text" id="kbSearch" placeholder="Search solutions..." style="width:100%; max-width:420px; margin:16px 0 24px;">
           <div id="knowledgeList"></div>
         </div>
       </div>
 
-      <!-- ─── TICKETS VIEW ─── -->
+      <!-- Tickets -->
       <div id="ticketsPage" class="section-card hidden">
         <h1 id="ticketsTitle">Tickets</h1>
         <input type="text" id="searchInput" placeholder="Search tickets..." style="width:100%; max-width:500px; margin-bottom:24px;">
@@ -288,22 +296,28 @@
   </div>
 
   <script>
+    // ─── CONFIG ─────────────────────────────────────────────
+
+    const GROQ_API_KEY = 'gsk_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'; // ← PASTE YOUR REAL GROQ KEY HERE
+
+    const GROQ_ENDPOINT = 'https://api.groq.com/openai/v1/chat/completions';
+
+    const DEFAULT_MODEL = 'llama-3.1-8b-instant'; // fast & free tier friendly
+
     // ─── DEFAULT DATA ───────────────────────────────────────
 
     const defaultUsers = [
-      { id:1, username:'admin',  password:'admin',  role:'admin' },
-      { id:2, username:'user1',  password:'pass',   role:'user'  }
+      { id:1, username:'admin', password:'admin', role:'admin' },
+      { id:2, username:'user1', password:'pass', role:'user' }
     ];
 
     const defaultKB = [
-      { title:"Computer very slow", text:"1. Close unnecessary programs\n2. Run Disk Cleanup\n3. Update graphics driver\n4. Scan with antivirus\n5. Consider more RAM" },
-      { title:"No internet / Wi-Fi", text:"1. Restart router & PC\n2. Forget network → reconnect\n3. ipconfig /release → ipconfig /renew\n4. Check cables / signal" },
-      { title:"Printer not printing", text:"1. Check power & connection\n2. Set as default printer\n3. Clear print queue\n4. Reinstall driver\n5. Run Windows Printer Troubleshooter" },
-      { title:"Blue screen / crash", text:"1. Note the error code\n2. Boot to Safe Mode\n3. Update Windows & drivers\n4. Check RAM / hardware\n5. Run sfc /scannow" },
-      { title:"Email not sending", text:"1. Check credentials & server settings\n2. Clear cache / cookies\n3. Check sent items & spam\n4. Test with webmail" }
+      { title:"Slow computer", text:"Close apps • Update drivers • Scan malware • Consider SSD upgrade" },
+      { title:"No internet", text:"Restart router • Renew IP • Check cables • Contact ISP" },
+      { title:"Printer offline", text:"Check connection • Clear queue • Reinstall driver • Run troubleshooter" }
     ];
 
-    // ─── STORAGE HELPERS ────────────────────────────────────
+    // ─── STORAGE ────────────────────────────────────────────
 
     function initStorage() {
       if (!localStorage.users)    localStorage.users    = JSON.stringify(defaultUsers);
@@ -311,18 +325,18 @@
       if (!localStorage.kb)       localStorage.kb       = JSON.stringify(defaultKB);
     }
 
-    const getUsers      = () => JSON.parse(localStorage.users    || '[]');
-    const saveUsers     = u  => localStorage.users    = JSON.stringify(u);
-    const getTickets    = () => JSON.parse(localStorage.tickets  || '[]');
-    const saveTickets   = t  => localStorage.tickets  = JSON.stringify(t);
-    const getKB         = () => JSON.parse(localStorage.kb       || '[]');
-    const saveKB        = k  => localStorage.kb       = JSON.stringify(k);
+    const getUsers    = () => JSON.parse(localStorage.users    || '[]');
+    const saveUsers   = u  => localStorage.users    = JSON.stringify(u);
+    const getTickets  = () => JSON.parse(localStorage.tickets  || '[]');
+    const saveTickets = t  => localStorage.tickets  = JSON.stringify(t);
+    const getKB       = () => JSON.parse(localStorage.kb       || '[]');
+    const saveKB      = k  => localStorage.kb       = JSON.stringify(k);
 
     let currentUser = null;
 
     // ─── AUTH ───────────────────────────────────────────────
 
-    function tryLogin(username, password) {
+    function login(username, password) {
       const user = getUsers().find(u => u.username === username && u.password === password);
       if (user) {
         currentUser = user;
@@ -338,15 +352,13 @@
       showView('login');
     }
 
-    function isAdmin() {
-      return currentUser?.role === 'admin';
-    }
+    function isAdmin() { return currentUser?.role === 'admin'; }
 
-    // ─── NAVIGATION ─────────────────────────────────────────
+    // ─── VIEWS ──────────────────────────────────────────────
 
     function showView(view) {
-      // Hide everything
-      document.querySelectorAll('#loginPage, #dashboardPage, #ticketsPage, #createTicketArea, #manageUsersArea').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('#loginPage, #dashboardPage, #ticketsPage, #createTicketArea, #manageUsersArea')
+        .forEach(el => el.classList.add('hidden'));
 
       if (view === 'login') {
         document.getElementById('loginPage').classList.remove('hidden');
@@ -359,7 +371,7 @@
       document.getElementById('sidebar').innerHTML = `
         <h2>IT Helpdesk AI</h2>
         <a href="#" ${view==='dashboard'?'class="active"':''} onclick="showView('dashboard');return false">Dashboard</a>
-        <a href="#" ${view==='tickets'?'class="active"':''}   onclick="showView('tickets');return false">${isAdmin()?'All Tickets':'My Tickets'}</a>
+        <a href="#" ${view==='tickets'?'class="active"':''}   onclick="showView('tickets');return false">${isAdmin()?'All':'My'} Tickets</a>
         ${isAdmin() ? '<a href="#" onclick="showManageUsers();return false">Manage Users</a>' : ''}
         <a href="#" onclick="logout();return false">Logout</a>
       `;
@@ -370,9 +382,7 @@
       } else {
         document.getElementById('dashboardPage').classList.remove('hidden');
         updateDashboard();
-        if (!isAdmin()) {
-          document.getElementById('createTicketArea').classList.remove('hidden');
-        }
+        if (!isAdmin()) document.getElementById('createTicketArea').classList.remove('hidden');
       }
     }
 
@@ -390,22 +400,16 @@
       document.getElementById('statOpen').textContent       = tickets.filter(t=>t.status==='Open').length;
       document.getElementById('statInProgress').textContent = tickets.filter(t=>t.status==='In Progress').length;
       document.getElementById('statClosed').textContent     = tickets.filter(t=>t.status==='Closed').length;
-
       document.getElementById('dashboardTitle').textContent = isAdmin() ? 'Admin Dashboard' : 'My Dashboard';
     }
 
     function renderTickets() {
       const q = document.getElementById('searchInput').value.toLowerCase().trim();
-      let list = getTickets();
+      let list = getTickets().filter(t => isAdmin() || t.createdBy === currentUser.id);
 
-      if (!isAdmin()) list = list.filter(t => t.createdBy === currentUser.id);
-
-      if (q) {
-        list = list.filter(t =>
-          t.title.toLowerCase().includes(q) ||
-          t.description.toLowerCase().includes(q)
-        );
-      }
+      if (q) list = list.filter(t => 
+        t.title.toLowerCase().includes(q) || t.description.toLowerCase().includes(q)
+      );
 
       document.getElementById('ticketsTitle').textContent = isAdmin() ? 'All Tickets' : 'My Tickets';
 
@@ -419,6 +423,7 @@
               <div class="meta">
                 <strong>${t.status}</strong> • ${t.priority} • ${new Date(t.createdAt).toLocaleString()}
               </div>
+              <div id="ai-fix-${t.id}" class="ai-response hidden"></div>
             </div>
             ${isAdmin() ? `
             <div class="actions">
@@ -432,7 +437,7 @@
                 <option ${t.priority==='Medium'?'selected':''}>Medium</option>
                 <option ${t.priority==='High'?'selected':''}>High</option>
               </select>
-              <button class="ai-btn" onclick="suggestFix(${t.id})">AI Quick Fix</button>
+              <button class="ai-btn" onclick="getAIFixSuggestion(${t.id})">AI Fix Suggestion</button>
               <button class="danger" onclick="deleteTicket(${t.id})">Delete</button>
             </div>` : ''}
           </div>
@@ -441,80 +446,141 @@
 
     function renderUserList() {
       const users = getUsers().filter(u => u.role === 'user');
-      document.getElementById('usersList').innerHTML = users.length === 0
-        ? '<p style="color:#94a3b8;">No regular users yet.</p>'
-        : users.map(u => `
-          <div style="background:rgba(255,255,255,0.06); padding:14px; margin:12px 0; border-radius:10px; display:flex; justify-content:space-between; align-items:center;">
-            <span>${u.username}</span>
-            <button class="danger" onclick="deleteUser(${u.id})">Delete</button>
-          </div>
-        `).join('');
+      document.getElementById('usersList').innerHTML = users.map(u => `
+        <div style="background:rgba(255,255,255,0.06); padding:14px; margin:12px 0; border-radius:10px; display:flex; justify-content:space-between;">
+          <span>${u.username}</span>
+          <button class="danger" onclick="deleteUser(${u.id})">Delete</button>
+        </div>
+      `).join('') || '<p style="color:#94a3b8;">No users yet.</p>';
     }
 
     function renderKnowledgeBase() {
       const q = document.getElementById('kbSearch').value.toLowerCase().trim();
-      const items = getKB().filter(i =>
+      const items = getKB().filter(i => 
         i.title.toLowerCase().includes(q) || i.text.toLowerCase().includes(q)
       );
 
-      document.getElementById('knowledgeList').innerHTML = items.length === 0
-        ? '<p style="color:#94a3b8; text-align:center; padding:32px;">No matching guides found.</p>'
-        : items.map(i => `
-          <div class="section-card" style="margin:16px 0;">
-            <h3 style="margin-bottom:12px;">${i.title}</h3>
-            <p style="white-space:pre-line; color:#cbd5e1;">${i.text}</p>
-          </div>
-        `).join('');
+      document.getElementById('knowledgeList').innerHTML = items.map(i => `
+        <div class="section-card" style="margin:16px 0;">
+          <h3>${i.title}</h3>
+          <p style="white-space:pre-line; color:#cbd5e1;">${i.text}</p>
+        </div>
+      `).join('') || '<p style="color:#94a3b8; text-align:center;">No matching guides.</p>';
     }
 
-    // ─── ACTIONS ────────────────────────────────────────────
+    // ─── REAL AI CALLS (Groq) ───────────────────────────────
 
-    function suggestPriority() {
-      const text = document.getElementById('ticketDesc').value.toLowerCase();
-      if (!text) return alert("Write something first.");
-
-      let prio = "Medium";
-      let msg = "AI Suggestion:\n\n";
-
-      if (/urgent|critical|emergency|down|crash|stopped/i.test(text)) {
-        prio = "High";
-        msg += "→ Looks urgent/critical → **High** priority suggested\n";
-      } else if (/slow|lag|freeze|stuck|delay/i.test(text)) {
-        prio = "Medium";
-        msg += "→ Performance issue → **Medium** priority\n";
-      } else {
-        msg += "→ No strong urgency detected → **Medium** priority\n";
+    async function callGroq(messages, model = DEFAULT_MODEL) {
+      if (!GROQ_API_KEY || GROQ_API_KEY.includes('xxxx')) {
+        return { content: "Error: Please add your real Groq API key in the code (line ~15)" };
       }
 
-      document.getElementById('ticketPriority').value = prio;
-      alert(msg);
+      try {
+        const res = await fetch(GROQ_ENDPOINT, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${GROQ_API_KEY}`
+          },
+          body: JSON.stringify({
+            model,
+            messages,
+            temperature: 0.7,
+            max_tokens: 300
+          })
+        });
+
+        if (!res.ok) throw new Error(`Groq HTTP ${res.status}`);
+
+        const data = await res.json();
+        return data.choices?.[0]?.message || { content: "No response from AI" };
+      } catch (err) {
+        console.error(err);
+        return { content: `AI error: ${err.message}` };
+      }
     }
 
-    function suggestFix(ticketId) {
+    async function suggestPriority() {
+      const desc = document.getElementById('ticketDesc').value.trim();
+      if (!desc) return alert("Describe the issue first.");
+
+      const messages = [
+        { role: "system", content: "You are a helpful IT support classifier. Respond ONLY with priority level: Low, Medium or High." },
+        { role: "user",   content: `Classify urgency: ${desc}` }
+      ];
+
+      const ai = await callGroq(messages);
+      const prio = (ai.content || "").trim().match(/Low|Medium|High/i)?.[0] || "Medium";
+
+      document.getElementById('ticketPriority').value = prio;
+      alert(`AI suggested priority: ${prio}`);
+    }
+
+    async function getAIFixSuggestion(ticketId) {
       const ticket = getTickets().find(t => t.id === ticketId);
       if (!ticket) return alert("Ticket not found.");
 
-      const d = ticket.description.toLowerCase();
-      let msg = "AI Quick Fix Ideas:\n\n";
+      const container = document.getElementById(`ai-fix-${ticketId}`);
+      container.classList.remove('hidden');
+      container.textContent = "AI thinking...";
 
-      if (/printer/i.test(d)) {
-        msg += "Printer problem?\n1. Check power & connection\n2. Clear print queue\n3. Reinstall driver\n4. Run printer troubleshooter";
-      } else if (/slow|lag|freeze/i.test(d)) {
-        msg += "Slow performance?\n1. Close background apps\n2. Update graphics driver\n3. Run disk cleanup\n4. Scan for malware";
-      } else if (/wifi|internet|network/i.test(d)) {
-        msg += "Network issue?\n1. Restart router & device\n2. Forget & reconnect Wi-Fi\n3. ipconfig /renew\n4. Check cables";
-      } else {
-        msg += "No specific pattern detected.\nTry: restart → update drivers → scan → check cables.";
-      }
+      const messages = [
+        { role: "system", content: "You are an expert IT support technician. Give clear, step-by-step fix suggestions. Keep it concise." },
+        { role: "user",   content: `Issue title: ${ticket.title}\nDescription: ${ticket.description}\nCurrent status: ${ticket.status}\nSuggest fixes:` }
+      ];
 
-      alert(msg);
+      const ai = await callGroq(messages, 'llama-3.1-70b-versatile'); // better reasoning model
+      container.textContent = ai.content || "No suggestion available.";
     }
+
+    // ─── CRUD ───────────────────────────────────────────────
+
+    document.getElementById('createTicketForm')?.addEventListener('submit', e => {
+      e.preventDefault();
+      const title = document.getElementById('ticketTitle').value.trim();
+      const desc  = document.getElementById('ticketDesc').value.trim();
+      const prio  = document.getElementById('ticketPriority').value;
+
+      if (!title || !desc) return alert("Fill title & description.");
+
+      const tickets = getTickets();
+      tickets.push({
+        id: Date.now(),
+        title, description: desc,
+        status: 'Open',
+        priority: prio,
+        createdBy: currentUser.id,
+        createdAt: new Date().toISOString()
+      });
+      saveTickets(tickets);
+      e.target.reset();
+      alert("Ticket created!");
+      updateDashboard();
+    });
+
+    document.getElementById('addUserForm')?.addEventListener('submit', e => {
+      e.preventDefault();
+      const un = document.getElementById('newUsername').value.trim();
+      const pw = document.getElementById('newPassword').value;
+
+      if (!un || !pw) return alert("Both fields required.");
+
+      const users = getUsers();
+      if (users.some(u => u.username === un)) return alert("Username taken.");
+
+      const id = Math.max(0, ...users.map(u=>u.id)) + 1;
+      users.push({ id, username: un, password: pw, role: 'user' });
+      saveUsers(users);
+      alert("User added.");
+      renderUserList();
+      e.target.reset();
+    });
 
     function updateTicket(id, field, value) {
       let tickets = getTickets();
-      const idx = tickets.findIndex(t => t.id === id);
-      if (idx !== -1) {
-        tickets[idx][field] = value;
+      const t = tickets.find(t => t.id === id);
+      if (t) {
+        t[field] = value;
         saveTickets(tickets);
         renderTickets();
         updateDashboard();
@@ -522,19 +588,19 @@
     }
 
     function deleteTicket(id) {
-      if (!confirm("Delete ticket permanently?")) return;
+      if (!confirm("Delete forever?")) return;
       saveTickets(getTickets().filter(t => t.id !== id));
       renderTickets();
       updateDashboard();
     }
 
     function deleteUser(id) {
-      if (!confirm("Delete this user?")) return;
+      if (!confirm("Delete user?")) return;
       saveUsers(getUsers().filter(u => u.id !== id));
       renderUserList();
     }
 
-    // ─── INIT & EVENT LISTENERS ─────────────────────────────
+    // ─── INIT ───────────────────────────────────────────────
 
     document.addEventListener('DOMContentLoaded', () => {
       initStorage();
@@ -546,71 +612,25 @@
           currentUser = JSON.parse(stored);
           if (getUsers().some(u => u.id === currentUser.id)) {
             showView('dashboard');
-          } else {
-            localStorage.removeItem('currentUser');
+            return;
           }
         }
       } catch {}
+      localStorage.removeItem('currentUser');
 
-      if (!currentUser) showView('login');
+      showView('login');
 
-      // ─── LOGIN ───
       document.getElementById('loginForm').addEventListener('submit', e => {
         e.preventDefault();
         const un = document.getElementById('username').value.trim();
         const pw = document.getElementById('password').value;
-        if (tryLogin(un, pw)) {
+        if (login(un, pw)) {
           showView('dashboard');
         } else {
-          document.getElementById('loginError').textContent = 'Invalid username or password';
+          document.getElementById('loginError').textContent = 'Wrong credentials';
         }
       });
 
-      // ─── CREATE TICKET ───
-      document.getElementById('createTicketForm').addEventListener('submit', e => {
-        e.preventDefault();
-        const title = document.getElementById('ticketTitle').value.trim();
-        const desc  = document.getElementById('ticketDesc').value.trim();
-        const prio  = document.getElementById('ticketPriority').value;
-
-        if (!title || !desc) return alert("Title and description required.");
-
-        const tickets = getTickets();
-        tickets.push({
-          id: Date.now(),
-          title,
-          description: desc,
-          status: 'Open',
-          priority: prio,
-          createdBy: currentUser.id,
-          createdAt: new Date().toISOString()
-        });
-        saveTickets(tickets);
-        e.target.reset();
-        alert("Ticket created successfully.");
-        updateDashboard();
-      });
-
-      // ─── ADD USER (ADMIN) ───
-      document.getElementById('addUserForm').addEventListener('submit', e => {
-        e.preventDefault();
-        const un = document.getElementById('newUsername').value.trim();
-        const pw = document.getElementById('newPassword').value;
-
-        if (!un || !pw) return alert("Both fields required.");
-
-        const users = getUsers();
-        if (users.some(u => u.username === un)) return alert("Username already exists.");
-
-        const id = Math.max(0, ...users.map(u=>u.id)) + 1;
-        users.push({ id, username: un, password: pw, role: 'user' });
-        saveUsers(users);
-        alert("User added.");
-        renderUserList();
-        e.target.reset();
-      });
-
-      // ─── SEARCH ───
       document.getElementById('searchInput')?.addEventListener('input', renderTickets);
       document.getElementById('kbSearch')?.addEventListener('input', renderKnowledgeBase);
     });
