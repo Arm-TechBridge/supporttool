@@ -1,43 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IT Helpdesk - Login</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <script src="app.js" defer></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>IT Helpdesk – Login</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 </head>
 <body class="login-body">
-    <div class="login-container">
-        <div class="login-card">
-            <h1>IT Helpdesk Login</h1>
-            <p class="role-hint">Admin: admin/admin | User: user1/pass</p>
-            <form id="loginForm">
-                <input type="text" id="username" placeholder="Username" required>
-                <input type="password" id="password" placeholder="Password" required>
-                <button type="submit">Login</button>
-            </form>
-            <p id="errorMsg" class="error"></p>
-        </div>
+
+  <div class="login-container">
+    <div class="login-card">
+      <h1>IT Helpdesk</h1>
+      <p style="color:#666; margin: 8px 0 24px;">Default credentials:<br>
+        Admin → <strong>admin / admin</strong><br>
+        User  → <strong>user1 / pass</strong>
+      </p>
+
+      <form id="loginForm">
+        <input type="text" id="username" placeholder="Username" required autocomplete="off">
+        <input type="password" id="password" placeholder="Password" required autocomplete="off">
+        <button type="submit">Login</button>
+      </form>
+
+      <p id="errorMsg" class="error"></p>
     </div>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            initStorage();
-            const form = document.getElementById('loginForm');
-            const errorMsg = document.getElementById('errorMsg');
-            form.addEventListener('submit', function(e) {
-                e.preventDefault();
-                const username = document.getElementById('username').value;
-                const password = document.getElementById('password').value;
-                const result = login(username, password);
-                if (result.success) {
-                    window.location.href = result.role === 'admin' ? 'admin.html' : 'user.html';
-                } else {
-                    errorMsg.textContent = result.message;
-                }
-            });
-        });
-    </script>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      initStorage();
+
+      const form = document.getElementById('loginForm');
+      const errorMsg = document.getElementById('errorMsg');
+
+      form.addEventListener('submit', e => {
+        e.preventDefault();
+        const username = document.getElementById('username').value.trim();
+        const password = document.getElementById('password').value;
+
+        const result = login(username, password);
+
+        if (result.success) {
+          window.location.href = result.role === 'admin' ? '/admin.html' : '/user.html';
+        } else {
+          errorMsg.textContent = result.message || 'Login failed';
+        }
+      });
+    });
+  </script>
 </body>
 </html>
