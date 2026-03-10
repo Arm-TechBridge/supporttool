@@ -3,53 +3,478 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>IT Helpdesk – Login</title>
-  <link rel="stylesheet" href="style.css">
+  <title>IT Helpdesk Ticket System</title>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-</head>
-<body class="login-body">
 
-  <div class="login-container">
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: 'Roboto', sans-serif;
+      background:#f8fafc;
+      color:#1e293b;
+      min-height:100vh;
+    }
+    .hidden { display:none !important; }
+
+    /* Login */
+    #loginPage {
+      background: linear-gradient(135deg, #e0e7ff, #c7d2fe);
+      height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:20px;
+    }
+    .login-card {
+      background:white;
+      padding:40px 32px;
+      border-radius:12px;
+      box-shadow:0 10px 30px rgba(0,0,0,0.15);
+      width:100%;
+      max-width:420px;
+      text-align:center;
+    }
+    .login-card input, .login-card button {
+      width:100%;
+      padding:14px;
+      margin:12px 0;
+      border-radius:6px;
+      font-size:1rem;
+    }
+    .login-card input { border:1px solid #d1d5db; }
+    .login-card button {
+      background:#4f46e5;
+      color:white;
+      border:none;
+      cursor:pointer;
+      font-weight:500;
+    }
+    .login-card button:hover { background:#4338ca; }
+    .error { color:#dc2626; margin-top:12px; }
+
+    /* Sidebar */
+    #sidebar {
+      width:240px;
+      background: linear-gradient(135deg, #4f46e5, #7c3aed);
+      color:white;
+      padding:24px 16px;
+      position:fixed;
+      height:100%;
+    }
+    #sidebar h2 { margin-bottom:32px; text-align:center; }
+    #sidebar ul { list-style:none; }
+    #sidebar a {
+      color:white;
+      text-decoration:none;
+      display:block;
+      padding:12px 16px;
+      border-radius:6px;
+      margin:4px 0;
+    }
+    #sidebar a:hover, #sidebar a.active { background:rgba(255,255,255,0.18); }
+
+    /* Main content */
+    #mainContent {
+      margin-left:240px;
+      padding:32px;
+    }
+    .stats-grid {
+      display:grid;
+      grid-template-columns:repeat(auto-fit, minmax(180px, 1fr));
+      gap:20px;
+      margin:32px 0;
+    }
+    .card {
+      background:white;
+      padding:24px;
+      border-radius:10px;
+      box-shadow:0 4px 12px rgba(0,0,0,0.08);
+      text-align:center;
+    }
+    .card h3 { color:#64748b; margin-bottom:8px; }
+    .card span { font-size:2.4rem; font-weight:700; color:#4f46e5; }
+
+    .create-ticket-section, .manage-users-section {
+      background:white;
+      padding:28px;
+      border-radius:10px;
+      margin-top:32px;
+      box-shadow:0 4px 12px rgba(0,0,0,0.08);
+    }
+    form { display:flex; flex-direction:column; gap:16px; }
+    input, textarea, button {
+      padding:14px;
+      border:1px solid #d1d5db;
+      border-radius:6px;
+      font-size:1rem;
+    }
+    button {
+      background:#4f46e5;
+      color:white;
+      border:none;
+      cursor:pointer;
+    }
+    button.danger { background:#ef4444; }
+
+    .ticket-item {
+      background:white;
+      padding:20px;
+      margin:16px 0;
+      border-radius:10px;
+      box-shadow:0 2px 10px rgba(0,0,0,0.07);
+      display:flex;
+      justify-content:space-between;
+      gap:20px;
+      flex-wrap:wrap;
+    }
+    .actions { display:flex; gap:12px; flex-wrap:wrap; align-items:center; }
+    .actions select { padding:8px 12px; border-radius:6px; }
+
+    @media (max-width: 840px) {
+      #sidebar { width:100%; height:auto; position:static; }
+      #mainContent { margin-left:0; padding:20px; }
+      .ticket-item { flex-direction:column; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Login Page -->
+  <div id="loginPage">
     <div class="login-card">
       <h1>IT Helpdesk</h1>
-      <p style="color:#666; margin: 8px 0 24px; font-size:0.95em;">
-        Default credentials:<br>
-        <strong>Admin</strong> → admin / admin<br>
-        <strong>User</strong> → user1 / pass
+      <p style="color:#666; margin:12px 0 24px;">
+        Admin: <strong>admin / admin</strong><br>
+        User: <strong>user1 / pass</strong>
       </p>
-
       <form id="loginForm">
         <input type="text" id="username" placeholder="Username" required autocomplete="off">
         <input type="password" id="password" placeholder="Password" required autocomplete="off">
         <button type="submit">Login</button>
       </form>
-
-      <p id="errorMsg" class="error"></p>
+      <p id="loginError" class="error"></p>
     </div>
   </div>
 
-  <script src="app.js"></script>
+  <!-- App Layout (hidden until login) -->
+  <div id="appLayout" class="hidden">
+    <div id="sidebar"></div>
+    <div id="mainContent">
+
+      <!-- Dashboard (User or Admin) -->
+      <div id="dashboardPage" class="page">
+        <h1 id="dashboardTitle">Dashboard</h1>
+        <div class="stats-grid">
+          <div class="card"><h3>Total</h3><span id="statTotal">0</span></div>
+          <div class="card"><h3>Open</h3><span id="statOpen">0</span></div>
+          <div class="card"><h3>In Progress</h3><span id="statInProgress">0</span></div>
+          <div class="card"><h3>Closed</h3><span id="statClosed">0</span></div>
+        </div>
+
+        <!-- User: Create Ticket -->
+        <div id="createTicketSection" class="create-ticket-section hidden">
+          <h2>Create New Ticket</h2>
+          <form id="createTicketForm">
+            <input type="text" id="ticketTitle" placeholder="Ticket Title" required>
+            <textarea id="ticketDesc" placeholder="Describe the issue..." required rows="5"></textarea>
+            <button type="submit">Submit Ticket</button>
+          </form>
+        </div>
+
+        <!-- Admin: Manage Users -->
+        <div id="manageUsersSection" class="manage-users-section hidden">
+          <h2>Manage Users</h2>
+          <form id="addUserForm" style="display:flex; gap:12px; flex-wrap:wrap; margin:20px 0;">
+            <input type="text" id="newUsername" placeholder="Username" required style="flex:1; min-width:160px;">
+            <input type="password" id="newPassword" placeholder="Password" required style="flex:1; min-width:160px;">
+            <button type="submit">Add User</button>
+          </form>
+          <div id="usersList"></div>
+        </div>
+      </div>
+
+      <!-- Tickets Page -->
+      <div id="ticketsPage" class="page hidden">
+        <h1 id="ticketsTitle">Tickets</h1>
+        <input type="text" id="searchInput" placeholder="Search title or description..." style="width:100%; max-width:500px; padding:12px; margin:16px 0; border:1px solid #d1d5db; border-radius:6px;">
+        <div id="ticketsList"></div>
+      </div>
+
+    </div>
+  </div>
+
   <script>
+    // ────────────────────────────────────────────────
+    // Data & Auth
+    // ────────────────────────────────────────────────
+
+    const defaultUsers = [
+      { id:1, username:'admin',  password:'admin',  role:'admin' },
+      { id:2, username:'user1',  password:'pass',   role:'user'  }
+    ];
+
+    function initStorage() {
+      if (!localStorage.getItem('users')) {
+        localStorage.setItem('users', JSON.stringify(defaultUsers));
+      }
+      if (!localStorage.getItem('tickets')) {
+        localStorage.setItem('tickets', JSON.stringify([]));
+      }
+    }
+
+    function getUsers()          { return JSON.parse(localStorage.getItem('users')   || '[]'); }
+    function saveUsers(u)        { localStorage.setItem('users',   JSON.stringify(u)); }
+    function getTickets()        { return JSON.parse(localStorage.getItem('tickets') || '[]'); }
+    function saveTickets(t)      { localStorage.setItem('tickets', JSON.stringify(t)); }
+
+    let currentUser = null;
+
+    function login(username, password) {
+      const user = getUsers().find(u => u.username === username && u.password === password);
+      if (user) {
+        currentUser = user;
+        localStorage.setItem('currentUser', JSON.stringify(user));
+        return true;
+      }
+      return false;
+    }
+
+    function logout() {
+      currentUser = null;
+      localStorage.removeItem('currentUser');
+      showPage('login');
+    }
+
+    function isAdmin() { return currentUser?.role === 'admin'; }
+
+    // ────────────────────────────────────────────────
+    // UI Navigation
+    // ────────────────────────────────────────────────
+
+    function showPage(page) {
+      document.getElementById('loginPage').classList.add('hidden');
+      document.getElementById('appLayout').classList.add('hidden');
+      document.getElementById('dashboardPage').classList.add('hidden');
+      document.getElementById('ticketsPage').classList.add('hidden');
+      document.getElementById('createTicketSection').classList.add('hidden');
+      document.getElementById('manageUsersSection').classList.add('hidden');
+
+      if (page === 'login') {
+        document.getElementById('loginPage').classList.remove('hidden');
+      } else {
+        document.getElementById('appLayout').classList.remove('hidden');
+        document.getElementById('dashboardPage').classList.remove('hidden');
+
+        // Sidebar
+        document.getElementById('sidebar').innerHTML = `
+          <h2>IT Helpdesk</h2>
+          <ul>
+            <li><a href="#" class="${page==='dashboard'?'active':''}" onclick="showPage('dashboard'); return false;">Dashboard</a></li>
+            <li><a href="#" class="${page==='tickets'?'active':''}" onclick="showPage('tickets'); return false;">${isAdmin() ? 'All Tickets' : 'My Tickets'}</a></li>
+            ${isAdmin() ? '<li><a href="#" onclick="showManageUsers(); return false;">Manage Users</a></li>' : ''}
+            <li><a href="#" onclick="logout(); return false;">Logout</a></li>
+          </ul>
+        `;
+
+        if (page === 'tickets') {
+          document.getElementById('dashboardPage').classList.add('hidden');
+          document.getElementById('ticketsPage').classList.remove('hidden');
+          renderTickets();
+        } else if (page === 'dashboard') {
+          updateDashboard();
+          if (isAdmin()) {
+            // Admin sees nothing extra by default on dashboard
+          } else {
+            document.getElementById('createTicketSection').classList.remove('hidden');
+          }
+        }
+      }
+    }
+
+    function showManageUsers() {
+      document.getElementById('createTicketSection').classList.add('hidden');
+      document.getElementById('manageUsersSection').classList.remove('hidden');
+      loadUsersList();
+    }
+
+    // ────────────────────────────────────────────────
+    // Dashboard Stats
+    // ────────────────────────────────────────────────
+
+    function updateDashboard() {
+      const tickets = getTickets().filter(t => !isAdmin() ? t.createdBy === currentUser.id : true);
+
+      const total   = tickets.length;
+      const open    = tickets.filter(t=>t.status==='Open').length;
+      const inProg  = tickets.filter(t=>t.status==='In Progress').length;
+      const closed  = tickets.filter(t=>t.status==='Closed').length;
+
+      document.getElementById('statTotal').textContent      = total;
+      document.getElementById('statOpen').textContent       = open;
+      document.getElementById('statInProgress').textContent = inProg;
+      document.getElementById('statClosed').textContent     = closed;
+      document.getElementById('dashboardTitle').textContent = isAdmin() ? 'Admin Dashboard' : 'My Dashboard';
+    }
+
+    // ────────────────────────────────────────────────
+    // Tickets Rendering
+    // ────────────────────────────────────────────────
+
+    function renderTickets() {
+      const query = document.getElementById('searchInput').value.toLowerCase().trim();
+      let tickets = getTickets();
+
+      if (!isAdmin()) {
+        tickets = tickets.filter(t => t.createdBy === currentUser.id);
+      }
+
+      if (query) {
+        tickets = tickets.filter(t =>
+          t.title.toLowerCase().includes(query) ||
+          t.desc.toLowerCase().includes(query)
+        );
+      }
+
+      document.getElementById('ticketsTitle').textContent = isAdmin() ? 'All Tickets' : 'My Tickets';
+
+      document.getElementById('ticketsList').innerHTML = tickets.length === 0
+        ? '<p style="padding:20px; color:#64748b;">No tickets found.</p>'
+        : tickets.map(t => `
+          <div class="ticket-item">
+            <div style="flex:1;">
+              <h3>${t.title}</h3>
+              <p style="margin:8px 0; color:#475569;">${t.desc}</p>
+              <div style="margin-top:10px; font-size:0.9rem; color:#64748b;">
+                Status: <strong>${t.status}</strong> • Priority: <strong>${t.priority}</strong> •
+                ${new Date(t.createdAt).toLocaleString()}
+              </div>
+            </div>
+            ${isAdmin() ? `
+            <div class="actions">
+              <select onchange="updateTicket(${t.id}, 'status', this.value)">
+                <option ${t.status==='Open'?'selected':''}>Open</option>
+                <option ${t.status==='In Progress'?'selected':''}>In Progress</option>
+                <option ${t.status==='Closed'?'selected':''}>Closed</option>
+              </select>
+              <select onchange="updateTicket(${t.id}, 'priority', this.value)">
+                <option ${t.priority==='Low'?'selected':''}>Low</option>
+                <option ${t.priority==='Medium'?'selected':''}>Medium</option>
+                <option ${t.priority==='High'?'selected':''}>High</option>
+              </select>
+              <button class="danger" onclick="deleteTicket(${t.id})">Delete</button>
+            </div>` : ''}
+          </div>
+        `).join('');
+    }
+
+    function updateTicket(id, field, value) {
+      let tickets = getTickets();
+      const ticket = tickets.find(t => t.id === id);
+      if (ticket) {
+        ticket[field] = value;
+        saveTickets(tickets);
+        renderTickets();
+      }
+    }
+
+    function deleteTicket(id) {
+      if (!confirm('Delete ticket?')) return;
+      saveTickets(getTickets().filter(t => t.id !== id));
+      renderTickets();
+    }
+
+    // ────────────────────────────────────────────────
+    // Event Listeners
+    // ────────────────────────────────────────────────
+
     document.addEventListener('DOMContentLoaded', () => {
       initStorage();
 
-      const form = document.getElementById('loginForm');
-      const errorMsg = document.getElementById('errorMsg');
+      // Try auto-login from storage
+      const stored = localStorage.getItem('currentUser');
+      if (stored) {
+        currentUser = JSON.parse(stored);
+        if (getUsers().some(u => u.id === currentUser.id)) {
+          showPage('dashboard');
+          return;
+        }
+      }
 
-      form.addEventListener('submit', e => {
+      showPage('login');
+
+      // Login form
+      document.getElementById('loginForm').addEventListener('submit', e => {
         e.preventDefault();
-        const username = document.getElementById('username').value.trim();
-        const password = document.getElementById('password').value;
-
-        const result = login(username, password);
-
-        if (result.success) {
-          window.location.href = result.role === 'admin' ? '/admin.html' : '/user.html';
+        const un = document.getElementById('username').value.trim();
+        const pw = document.getElementById('password').value;
+        if (login(un, pw)) {
+          showPage('dashboard');
         } else {
-          errorMsg.textContent = result.message || 'Invalid credentials';
+          document.getElementById('loginError').textContent = 'Invalid username or password';
         }
       });
+
+      // Create ticket
+      document.getElementById('createTicketForm')?.addEventListener('submit', e => {
+        e.preventDefault();
+        const title = document.getElementById('ticketTitle').value.trim();
+        const desc = document.getElementById('ticketDesc').value.trim();
+        if (!title || !desc) return alert('Title and description required');
+
+        const tickets = getTickets();
+        tickets.push({
+          id: Date.now(),
+          title, desc,
+          status: 'Open',
+          priority: 'Low',
+          createdBy: currentUser.id,
+          createdAt: new Date().toISOString()
+        });
+        saveTickets(tickets);
+        e.target.reset();
+        alert('Ticket created');
+        updateDashboard();
+      });
+
+      // Add user (admin only)
+      document.getElementById('addUserForm')?.addEventListener('submit', e => {
+        e.preventDefault();
+        const un = document.getElementById('newUsername').value.trim();
+        const pw = document.getElementById('newPassword').value;
+        if (!un || !pw) return alert('Username and password required');
+
+        const users = getUsers();
+        if (users.some(u => u.username === un)) return alert('Username already exists');
+
+        const id = Math.max(...users.map(u=>u.id), 0) + 1;
+        users.push({ id, username:un, password:pw, role:'user' });
+        saveUsers(users);
+        alert('User added');
+        loadUsersList();
+        e.target.reset();
+      });
+
+      // Search on tickets page
+      document.getElementById('searchInput')?.addEventListener('input', renderTickets);
     });
+
+    function loadUsersList() {
+      const users = getUsers().filter(u => u.role === 'user');
+      document.getElementById('usersList').innerHTML = users.length === 0
+        ? '<p>No users yet.</p>'
+        : users.map(u => `
+          <div style="background:#f8fafc; padding:12px; margin:10px 0; border-radius:8px; display:flex; justify-content:space-between; align-items:center;">
+            <span>${u.username}</span>
+            <button class="danger" onclick="deleteUser(${u.id})">Delete</button>
+          </div>
+        `).join('');
+    }
+
+    function deleteUser(id) {
+      if (!confirm('Delete user?')) return;
+      saveUsers(getUsers().filter(u => u.id !== id));
+      loadUsersList();
+    }
   </script>
 </body>
 </html>
