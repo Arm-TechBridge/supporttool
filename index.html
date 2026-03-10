@@ -12,9 +12,10 @@
   <div class="login-container">
     <div class="login-card">
       <h1>IT Helpdesk</h1>
-      <p style="color:#666; margin: 8px 0 24px;">Default credentials:<br>
-        Admin → <strong>admin / admin</strong><br>
-        User  → <strong>user1 / pass</strong>
+      <p style="color:#666; margin: 8px 0 24px; font-size:0.95em;">
+        Default credentials:<br>
+        <strong>Admin</strong> → admin / admin<br>
+        <strong>User</strong> → user1 / pass
       </p>
 
       <form id="loginForm">
@@ -45,7 +46,7 @@
         if (result.success) {
           window.location.href = result.role === 'admin' ? '/admin.html' : '/user.html';
         } else {
-          errorMsg.textContent = result.message || 'Login failed';
+          errorMsg.textContent = result.message || 'Invalid credentials';
         }
       });
     });
