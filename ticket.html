@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IT Helpdesk - Tickets</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <script src="app.js" defer></script>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>IT Helpdesk</h2>
+        <nav>
+            <ul>
+                <li><a href="user.html">Dashboard</a></li>
+                <li><a href="tickets.html" class="active">Tickets</a></li>
+                <li><a href="#" onclick="logout()">Logout</a></li>
+            </ul>
+        </nav>
+    </div>
+    <div class="main-content">
+        <h1 id="ticketsTitle">Tickets</h1>
+        <input type="text" id="searchInput" placeholder="Search tickets by title or description..." onkeyup="filterTickets()">
+        <div id="ticketsList"></div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            initStorage();
+            const currentUser = getCurrentUser();
+            if (!isLoggedIn()) {
+                window.location.href = 'index.html';
+                return;
+            }
+            document.querySelector('.sidebar ul li:last-child a').textContent = 'Logout'; // Ensure logout
+            if (currentUser.role === 'admin') {
+                document.getElementById('ticketsTitle').textContent = 'All Tickets';
+                loadAdminTickets();
+            } else {
+                document.getElementById('ticketsTitle').textContent = 'My Tickets';
+                loadUserTickets();
+            }
+        });
+
+        function loadUserTickets() {
+            const currentUser = getCurrentUser();
+            const tickets = getTickets().filter(t => t.createdBy === currentUser.id);
+            renderTickets(tickets, false); // No actions for user
+        }
+
+        function loadAdminTickets() {
+            const tickets = getTickets();
+            renderTickets(tickets, true); // With actions
+        }
+
+        function renderTickets(tickets, showActions) {
+            const list = document.getElementById('ticketsList');
+            list.innerHTML = tickets.map(t => `
+                <div class="ticket-item">
+                    <h3>${t.title}</h3>
+                    <p><strong>Description:</strong> ${t.desc}</p>
+                    <p><strong>Status:</strong> ${t.status} | <strong>Priority:</strong> ${t.priority}</p>
+                    <p><strong>Created:</strong> ${new Date(t.createdAt).toLocaleString()}</p>
+                    ${showActions ? `
+                        <select onchange="updateTicket(${t.id}, this.value, '${t.priority}')">
+                            <option value="Open" ${t.status === 'Open' ? 'selected' : ''}>Open</option>
+                            <option value="In Progress" ${t.status === 'In Progress' ? 'selected' : ''}>In Progress</option>
+                            <option value="Closed" ${t.status === 'Closed' ? 'selected' : ''}>Closed</option>
+                        </select>
+                        <select onchange="updateTicket(${t.id}, '${t.status}', this.value)">
+                            <option value="Low" ${t.priority === 'Low' ? 'selected' : ''}>Low</option>
+                            <option value="Medium" ${t.priority === 'Medium' ? 'selected' : ''}>Medium</option>
+                            <option value="High" ${t.priority === 'High' ? 'selected' : ''}>High</option>
+                        </select>
+                        <button onclick="deleteTicket(${t.id})">Delete</button>
+                    ` : ''}
+                </div>
+            `).join('') || '<p>No tickets found.</p>';
+        }
+
+        function filterTickets() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const currentUser = getCurrentUser();
+            let tickets = getTickets();
+            if (currentUser.role !== 'admin') {
+                tickets = tickets.filter(t => t.createdBy === currentUser.id);
+            }
+            const filtered = tickets.filter(t => 
+                t.title.toLowerCase().includes(query) || t.desc.toLowerCase().includes(query)
+            );
+            renderTickets(filtered, currentUser.role === 'admin');
+        }
+    </script>
+</body>
+</html>
