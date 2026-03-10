@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>IT Helpdesk - AI Assisted</title>
+  <title>IT Helpdesk • AI Assisted</title>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 
   <style>
@@ -13,22 +13,21 @@
       color: #e2e8f0;
       background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
       min-height: 100vh;
-      overflow-x: hidden;
     }
 
     body::before {
       content: '';
       position: fixed;
       inset: 0;
-      background: radial-gradient(circle at 20% 80%, rgba(120,119,198,0.25) 0%, transparent 50%),
-                  radial-gradient(circle at 80% 20%, rgba(255,119,198,0.25) 0%, transparent 50%),
-                  radial-gradient(circle at 40% 40%, rgba(120,219,255,0.25) 0%, transparent 50%);
+      background: radial-gradient(circle at 15% 85%, rgba(99,102,241,0.22) 0%, transparent 50%),
+                  radial-gradient(circle at 85% 15%, rgba(139,92,246,0.22) 0%, transparent 50%),
+                  radial-gradient(circle at 50% 50%, rgba(34,197,94,0.12) 0%, transparent 60%);
       z-index: -2;
     }
 
     .hidden { display: none !important; }
 
-    /* Login */
+    /* ─── LOGIN ─── */
     #loginPage {
       min-height: 100vh;
       display: flex;
@@ -38,48 +37,48 @@
     }
 
     .login-card {
-      background: rgba(30, 30, 50, 0.85);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(100, 100, 255, 0.3);
-      padding: 40px 32px;
-      border-radius: 16px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+      background: rgba(30, 30, 50, 0.92);
+      backdrop-filter: blur(14px);
+      border: 1px solid rgba(99,102,241,0.35);
+      padding: 48px 36px;
+      border-radius: 20px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.6);
       width: 100%;
-      max-width: 420px;
+      max-width: 440px;
       text-align: center;
     }
 
-    .login-card h1 { color: #fff; margin-bottom: 16px; }
+    .login-card h1 { color: white; margin-bottom: 20px; font-weight: 500; }
     .login-card input, .login-card button {
       width: 100%;
-      padding: 14px;
+      padding: 14px 16px;
       margin: 12px 0;
-      border-radius: 8px;
+      border-radius: 10px;
       font-size: 1rem;
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.18);
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.16);
       color: white;
     }
 
     .login-card button {
       background: linear-gradient(90deg, #6366f1, #8b5cf6);
       border: none;
-      cursor: pointer;
       font-weight: 500;
+      cursor: pointer;
     }
 
     .error { color: #ff6b6b; margin-top: 12px; font-size: 0.95rem; }
 
-    /* Layout */
+    /* ─── LAYOUT ─── */
     #appLayout { display: flex; min-height: 100vh; }
 
     #sidebar {
-      width: 240px;
-      background: rgba(15, 15, 35, 0.96);
-      backdrop-filter: blur(10px);
-      border-right: 1px solid rgba(100,100,255,0.15);
+      width: 260px;
+      background: rgba(15,15,35,0.97);
+      backdrop-filter: blur(12px);
+      border-right: 1px solid rgba(99,102,241,0.18);
       color: #e2e8f0;
-      padding: 24px 16px;
+      padding: 32px 20px;
       position: fixed;
       height: 100%;
       overflow-y: auto;
@@ -87,33 +86,34 @@
 
     #sidebar h2 {
       color: white;
-      margin-bottom: 32px;
+      margin-bottom: 36px;
       text-align: center;
       font-weight: 500;
     }
 
     #sidebar a {
       display: block;
-      padding: 12px 16px;
-      margin: 4px 0;
-      color: #d1d5db;
+      padding: 14px 18px;
+      margin: 6px 0;
+      color: #cbd5e1;
       text-decoration: none;
-      border-radius: 8px;
+      border-radius: 10px;
       transition: all 0.2s;
     }
 
     #sidebar a:hover,
     #sidebar a.active {
-      background: rgba(99, 102, 241, 0.25);
+      background: rgba(99,102,241,0.28);
       color: white;
     }
 
     #mainContent {
-      margin-left: 240px;
-      padding: 32px;
+      margin-left: 260px;
+      padding: 40px;
       width: 100%;
-      background: rgba(26,26,46,0.4);
     }
+
+    h1 { color: white; margin-bottom: 24px; font-weight: 500; }
 
     .stats-grid {
       display: grid;
@@ -124,33 +124,33 @@
 
     .card {
       background: rgba(255,255,255,0.06);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255,255,255,0.12);
-      padding: 24px;
-      border-radius: 12px;
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.14);
+      padding: 28px;
+      border-radius: 14px;
       text-align: center;
     }
 
-    .card h3 { color: #94a3b8; margin-bottom: 8px; font-weight: 400; }
-    .card span { font-size: 2.6rem; font-weight: 700; color: #6366f1; }
+    .card h3 { color: #94a3b8; margin-bottom: 10px; font-weight: 400; }
+    .card span { font-size: 2.8rem; font-weight: 700; color: #6366f1; }
 
     .section-card {
       background: rgba(255,255,255,0.05);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255,255,255,0.12);
-      padding: 28px;
-      border-radius: 12px;
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.14);
+      padding: 32px;
+      border-radius: 14px;
       margin: 32px 0;
     }
 
-    form { display: flex; flex-direction: column; gap: 16px; }
+    form { display: flex; flex-direction: column; gap: 18px; }
 
     input, textarea, select, button {
-      padding: 14px;
-      border-radius: 8px;
+      padding: 14px 16px;
+      border-radius: 10px;
       font-size: 1rem;
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.18);
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.16);
       color: white;
     }
 
@@ -164,8 +164,9 @@
     button.ai-btn {
       background: linear-gradient(90deg, #10b981, #059669);
       font-size: 0.95rem;
-      padding: 10px 16px;
+      padding: 10px 20px;
       align-self: flex-start;
+      border-radius: 10px;
     }
 
     button.danger {
@@ -174,44 +175,44 @@
 
     .ticket-item {
       background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.12);
-      padding: 20px;
-      margin: 16px 0;
-      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.14);
+      padding: 24px;
+      margin: 20px 0;
+      border-radius: 14px;
       display: flex;
       justify-content: space-between;
-      gap: 20px;
+      gap: 24px;
       flex-wrap: wrap;
     }
 
-    .ticket-item h3 { color: white; margin-bottom: 8px; }
-    .ticket-item p { color: #cbd5e1; line-height: 1.5; }
+    .ticket-item h3 { color: white; margin-bottom: 12px; }
+    .ticket-item p { color: #cbd5e1; line-height: 1.6; }
 
-    .meta { margin-top: 12px; font-size: 0.9rem; color: #94a3b8; }
+    .meta { margin-top: 14px; font-size: 0.92rem; color: #94a3b8; }
 
-    .actions { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+    .actions { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
 
-    @media (max-width: 840px) {
-      #sidebar { width: 100%; height: auto; position: static; }
-      #mainContent { margin-left: 0; padding: 20px; }
+    @media (max-width: 900px) {
+      #sidebar { width: 100%; height: auto; position: static; padding: 24px 16px; }
+      #mainContent { margin-left: 0; padding: 24px; }
       .ticket-item { flex-direction: column; }
     }
   </style>
 </head>
 <body>
 
-  <!-- ─── LOGIN ─────────────────────────────────────── -->
+  <!-- LOGIN SCREEN -->
   <div id="loginPage">
     <div class="login-card">
       <h1>IT Helpdesk AI</h1>
-      <p style="color:#94a3b8; margin:16px 0 24px;">
-        Username + Password<br><br>
-        Admin → <strong>admin / admin</strong><br>
-        User  → <strong>user1 / pass</strong>
+      <p style="color:#94a3b8; margin:20px 0 32px; line-height:1.6;">
+        Username + Password login<br><br>
+        <strong>admin / admin</strong>  → Admin<br>
+        <strong>user1 / pass</strong>  → Regular user
       </p>
 
       <form id="loginForm">
-        <input type="text" id="username" placeholder="Username" required autocomplete="off">
+        <input type="text"     id="username" placeholder="Username" required autocomplete="off">
         <input type="password" id="password" placeholder="Password" required autocomplete="off">
         <button type="submit">Sign In</button>
       </form>
@@ -220,96 +221,102 @@
     </div>
   </div>
 
-  <!-- ─── MAIN APP ──────────────────────────────────── -->
+  <!-- MAIN APPLICATION -->
   <div id="appLayout" class="hidden">
 
     <div id="sidebar"></div>
 
     <div id="mainContent">
 
-      <!-- Dashboard -->
-      <div id="dashboardPage" class="section-card">
+      <!-- ─── DASHBOARD ─── -->
+      <div id="dashboardPage">
         <h1 id="dashboardTitle">Dashboard</h1>
 
         <div class="stats-grid">
-          <div class="card"><h3>Total</h3><span id="statTotal">—</span></div>
+          <div class="card"><h3>Total Tickets</h3><span id="statTotal">—</span></div>
           <div class="card"><h3>Open</h3><span id="statOpen">—</span></div>
           <div class="card"><h3>In Progress</h3><span id="statInProgress">—</span></div>
           <div class="card"><h3>Closed</h3><span id="statClosed">—</span></div>
         </div>
 
-        <!-- Create Ticket (User) -->
-        <div id="createTicketArea" class="hidden section-card">
-          <h2>New Ticket</h2>
+        <!-- User — Create Ticket -->
+        <div id="createTicketArea" class="section-card hidden">
+          <h2>Create New Ticket</h2>
           <form id="createTicketForm">
-            <input type="text" id="ticketTitle" placeholder="Title" required>
-            <textarea id="ticketDesc" placeholder="Describe the issue..." rows="5" required></textarea>
-            <button type="button" class="ai-btn" onclick="suggestPriorityAndSolution()">AI Suggest</button>
-            <select id="ticketPriority">
-              <option value="Low">Low</option>
-              <option value="Medium">Medium</option>
-              <option value="High">High</option>
-            </select>
-            <button type="submit">Create Ticket</button>
+            <input type="text" id="ticketTitle" placeholder="Ticket Title" required>
+            <textarea id="ticketDesc" placeholder="Describe your issue in detail..." rows="6" required></textarea>
+
+            <button type="button" class="ai-btn" onclick="suggestPriority()">AI Suggest Priority</button>
+
+            <div style="display:flex; gap:16px; flex-wrap:wrap;">
+              <select id="ticketPriority">
+                <option value="Low">Low</option>
+                <option value="Medium">Medium</option>
+                <option value="High">High</option>
+              </select>
+              <button type="submit">Create Ticket</button>
+            </div>
           </form>
         </div>
 
-        <!-- Manage Users (Admin) -->
-        <div id="manageUsersArea" class="hidden section-card">
+        <!-- Admin — Manage Users -->
+        <div id="manageUsersArea" class="section-card hidden">
           <h2>Manage Users</h2>
-          <form id="addUserForm" style="display:flex; gap:12px; flex-wrap:wrap; margin:20px 0;">
+          <form id="addUserForm" style="display:flex; gap:14px; flex-wrap:wrap; margin:24px 0;">
             <input type="text" id="newUsername" placeholder="Username" required style="flex:1; min-width:180px;">
             <input type="password" id="newPassword" placeholder="Password" required style="flex:1; min-width:180px;">
-            <button type="submit">Add</button>
+            <button type="submit">Add User</button>
           </form>
           <div id="usersList"></div>
         </div>
 
-        <!-- Knowledge Base -->
-        <div id="knowledgeBaseArea" class="section-card">
-          <h2>Troubleshooting & Common Issues</h2>
-          <input type="text" id="kbSearch" placeholder="Search troubleshooting..." style="width:100%; max-width:400px; margin-bottom:20px;">
+        <!-- Troubleshooting / Knowledge Base -->
+        <div class="section-card">
+          <h2>Common Issues & Troubleshooting</h2>
+          <input type="text" id="kbSearch" placeholder="Search solutions..." style="width:100%; max-width:420px; margin:16px 0 24px;">
           <div id="knowledgeList"></div>
         </div>
       </div>
 
-      <!-- Tickets View -->
+      <!-- ─── TICKETS VIEW ─── -->
       <div id="ticketsPage" class="section-card hidden">
         <h1 id="ticketsTitle">Tickets</h1>
-        <input type="text" id="searchInput" placeholder="Search tickets..." style="width:100%; max-width:500px; margin-bottom:20px;">
+        <input type="text" id="searchInput" placeholder="Search tickets..." style="width:100%; max-width:500px; margin-bottom:24px;">
         <div id="ticketsList"></div>
       </div>
-
     </div>
   </div>
 
   <script>
-    // ─── DATA ───────────────────────────────────────────────
+    // ─── DEFAULT DATA ───────────────────────────────────────
 
     const defaultUsers = [
-      { id:1, username:'admin', password:'admin', role:'admin' },
-      { id:2, username:'user1', password:'pass',  role:'user'  }
+      { id:1, username:'admin',  password:'admin',  role:'admin' },
+      { id:2, username:'user1',  password:'pass',   role:'user'  }
     ];
 
     const defaultKB = [
-      { title:"Slow PC", text:"1. Close background apps\n2. Run disk cleanup\n3. Update graphics driver\n4. Scan for malware" },
-      { title:"No Internet", text:"1. Restart router\n2. Forget & reconnect Wi-Fi\n3. Check IP (ipconfig /renew)\n4. Contact ISP if needed" },
-      { title:"Printer Offline", text:"1. Check USB/Wi-Fi connection\n2. Set as default printer\n3. Run Windows Printer Troubleshooter" },
-      { title:"Blue Screen", text:"1. Note error code\n2. Boot to safe mode\n3. Update drivers\n4. Check hardware (RAM)" }
+      { title:"Computer very slow", text:"1. Close unnecessary programs\n2. Run Disk Cleanup\n3. Update graphics driver\n4. Scan with antivirus\n5. Consider more RAM" },
+      { title:"No internet / Wi-Fi", text:"1. Restart router & PC\n2. Forget network → reconnect\n3. ipconfig /release → ipconfig /renew\n4. Check cables / signal" },
+      { title:"Printer not printing", text:"1. Check power & connection\n2. Set as default printer\n3. Clear print queue\n4. Reinstall driver\n5. Run Windows Printer Troubleshooter" },
+      { title:"Blue screen / crash", text:"1. Note the error code\n2. Boot to Safe Mode\n3. Update Windows & drivers\n4. Check RAM / hardware\n5. Run sfc /scannow" },
+      { title:"Email not sending", text:"1. Check credentials & server settings\n2. Clear cache / cookies\n3. Check sent items & spam\n4. Test with webmail" }
     ];
 
-    function initData() {
+    // ─── STORAGE HELPERS ────────────────────────────────────
+
+    function initStorage() {
       if (!localStorage.users)    localStorage.users    = JSON.stringify(defaultUsers);
       if (!localStorage.tickets)  localStorage.tickets  = JSON.stringify([]);
       if (!localStorage.kb)       localStorage.kb       = JSON.stringify(defaultKB);
     }
 
-    function getUsers()    { return JSON.parse(localStorage.users   || '[]'); }
-    function saveUsers(u)  { localStorage.users   = JSON.stringify(u); }
-    function getTickets()  { return JSON.parse(localStorage.tickets || '[]'); }
-    function saveTickets(t){ localStorage.tickets = JSON.stringify(t); }
-    function getKB()       { return JSON.parse(localStorage.kb      || '[]'); }
-    function saveKB(k)     { localStorage.kb      = JSON.stringify(k); }
+    const getUsers      = () => JSON.parse(localStorage.users    || '[]');
+    const saveUsers     = u  => localStorage.users    = JSON.stringify(u);
+    const getTickets    = () => JSON.parse(localStorage.tickets  || '[]');
+    const saveTickets   = t  => localStorage.tickets  = JSON.stringify(t);
+    const getKB         = () => JSON.parse(localStorage.kb       || '[]');
+    const saveKB        = k  => localStorage.kb       = JSON.stringify(k);
 
     let currentUser = null;
 
@@ -335,10 +342,11 @@
       return currentUser?.role === 'admin';
     }
 
-    // ─── VIEWS ──────────────────────────────────────────────
+    // ─── NAVIGATION ─────────────────────────────────────────
 
     function showView(view) {
-      document.querySelectorAll('#loginPage, #appLayout > *').forEach(el => el.classList.add('hidden'));
+      // Hide everything
+      document.querySelectorAll('#loginPage, #dashboardPage, #ticketsPage, #createTicketArea, #manageUsersArea').forEach(el => el.classList.add('hidden'));
 
       if (view === 'login') {
         document.getElementById('loginPage').classList.remove('hidden');
@@ -346,11 +354,9 @@
       }
 
       document.getElementById('appLayout').classList.remove('hidden');
-      document.getElementById('dashboardPage').classList.remove('hidden');
 
       // Sidebar
-      const sb = document.getElementById('sidebar');
-      sb.innerHTML = `
+      document.getElementById('sidebar').innerHTML = `
         <h2>IT Helpdesk AI</h2>
         <a href="#" ${view==='dashboard'?'class="active"':''} onclick="showView('dashboard');return false">Dashboard</a>
         <a href="#" ${view==='tickets'?'class="active"':''}   onclick="showView('tickets');return false">${isAdmin()?'All Tickets':'My Tickets'}</a>
@@ -358,15 +364,11 @@
         <a href="#" onclick="logout();return false">Logout</a>
       `;
 
-      // Reset inner sections
-      document.getElementById('createTicketArea').classList.add('hidden');
-      document.getElementById('manageUsersArea').classList.add('hidden');
-
       if (view === 'tickets') {
-        document.getElementById('dashboardPage').classList.add('hidden');
         document.getElementById('ticketsPage').classList.remove('hidden');
         renderTickets();
-      } else if (view === 'dashboard') {
+      } else {
+        document.getElementById('dashboardPage').classList.remove('hidden');
         updateDashboard();
         if (!isAdmin()) {
           document.getElementById('createTicketArea').classList.remove('hidden');
@@ -380,30 +382,26 @@
       renderUserList();
     }
 
-    // ─── RENDER FUNCTIONS ───────────────────────────────────
+    // ─── RENDER ─────────────────────────────────────────────
 
     function updateDashboard() {
       const tickets = getTickets().filter(t => isAdmin() || t.createdBy === currentUser.id);
-      const total  = tickets.length;
-      const open   = tickets.filter(t => t.status === 'Open').length;
-      const prog   = tickets.filter(t => t.status === 'In Progress').length;
-      const closed = tickets.filter(t => t.status === 'Closed').length;
+      document.getElementById('statTotal').textContent      = tickets.length;
+      document.getElementById('statOpen').textContent       = tickets.filter(t=>t.status==='Open').length;
+      document.getElementById('statInProgress').textContent = tickets.filter(t=>t.status==='In Progress').length;
+      document.getElementById('statClosed').textContent     = tickets.filter(t=>t.status==='Closed').length;
 
-      document.getElementById('statTotal').textContent      = total;
-      document.getElementById('statOpen').textContent       = open;
-      document.getElementById('statInProgress').textContent = prog;
-      document.getElementById('statClosed').textContent     = closed;
       document.getElementById('dashboardTitle').textContent = isAdmin() ? 'Admin Dashboard' : 'My Dashboard';
     }
 
     function renderTickets() {
       const q = document.getElementById('searchInput').value.toLowerCase().trim();
-      let tickets = getTickets();
+      let list = getTickets();
 
-      if (!isAdmin()) tickets = tickets.filter(t => t.createdBy === currentUser.id);
+      if (!isAdmin()) list = list.filter(t => t.createdBy === currentUser.id);
 
       if (q) {
-        tickets = tickets.filter(t =>
+        list = list.filter(t =>
           t.title.toLowerCase().includes(q) ||
           t.description.toLowerCase().includes(q)
         );
@@ -411,10 +409,9 @@
 
       document.getElementById('ticketsTitle').textContent = isAdmin() ? 'All Tickets' : 'My Tickets';
 
-      const container = document.getElementById('ticketsList');
-      container.innerHTML = tickets.length === 0
-        ? '<p style="color:#94a3b8; padding:20px; text-align:center;">No tickets found.</p>'
-        : tickets.map(t => `
+      document.getElementById('ticketsList').innerHTML = list.length === 0
+        ? '<p style="color:#94a3b8; padding:32px; text-align:center;">No tickets found.</p>'
+        : list.map(t => `
           <div class="ticket-item">
             <div style="flex:1;">
               <h3>${t.title}</h3>
@@ -435,7 +432,7 @@
                 <option ${t.priority==='Medium'?'selected':''}>Medium</option>
                 <option ${t.priority==='High'?'selected':''}>High</option>
               </select>
-              <button class="ai-btn" onclick="suggestFixForTicket(${t.id})">AI Suggest Fix</button>
+              <button class="ai-btn" onclick="suggestFix(${t.id})">AI Quick Fix</button>
               <button class="danger" onclick="deleteTicket(${t.id})">Delete</button>
             </div>` : ''}
           </div>
@@ -445,9 +442,9 @@
     function renderUserList() {
       const users = getUsers().filter(u => u.role === 'user');
       document.getElementById('usersList').innerHTML = users.length === 0
-        ? '<p style="color:#94a3b8;">No users yet.</p>'
+        ? '<p style="color:#94a3b8;">No regular users yet.</p>'
         : users.map(u => `
-          <div style="background:rgba(255,255,255,0.05); padding:12px; margin:10px 0; border-radius:8px; display:flex; justify-content:space-between;">
+          <div style="background:rgba(255,255,255,0.06); padding:14px; margin:12px 0; border-radius:10px; display:flex; justify-content:space-between; align-items:center;">
             <span>${u.username}</span>
             <button class="danger" onclick="deleteUser(${u.id})">Delete</button>
           </div>
@@ -456,66 +453,58 @@
 
     function renderKnowledgeBase() {
       const q = document.getElementById('kbSearch').value.toLowerCase().trim();
-      const items = getKB().filter(item =>
-        item.title.toLowerCase().includes(q) || item.text.toLowerCase().includes(q)
+      const items = getKB().filter(i =>
+        i.title.toLowerCase().includes(q) || i.text.toLowerCase().includes(q)
       );
 
       document.getElementById('knowledgeList').innerHTML = items.length === 0
-        ? '<p style="color:#94a3b8; text-align:center;">No matching troubleshooting guides.</p>'
-        : items.map(item => `
-          <div class="section-card" style="margin:12px 0;">
-            <h3 style="margin-bottom:12px;">${item.title}</h3>
-            <p style="white-space: pre-line; color:#cbd5e1;">${item.text}</p>
-            <button class="ai-btn" style="margin-top:12px;" onclick="alert('AI analysis not yet implemented for this item.')">Ask AI for more help</button>
+        ? '<p style="color:#94a3b8; text-align:center; padding:32px;">No matching guides found.</p>'
+        : items.map(i => `
+          <div class="section-card" style="margin:16px 0;">
+            <h3 style="margin-bottom:12px;">${i.title}</h3>
+            <p style="white-space:pre-line; color:#cbd5e1;">${i.text}</p>
           </div>
         `).join('');
     }
 
     // ─── ACTIONS ────────────────────────────────────────────
 
-    function suggestPriorityAndSolution() {
-      const desc = document.getElementById('ticketDesc').value.toLowerCase();
-      if (!desc) return alert("Please write something first.");
+    function suggestPriority() {
+      const text = document.getElementById('ticketDesc').value.toLowerCase();
+      if (!text) return alert("Write something first.");
 
-      let priority = "Medium";
-      let message = "AI Suggestion:\n\n";
+      let prio = "Medium";
+      let msg = "AI Suggestion:\n\n";
 
-      if (/urgent|critical|down|crash|emergency/i.test(desc)) {
-        priority = "High";
-        message += "→ This looks **urgent** → suggested **High** priority\n";
-      } else if (/slow|lag|freeze|stuck/i.test(desc)) {
-        priority = "Medium";
-        message += "→ Performance issue detected → **Medium** priority\n";
+      if (/urgent|critical|emergency|down|crash|stopped/i.test(text)) {
+        prio = "High";
+        msg += "→ Looks urgent/critical → **High** priority suggested\n";
+      } else if (/slow|lag|freeze|stuck|delay/i.test(text)) {
+        prio = "Medium";
+        msg += "→ Performance issue → **Medium** priority\n";
       } else {
-        message += "→ No urgency keywords detected → **Medium** priority\n";
+        msg += "→ No strong urgency detected → **Medium** priority\n";
       }
 
-      // Very basic solution hint
-      if (desc.includes("printer")) {
-        message += "→ Printer issue? Check connection, drivers, queue\n";
-      } else if (desc.includes("wifi") || desc.includes("internet")) {
-        message += "→ Network? Restart router, renew IP, check cables\n";
-      }
-
-      document.getElementById('ticketPriority').value = priority;
-      alert(message);
+      document.getElementById('ticketPriority').value = prio;
+      alert(msg);
     }
 
-    function suggestFixForTicket(ticketId) {
+    function suggestFix(ticketId) {
       const ticket = getTickets().find(t => t.id === ticketId);
       if (!ticket) return alert("Ticket not found.");
 
-      const desc = ticket.description.toLowerCase();
-      let msg = "AI Quick Fix Suggestion:\n\n";
+      const d = ticket.description.toLowerCase();
+      let msg = "AI Quick Fix Ideas:\n\n";
 
-      if (desc.includes("printer")) {
-        msg += "1. Check printer is powered on and connected\n2. Clear print queue\n3. Reinstall driver\n";
-      } else if (desc.includes("slow") || desc.includes("lag")) {
-        msg += "1. Close background apps\n2. Update graphics driver\n3. Run disk cleanup / malware scan\n";
-      } else if (desc.includes("blue") || desc.includes("crash")) {
-        msg += "1. Note error code\n2. Boot to safe mode\n3. Update Windows & drivers\n";
+      if (/printer/i.test(d)) {
+        msg += "Printer problem?\n1. Check power & connection\n2. Clear print queue\n3. Reinstall driver\n4. Run printer troubleshooter";
+      } else if (/slow|lag|freeze/i.test(d)) {
+        msg += "Slow performance?\n1. Close background apps\n2. Update graphics driver\n3. Run disk cleanup\n4. Scan for malware";
+      } else if (/wifi|internet|network/i.test(d)) {
+        msg += "Network issue?\n1. Restart router & device\n2. Forget & reconnect Wi-Fi\n3. ipconfig /renew\n4. Check cables";
       } else {
-        msg += "No specific pattern detected. Try basic restart → update drivers → scan for malware.";
+        msg += "No specific pattern detected.\nTry: restart → update drivers → scan → check cables.";
       }
 
       alert(msg);
@@ -540,17 +529,17 @@
     }
 
     function deleteUser(id) {
-      if (!confirm("Delete user?")) return;
+      if (!confirm("Delete this user?")) return;
       saveUsers(getUsers().filter(u => u.id !== id));
       renderUserList();
     }
 
-    // ─── INIT & EVENTS ──────────────────────────────────────
+    // ─── INIT & EVENT LISTENERS ─────────────────────────────
 
     document.addEventListener('DOMContentLoaded', () => {
-      initData();
+      initStorage();
 
-      // Session resume
+      // Resume session
       try {
         const stored = localStorage.currentUser;
         if (stored) {
@@ -565,7 +554,7 @@
 
       if (!currentUser) showView('login');
 
-      // Login
+      // ─── LOGIN ───
       document.getElementById('loginForm').addEventListener('submit', e => {
         e.preventDefault();
         const un = document.getElementById('username').value.trim();
@@ -573,18 +562,18 @@
         if (tryLogin(un, pw)) {
           showView('dashboard');
         } else {
-          document.getElementById('loginError').textContent = 'Wrong username or password';
+          document.getElementById('loginError').textContent = 'Invalid username or password';
         }
       });
 
-      // New ticket
+      // ─── CREATE TICKET ───
       document.getElementById('createTicketForm').addEventListener('submit', e => {
         e.preventDefault();
         const title = document.getElementById('ticketTitle').value.trim();
         const desc  = document.getElementById('ticketDesc').value.trim();
         const prio  = document.getElementById('ticketPriority').value;
 
-        if (!title || !desc) return alert("Title and description are required.");
+        if (!title || !desc) return alert("Title and description required.");
 
         const tickets = getTickets();
         tickets.push({
@@ -598,11 +587,11 @@
         });
         saveTickets(tickets);
         e.target.reset();
-        alert("Ticket created.");
+        alert("Ticket created successfully.");
         updateDashboard();
       });
 
-      // Add user
+      // ─── ADD USER (ADMIN) ───
       document.getElementById('addUserForm').addEventListener('submit', e => {
         e.preventDefault();
         const un = document.getElementById('newUsername').value.trim();
@@ -611,7 +600,7 @@
         if (!un || !pw) return alert("Both fields required.");
 
         const users = getUsers();
-        if (users.some(u => u.username === un)) return alert("Username already taken.");
+        if (users.some(u => u.username === un)) return alert("Username already exists.");
 
         const id = Math.max(0, ...users.map(u=>u.id)) + 1;
         users.push({ id, username: un, password: pw, role: 'user' });
@@ -621,7 +610,7 @@
         e.target.reset();
       });
 
-      // Search listeners
+      // ─── SEARCH ───
       document.getElementById('searchInput')?.addEventListener('input', renderTickets);
       document.getElementById('kbSearch')?.addEventListener('input', renderKnowledgeBase);
     });
