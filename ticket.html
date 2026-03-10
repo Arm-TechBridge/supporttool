@@ -13,7 +13,9 @@
 
   <div class="main-content">
     <h1 id="pageTitle">Tickets</h1>
-    <input type="text" id="search" placeholder="Search title or description..." style="width:100%; max-width:500px; margin:16px 0; padding:10px;">
+
+    <input type="text" id="search" placeholder="Search title or description..." style="width:100%; max-width:480px; padding:12px; margin:16px 0; border:1px solid #d1d5db; border-radius:6px;">
+
     <div id="ticketsContainer"></div>
   </div>
 
@@ -23,10 +25,10 @@
       window.location.href = '/index.html';
     }
 
-    const user = getCurrentUser();
-    const isAdmin = user.role === 'admin';
+    const currentUser = getCurrentUser();
+    const isAdmin = currentUser.role === 'admin';
 
-    // Set correct sidebar
+    // Dynamic sidebar
     document.getElementById('sidebar').innerHTML = `
       <h2>IT Helpdesk</h2>
       <nav>
@@ -51,7 +53,7 @@
       let tickets = getTickets();
 
       if (!isAdmin) {
-        tickets = tickets.filter(t => t.createdBy === user.id);
+        tickets = tickets.filter(t => t.createdBy === currentUser.id);
       }
 
       if (query) {
@@ -62,15 +64,15 @@
       }
 
       document.getElementById('ticketsContainer').innerHTML = tickets.length === 0
-        ? '<p style="color:#777; padding:20px;">No tickets found.</p>'
+        ? '<p style="padding:24px; color:#64748b;">No tickets found.</p>'
         : tickets.map(t => `
           <div class="ticket-item">
-            <div>
+            <div style="flex:1;">
               <h3>${t.title}</h3>
-              <p>${t.desc}</p>
+              <p style="margin:8px 0; color:#475569;">${t.desc}</p>
               <div class="meta">
-                Status: <strong>${t.status}</strong>  • 
-                Priority: <strong>${t.priority}</strong>  • 
+                Status: <strong>${t.status}</strong>  • 
+                Priority: <strong>${t.priority}</strong>  • 
                 ${new Date(t.createdAt).toLocaleString()}
               </div>
             </div>
@@ -97,25 +99,27 @@
     }
 
     function updateStatus(id, status) {
-      const t = getTickets().find(t => t.id === id);
-      if (t) {
-        t.status = status;
-        saveTickets(getTickets().map(x => x.id === id ? t : x));
+      let tickets = getTickets();
+      const ticket = tickets.find(t => t.id === id);
+      if (ticket) {
+        ticket.status = status;
+        saveTickets(tickets);
         renderTickets();
       }
     }
 
     function updatePriority(id, priority) {
-      const t = getTickets().find(t => t.id === id);
-      if (t) {
-        t.priority = priority;
-        saveTickets(getTickets().map(x => x.id === id ? t : x));
+      let tickets = getTickets();
+      const ticket = tickets.find(t => t.id === id);
+      if (ticket) {
+        ticket.priority = priority;
+        saveTickets(tickets);
         renderTickets();
       }
     }
 
     function deleteTicket(id) {
-      if (!confirm('Delete this ticket?')) return;
+      if (!confirm('Delete this ticket permanently?')) return;
       saveTickets(getTickets().filter(t => t.id !== id));
       renderTickets();
     }
