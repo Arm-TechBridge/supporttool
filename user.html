@@ -1,85 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IT Helpdesk - User Dashboard</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <script src="app.js" defer></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>User Dashboard – IT Helpdesk</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="sidebar">
-        <h2>IT Helpdesk</h2>
-        <nav>
-            <ul>
-                <li><a href="user.html" class="active">Dashboard</a></li>
-                <li><a href="tickets.html">My Tickets</a></li>
-                <li><a href="#" onclick="logout()">Logout</a></li>
-            </ul>
-        </nav>
-    </div>
-    <div class="main-content">
-        <h1>User Dashboard</h1>
-        <div class="stats-grid">
-            <div class="card">
-                <h3>Total My Tickets</h3>
-                <span id="totalMyTickets">0</span>
-            </div>
-            <div class="card">
-                <h3>Open</h3>
-                <span id="openMyTickets">0</span>
-            </div>
-            <div class="card">
-                <h3>In Progress</h3>
-                <span id="inProgressMyTickets">0</span>
-            </div>
-            <div class="card">
-                <h3>Closed</h3>
-                <span id="closedMyTickets">0</span>
-            </div>
-        </div>
-        <div class="create-ticket-section">
-            <h2>Create New Ticket</h2>
-            <form id="createTicketForm">
-                <input type="text" id="ticketTitle" placeholder="Ticket Title" required>
-                <textarea id="ticketDesc" placeholder="Description" required></textarea>
-                <button type="submit">Create Ticket</button>
-            </form>
-        </div>
-    </div>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            initStorage();
-            if (!isLoggedIn() || getCurrentUser().role !== 'user') {
-                window.location.href = 'index.html';
-                return;
-            }
-            loadUserDashboardStats();
-            const currentUser = getCurrentUser();
-            document.getElementById('createTicketForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                const title = document.getElementById('ticketTitle').value;
-                const desc = document.getElementById('ticketDesc').value;
-                if (!title || !desc) {
-                    alert('Title and description are required!');
-                    return;
-                }
-                createTicket(title, desc, currentUser.id);
-                this.reset();
-                loadUserDashboardStats();
-                alert('Ticket created successfully!');
-            });
-        });
 
-        function loadUserDashboardStats() {
-            const currentUser = getCurrentUser();
-            const tickets = getTickets().filter(t => t.createdBy === currentUser.id);
-            document.getElementById('totalMyTickets').textContent = tickets.length;
-            document.getElementById('openMyTickets').textContent = tickets.filter(t => t.status === 'Open').length;
-            document.getElementById('inProgressMyTickets').textContent = tickets.filter(t => t.status === 'In Progress').length;
-            document.getElementById('closedMyTickets').textContent = tickets.filter(t => t.status === 'Closed').length;
+  <div class="sidebar">
+    <h2>IT Helpdesk</h2>
+    <nav>
+      <ul>
+        <li><a href="/user.html" class="active">Dashboard</a></li>
+        <li><a href="/tickets.html">My Tickets</a></li>
+        <li><a href="#" onclick="logout(); return false;">Logout</a></li>
+      </ul>
+    </nav>
+  </div>
+
+  <div class="main-content">
+    <h1>My Dashboard</h1>
+
+    <div class="stats-grid">
+      <div class="card"><h3>Total</h3><span id="totalMy">0</span></div>
+      <div class="card"><h3>Open</h3><span id="openMy">0</span></div>
+      <div class="card"><h3>In Progress</h3><span id="inProgressMy">0</span></div>
+      <div class="card"><h3>Closed</h3><span id="closedMy">0</span></div>
+    </div>
+
+    <div class="create-ticket-section">
+      <h2>Create New Ticket</h2>
+      <form id="createTicketForm">
+        <input type="text" id="ticketTitle" placeholder="Title" required>
+        <textarea id="ticketDesc" placeholder="Describe the issue..." required rows="5"></textarea>
+        <button type="submit">Submit Ticket</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    if (!isLoggedIn() || getCurrentUser().role !== 'user') {
+      window.location.href = '/index.html';
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadMyStats();
+
+      document.getElementById('createTicketForm').addEventListener('submit', e => {
+        e.preventDefault();
+        const title = document.getElementById('ticketTitle').value.trim();
+        const desc  = document.getElementById('ticketDesc').value.trim();
+        if (title && desc) {
+          createTicket(title, desc, getCurrentUser().id);
+          e.target.reset();
+          loadMyStats();
+          alert('Ticket created.');
         }
-    </script>
+      });
+    });
+
+    function loadMyStats() {
+      const uid = getCurrentUser().id;
+      const myTickets = getTickets().filter(t => t.createdBy === uid);
+      document.getElementById('totalMy').textContent      = myTickets.length;
+      document.getElementById('openMy').textContent       = myTickets.filter(t=>t.status==='Open').length;
+      document.getElementById('inProgressMy').textContent = myTickets.filter(t=>t.status==='In Progress').length;
+      document.getElementById('closedMy').textContent     = myTickets.filter(t=>t.status==='Closed').length;
+    }
+  </script>
 </body>
 </html>
