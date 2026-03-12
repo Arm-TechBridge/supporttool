@@ -8,52 +8,25 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.css" rel="stylesheet">
-
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
 
 <style>
 
-/* ==========================
-GLOBAL THEME
-==========================*/
-
 :root{
 --bg:#0f1117;
---card:#1b1f2b;
---neon:#00f2ff;
---accent:#7a5cff;
+--card:#1c2230;
+--accent:#00eaff;
 --text:#e6e8ee;
 }
 
 body{
 margin:0;
 font-family:Inter;
-background:linear-gradient(135deg,#0f1117,#121727);
+background:linear-gradient(135deg,#0f1117,#151a2b);
 color:var(--text);
 }
 
-/* background glow */
-
-body::before{
-content:"";
-position:fixed;
-width:600px;
-height:600px;
-background:radial-gradient(circle,var(--neon),transparent);
-opacity:.15;
-filter:blur(120px);
-top:-200px;
-left:-200px;
-animation:float 20s infinite alternate;
-}
-
-@keyframes float{
-to{transform:translate(200px,200px)}
-}
-
-/* ==========================
-LOGIN
-==========================*/
+/* LOGIN */
 
 #login{
 display:flex;
@@ -64,19 +37,19 @@ height:100vh;
 
 .login-box{
 background:rgba(255,255,255,.05);
-backdrop-filter:blur(20px);
 padding:40px;
 border-radius:12px;
-width:320px;
+backdrop-filter:blur(15px);
+width:300px;
 }
 
 input,select,textarea{
 width:100%;
 padding:10px;
-margin-top:8px;
+margin-top:10px;
+background:#111520;
 border:none;
 border-radius:6px;
-background:#12161f;
 color:white;
 }
 
@@ -85,25 +58,20 @@ margin-top:12px;
 padding:10px;
 border:none;
 border-radius:6px;
-background:linear-gradient(45deg,var(--neon),var(--accent));
+background:linear-gradient(45deg,#00eaff,#7a5cff);
 color:white;
 cursor:pointer;
 }
 
-button:hover{opacity:.9}
-
-/* ==========================
-LAYOUT
-==========================*/
+/* LAYOUT */
 
 #app{
 display:none;
-height:100vh;
 }
 
 .sidebar{
-width:230px;
-background:#11151f;
+width:220px;
+background:#111520;
 position:fixed;
 top:0;
 bottom:0;
@@ -112,20 +80,19 @@ padding:20px;
 
 .sidebar h2{
 font-family:Orbitron;
-color:var(--neon);
+color:#00eaff;
 }
 
 .sidebar a{
 display:block;
 padding:10px;
-margin-top:5px;
-color:white;
-text-decoration:none;
+margin-top:6px;
 border-radius:6px;
+cursor:pointer;
 }
 
-.sidebar a.active{
-background:rgba(0,255,255,.15);
+.sidebar a:hover{
+background:#20263a;
 }
 
 .main{
@@ -133,33 +100,28 @@ margin-left:240px;
 padding:20px;
 }
 
-/* ==========================
-CARDS
-==========================*/
+/* CARDS */
 
 .card{
 background:rgba(255,255,255,.05);
-backdrop-filter:blur(20px);
-border-radius:12px;
 padding:20px;
+border-radius:10px;
 margin-bottom:20px;
 }
 
 .stats{
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
 gap:20px;
 }
 
 .stat{
-background:rgba(0,0,0,.4);
+background:#121727;
 padding:20px;
 border-radius:10px;
 }
 
-/* ==========================
-TABLE
-==========================*/
+/* TABLE */
 
 table{
 width:100%;
@@ -171,23 +133,8 @@ padding:10px;
 border-bottom:1px solid #2a3040;
 }
 
-/* ==========================
-CALENDAR
-==========================*/
-
-#calendar{
-background:white;
-color:black;
-padding:10px;
-border-radius:10px;
-}
-
-/* ==========================
-CHAT
-==========================*/
-
 .chatbox{
-height:250px;
+height:220px;
 overflow:auto;
 background:#0c0f16;
 padding:10px;
@@ -195,18 +142,11 @@ border-radius:8px;
 margin-bottom:10px;
 }
 
-.message{margin-bottom:8px}
-
-/* ==========================
-RESPONSIVE
-==========================*/
-
-@media(max-width:900px){
-
-.sidebar{position:relative;width:100%;display:flex}
-
-.main{margin:0}
-
+#calendar{
+background:white;
+color:black;
+border-radius:10px;
+padding:10px;
 }
 
 </style>
@@ -214,30 +154,27 @@ RESPONSIVE
 
 <body>
 
-<!-- ==========================
-LOGIN
-========================== -->
+<!-- LOGIN -->
 
 <div id="login">
-
 <div class="login-box">
 
-<h2>WorldTech ServiceDesk</h2>
+<h2>WorldTech Login</h2>
 
 <input id="username" placeholder="Username">
-
 <input id="password" type="password" placeholder="Password">
 
 <button onclick="login()">Login</button>
 
-</div>
+<p style="font-size:12px;margin-top:10px;">
+Admin: admin / admin123
+</p>
 
 </div>
+</div>
 
 
-<!-- ==========================
-APP
-========================== -->
+<!-- APP -->
 
 <div id="app">
 
@@ -245,13 +182,12 @@ APP
 
 <h2>WorldTech</h2>
 
-<a onclick="show('dashboard')" class="active">Dashboard</a>
-<a onclick="show('tickets')">Tickets</a>
-<a onclick="show('createTicket')">Create Ticket</a>
-<a onclick="show('knowledge')">Knowledge Base</a>
-<a onclick="show('calendarPage')">Calendar</a>
-<a onclick="show('notesPage')">Notes</a>
-<a onclick="show('profilePage')">Profile</a>
+<a onclick="showPage('dashboard')">Dashboard</a>
+<a onclick="showPage('tickets')">Tickets</a>
+<a onclick="showPage('createTicket')">Create Ticket</a>
+<a onclick="showPage('knowledge')">AI Help</a>
+<a onclick="showPage('calendarPage')">Calendar</a>
+<a onclick="showPage('notesPage')">Notes</a>
 
 <button onclick="logout()">Logout</button>
 
@@ -259,9 +195,7 @@ APP
 
 <div class="main">
 
-<!-- ==========================
-DASHBOARD
-========================== -->
+<!-- DASHBOARD -->
 
 <div id="dashboard" class="page">
 
@@ -269,7 +203,7 @@ DASHBOARD
 
 <div class="stats">
 
-<div class="stat">Total Tickets <h3 id="totalTickets"></h3></div>
+<div class="stat">Total <h3 id="totalTickets"></h3></div>
 <div class="stat">Open <h3 id="openTickets"></h3></div>
 <div class="stat">In Progress <h3 id="progressTickets"></h3></div>
 <div class="stat">Closed <h3 id="closedTickets"></h3></div>
@@ -279,9 +213,7 @@ DASHBOARD
 </div>
 
 
-<!-- ==========================
-TICKETS
-========================== -->
+<!-- TICKETS -->
 
 <div id="tickets" class="page" style="display:none">
 
@@ -289,7 +221,7 @@ TICKETS
 
 <button onclick="exportCSV()">Export CSV</button>
 
-<table id="ticketTable">
+<table>
 
 <thead>
 <tr>
@@ -300,23 +232,20 @@ TICKETS
 </tr>
 </thead>
 
-<tbody></tbody>
+<tbody id="ticketTable"></tbody>
 
 </table>
 
 </div>
 
 
-<!-- ==========================
-CREATE TICKET
-========================== -->
+<!-- CREATE TICKET -->
 
 <div id="createTicket" class="page" style="display:none">
 
 <h2>Create Ticket</h2>
 
 <input id="tTitle" placeholder="Title">
-
 <textarea id="tDesc" placeholder="Description"></textarea>
 
 <button onclick="voiceInput()">🎤 Voice</button>
@@ -333,33 +262,27 @@ CREATE TICKET
 <option>Hardware</option>
 </select>
 
-<button onclick="aiPriority()">AI Suggest Priority</button>
-
-<button onclick="createTicket()">Submit</button>
+<button onclick="createTicket()">Submit Ticket</button>
 
 </div>
 
 
-<!-- ==========================
-KNOWLEDGE + AI CHAT
-========================== -->
+<!-- AI HELP -->
 
 <div id="knowledge" class="page" style="display:none">
 
-<h2>Self Service Portal</h2>
+<h2>AI IT Assistant</h2>
 
 <div class="chatbox" id="chat"></div>
 
-<input id="chatInput" placeholder="Ask IT question">
+<input id="chatInput" placeholder="Ask any IT issue">
 
 <button onclick="askAI()">Ask AI</button>
 
 </div>
 
 
-<!-- ==========================
-CALENDAR
-========================== -->
+<!-- CALENDAR -->
 
 <div id="calendarPage" class="page" style="display:none">
 
@@ -370,9 +293,7 @@ CALENDAR
 </div>
 
 
-<!-- ==========================
-NOTES
-========================== -->
+<!-- NOTES -->
 
 <div id="notesPage" class="page" style="display:none">
 
@@ -380,111 +301,90 @@ NOTES
 
 <textarea id="notesArea" rows="10"></textarea>
 
-<button onclick="saveNotes()">Save</button>
-
-</div>
-
-
-<!-- ==========================
-PROFILE
-========================== -->
-
-<div id="profilePage" class="page" style="display:none">
-
-<h2>Profile</h2>
-
-<input id="profileName">
-
-<input id="profilePass">
-
-<button onclick="saveProfile()">Save</button>
-
-</div>
-
+<button onclick="saveNotes()">Save Notes</button>
 
 </div>
 
 </div>
+</div>
+
 
 <script>
 
 /* ==========================
-CONFIG
-==========================*/
+DEFAULT USERS AUTO CREATE
+========================== */
 
-/* Paste your GROQ API key below */
+let users = JSON.parse(localStorage.getItem("users"));
 
-const GROQ_API_KEY="PASTE_YOUR_GROQ_API_KEY_HERE"
+if(!users){
 
-/* ==========================
-DATA
-==========================*/
+users = [
 
-let users=JSON.parse(localStorage.users||`[
-{"username":"admin","password":"admin","role":"admin"},
-{"username":"user1","password":"pass","role":"user"}
-]`);
+{username:"admin",password:"admin123",role:"admin"},
+{username:"user1",password:"pass123",role:"user"}
 
-let tickets=JSON.parse(localStorage.tickets||"[]")
+];
 
-let currentUser=null
+localStorage.setItem("users",JSON.stringify(users));
 
-/* ==========================
-LOGIN
-==========================*/
+}
+
+let tickets = JSON.parse(localStorage.getItem("tickets")) || [];
+
+let currentUser=null;
+
+/* LOGIN */
 
 function login(){
 
-let u=username.value
-let p=password.value
+let u=username.value;
+let p=password.value;
 
-let user=users.find(x=>x.username==u&&x.password==p)
+let user=users.find(x=>x.username===u && x.password===p);
 
-if(!user){alert("Invalid");return}
+if(!user){
+alert("Invalid login");
+return;
+}
 
-currentUser=user
+currentUser=user;
 
-login.style.display="none"
-app.style.display="block"
+login.style.display="none";
+app.style.display="block";
 
-init()
+init();
 
 }
+
+/* LOGOUT */
 
 function logout(){
+location.reload();
+}
 
-location.reload()
+/* NAVIGATION */
+
+function showPage(page){
+
+document.querySelectorAll(".page").forEach(p=>p.style.display="none");
+
+document.getElementById(page).style.display="block";
 
 }
 
-/* ==========================
-NAV
-==========================*/
-
-function show(page){
-
-document.querySelectorAll(".page").forEach(p=>p.style.display="none")
-
-document.getElementById(page).style.display="block"
-
-}
-
-/* ==========================
-INIT
-==========================*/
+/* INIT */
 
 function init(){
 
-renderTickets()
-updateStats()
-loadNotes()
-initCalendar()
+renderTickets();
+updateStats();
+loadNotes();
+initCalendar();
 
 }
 
-/* ==========================
-TICKETS
-==========================*/
+/* CREATE TICKET */
 
 function createTicket(){
 
@@ -498,247 +398,171 @@ category:tCategory.value,
 status:"Open",
 owner:currentUser.username
 
+};
+
+tickets.push(ticket);
+
+saveTickets();
+
+renderTickets();
+
+alert("Ticket created");
+
 }
 
-tickets.push(ticket)
-
-saveTickets()
-
-renderTickets()
-
-alert("Ticket created")
-
-}
+/* RENDER TICKETS */
 
 function renderTickets(){
 
-let tbody=document.querySelector("#ticketTable tbody")
-
-tbody.innerHTML=""
+ticketTable.innerHTML="";
 
 tickets.forEach(t=>{
 
-let tr=document.createElement("tr")
-
-tr.innerHTML=`
+let row=`
+<tr>
 <td>${t.title}</td>
 <td>${t.status}</td>
 <td>${t.priority}</td>
 <td>
-<button onclick="fixAI('${t.desc}')">AI Fix</button>
 <button onclick="deleteTicket(${t.id})">Delete</button>
 </td>
-`
+</tr>
+`;
 
-tbody.appendChild(tr)
+ticketTable.innerHTML+=row;
 
-})
+});
 
-updateStats()
+updateStats();
 
 }
 
 function deleteTicket(id){
 
-if(!confirm("Delete?"))return
+if(!confirm("Delete ticket?"))return;
 
-tickets=tickets.filter(t=>t.id!=id)
+tickets=tickets.filter(t=>t.id!=id);
 
-saveTickets()
+saveTickets();
 
-renderTickets()
+renderTickets();
 
 }
 
 function saveTickets(){
 
-localStorage.tickets=JSON.stringify(tickets)
+localStorage.setItem("tickets",JSON.stringify(tickets));
 
 }
 
-/* ==========================
-STATS
-==========================*/
+/* DASHBOARD STATS */
 
 function updateStats(){
 
-totalTickets.innerText=tickets.length
+totalTickets.innerText=tickets.length;
 
-openTickets.innerText=tickets.filter(t=>t.status=="Open").length
+openTickets.innerText=tickets.filter(t=>t.status==="Open").length;
 
-progressTickets.innerText=tickets.filter(t=>t.status=="In Progress").length
+progressTickets.innerText=tickets.filter(t=>t.status==="In Progress").length;
 
-closedTickets.innerText=tickets.filter(t=>t.status=="Closed").length
+closedTickets.innerText=tickets.filter(t=>t.status==="Closed").length;
 
 }
 
-/* ==========================
-CSV EXPORT
-==========================*/
+/* CSV EXPORT */
 
 function exportCSV(){
 
-let csv="Title,Status,Priority\n"
+let csv="Title,Status,Priority\n";
 
 tickets.forEach(t=>{
+csv+=`${t.title},${t.status},${t.priority}\n`;
+});
 
-csv+=`${t.title},${t.status},${t.priority}\n`
+let blob=new Blob([csv]);
 
-})
+let a=document.createElement("a");
 
-let blob=new Blob([csv])
+a.href=URL.createObjectURL(blob);
 
-let a=document.createElement("a")
+a.download="tickets.csv";
 
-a.href=URL.createObjectURL(blob)
-
-a.download="tickets.csv"
-
-a.click()
+a.click();
 
 }
 
-/* ==========================
-VOICE INPUT
-==========================*/
+/* VOICE INPUT */
 
 function voiceInput(){
 
-let rec=new webkitSpeechRecognition()
+let rec=new webkitSpeechRecognition();
 
 rec.onresult=e=>{
+tDesc.value+=e.results[0][0].transcript;
+};
 
-tDesc.value+=e.results[0][0].transcript
-
-}
-
-rec.start()
+rec.start();
 
 }
 
-/* ==========================
-AI CALL
-==========================*/
+/* AI PLACEHOLDER */
 
-async function callAI(prompt){
+const GROQ_API_KEY="PASTE_GROQ_API_KEY_HERE";
 
-if(GROQ_API_KEY=="PASTE_YOUR_GROQ_API_KEY_HERE"){
+async function askAI(){
 
-alert("Add Groq API key")
-
-return
-
+if(GROQ_API_KEY==="PASTE_GROQ_API_KEY_HERE"){
+alert("Add Groq API key in code");
+return;
 }
+
+let q=chatInput.value;
+
+chat.innerHTML+=`<div>User: ${q}</div>`;
 
 let res=await fetch("https://api.groq.com/openai/v1/chat/completions",{
 
 method:"POST",
-
 headers:{
 "Content-Type":"application/json",
 "Authorization":"Bearer "+GROQ_API_KEY
 },
-
 body:JSON.stringify({
-
 model:"llama3-8b-8192",
-
-messages:[
-{role:"user",content:prompt}
-]
-
+messages:[{role:"user",content:q}]
 })
 
-})
+});
 
-let data=await res.json()
+let data=await res.json();
 
-return data.choices[0].message.content
+let reply=data.choices[0].message.content;
 
-}
-
-/* ==========================
-AI PRIORITY
-==========================*/
-
-async function aiPriority(){
-
-let text=tDesc.value
-
-let reply=await callAI("Suggest ticket priority: "+text)
-
-alert(reply)
+chat.innerHTML+=`<div>AI: ${reply}</div>`;
 
 }
 
-/* ==========================
-AI FIX
-==========================*/
-
-async function fixAI(desc){
-
-let reply=await callAI("Give step by step IT fix for: "+desc)
-
-alert(reply)
-
-}
-
-/* ==========================
-CHAT
-==========================*/
-
-async function askAI(){
-
-let q=chatInput.value
-
-chat.innerHTML+=`<div>User: ${q}</div>`
-
-let reply=await callAI(q)
-
-chat.innerHTML+=`<div>AI: ${reply}</div>`
-
-}
-
-/* ==========================
-NOTES
-==========================*/
+/* NOTES */
 
 function saveNotes(){
 
-localStorage.notes=notesArea.value
+localStorage.setItem("notes",notesArea.value);
 
 }
 
 function loadNotes(){
 
-notesArea.value=localStorage.notes||""
+notesArea.value=localStorage.getItem("notes") || "";
 
 }
 
-/* ==========================
-PROFILE
-==========================*/
-
-function saveProfile(){
-
-currentUser.username=profileName.value
-currentUser.password=profilePass.value
-
-localStorage.users=JSON.stringify(users)
-
-alert("Saved")
-
-}
-
-/* ==========================
-CALENDAR
-==========================*/
+/* CALENDAR */
 
 function initCalendar(){
 
-let calendarEl=document.getElementById("calendar")
+let calendarEl=document.getElementById("calendar");
 
-let events=JSON.parse(localStorage.events||"[]")
+let events=JSON.parse(localStorage.getItem("events")||"[]");
 
 let calendar=new FullCalendar.Calendar(calendarEl,{
 
@@ -748,21 +572,23 @@ events:events,
 
 dateClick:function(info){
 
-let title=prompt("Event title")
+let title=prompt("Event title");
 
-if(!title)return
+if(!title)return;
 
-events.push({title:title,start:info.dateStr})
+let event={title:title,start:info.dateStr};
 
-localStorage.events=JSON.stringify(events)
+events.push(event);
 
-calendar.addEvent({title:title,start:info.dateStr})
+localStorage.setItem("events",JSON.stringify(events));
+
+calendar.addEvent(event);
 
 }
 
-})
+});
 
-calendar.render()
+calendar.render();
 
 }
 
