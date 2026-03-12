@@ -1,559 +1,554 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WorldTech ServiceDesk</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron&family=Inter&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: #0f1117;
+      color: white;
+    }
+    h2 { font-family: 'Orbitron', sans-serif; color: #00eaff; }
+    input, textarea, select {
+      width: 100%;
+      padding: 12px;
+      margin-top: 8px;
+      border: none;
+      border-radius: 6px;
+      background: #1f253a;
+      color: white;
+      font-size: 1rem;
+    }
+    button {
+      padding: 12px 20px;
+      margin-top: 12px;
+      background: #00eaff;
+      color: #0f1117;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.2s;
+    }
+    button:hover { background: #00c4ff; transform: translateY(-1px); }
 
-<meta charset="UTF-8">
-<title>WorldTech ServiceDesk</title>
+    /* LOGIN */
+    #login {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: linear-gradient(135deg, #0f1117, #1a1f2e);
+    }
+    .login-box {
+      background: #151a2b;
+      padding: 50px 40px;
+      border-radius: 12px;
+      width: 360px;
+      box-shadow: 0 0 30px rgba(0, 234, 255, 0.15);
+      text-align: center;
+    }
 
-<link href="https://fonts.googleapis.com/css2?family=Orbitron&family=Inter&display=swap" rel="stylesheet">
+    /* LAYOUT */
+    #app { display: none; }
+    .sidebar {
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      width: 240px;
+      background: #121727;
+      padding: 30px 20px;
+      overflow-y: auto;
+    }
+    .sidebar a {
+      display: block;
+      padding: 14px 18px;
+      cursor: pointer;
+      margin-top: 8px;
+      color: #b0b8c4;
+      border-radius: 8px;
+      transition: all 0.2s;
+    }
+    .sidebar a:hover, .sidebar a.active {
+      background: rgba(0, 234, 255, 0.1);
+      color: #00eaff;
+    }
+    .main {
+      margin-left: 240px;
+      padding: 30px;
+    }
 
-<style>
+    .card {
+      background: #151a2b;
+      padding: 24px;
+      border-radius: 10px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    }
 
-body{
-margin:0;
-font-family:Inter;
-background:#0f1117;
-color:white;
-}
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 20px;
+      margin: 30px 0;
+    }
+    .stat-card {
+      background: #1f253a;
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+    }
+    .stat-card h3 {
+      color: #00eaff;
+      margin: 8px 0;
+    }
 
-h2{font-family:Orbitron}
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    td, th {
+      padding: 14px;
+      border-bottom: 1px solid #2a3345;
+      text-align: left;
+    }
+    th { background: #1a1f2e; }
 
-input,textarea,select{
-width:100%;
-padding:10px;
-margin-top:8px;
-border:none;
-border-radius:5px;
-background:#1f253a;
-color:white;
-}
+    .chat {
+      background: #0c0f16;
+      height: 280px;
+      overflow-y: auto;
+      padding: 16px;
+      border-radius: 10px;
+      margin-bottom: 16px;
+      border: 1px solid #2a3345;
+    }
+    .chat div {
+      margin: 12px 0;
+      padding: 12px;
+      border-radius: 8px;
+    }
+    .chat .user { background: #1f253a; text-align: right; }
+    .chat .ai { background: rgba(0,234,255,0.08); }
 
-button{
-padding:10px;
-margin-top:10px;
-background:#00eaff;
-border:none;
-border-radius:5px;
-cursor:pointer;
-}
+    .page { display: none; }
+    .page.active { display: block; }
 
-/* LOGIN */
-
-#login{
-display:flex;
-justify-content:center;
-align-items:center;
-height:100vh;
-}
-
-.login-box{
-background:#151a2b;
-padding:40px;
-border-radius:10px;
-width:300px;
-}
-
-/* LAYOUT */
-
-#app{
-display:none;
-}
-
-.sidebar{
-position:fixed;
-top:0;
-bottom:0;
-width:220px;
-background:#121727;
-padding:20px;
-}
-
-.sidebar a{
-display:block;
-padding:10px;
-cursor:pointer;
-margin-top:6px;
-}
-
-.main{
-margin-left:240px;
-padding:20px;
-}
-
-.card{
-background:#151a2b;
-padding:20px;
-border-radius:10px;
-margin-bottom:20px;
-}
-
-table{
-width:100%;
-border-collapse:collapse;
-}
-
-td,th{
-padding:10px;
-border-bottom:1px solid #333;
-}
-
-.stats{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
-gap:20px;
-}
-
-.chat{
-background:#0c0f16;
-height:200px;
-overflow:auto;
-padding:10px;
-border-radius:8px;
-margin-bottom:10px;
-}
-
-</style>
-
+    .voice-btn {
+      background: #ff6b6b;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-left: 10px;
+    }
+  </style>
 </head>
-
 <body>
 
 <!-- LOGIN -->
-
 <div id="login">
-
-<div class="login-box">
-
-<h2>WorldTech Login</h2>
-
-<input id="username" placeholder="Username">
-<input id="password" type="password" placeholder="Password">
-
-<button onclick="login()">Login</button>
-
-<p>admin / admin123</p>
-
+  <div class="login-box">
+    <h2>WorldTech Login</h2>
+    <input id="username" placeholder="Username" autocomplete="off">
+    <input id="password" type="password" placeholder="Password">
+    <button onclick="doLogin()">Login</button>
+    <p style="margin-top:20px;color:#94a3b8">Default:<br>admin / admin123<br>user1 / pass123</p>
+    <p id="loginError" style="color:#ff6b6b;margin-top:12px;"></p>
+  </div>
 </div>
 
-</div>
-
-
-<!-- APP -->
-
+<!-- MAIN APP -->
 <div id="app">
+  <div class="sidebar">
+    <h2>WorldTech</h2>
+    <a onclick="showPage('dashboard')" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+    <a onclick="showPage('tickets')"><i class="fas fa-ticket-alt"></i> Tickets</a>
+    <a onclick="showPage('create')"><i class="fas fa-plus-circle"></i> Create Ticket</a>
+    <a onclick="showPage('ai')"><i class="fas fa-robot"></i> AI Helpdesk</a>
+    <a onclick="showPage('notes')"><i class="fas fa-sticky-note"></i> Notes</a>
+    <a onclick="showPage('profile')"><i class="fas fa-user"></i> Profile</a>
+    <button onclick="logout()" style="width:100%;margin-top:20px;background:#e53e3e;color:white">Logout</button>
+  </div>
 
-<div class="sidebar">
+  <div class="main">
 
-<h2>WorldTech</h2>
+    <!-- DASHBOARD -->
+    <div id="dashboard" class="page active">
+      <h2>Dashboard</h2>
+      <div class="stats">
+        <div class="stat-card">
+          Total Tickets
+          <h3 id="statTotal">0</h3>
+        </div>
+        <div class="stat-card">
+          Open
+          <h3 id="statOpen">0</h3>
+        </div>
+        <div class="stat-card">
+          Closed
+          <h3 id="statClosed">0</h3>
+        </div>
+      </div>
+    </div>
 
-<a onclick="showPage('dashboard')">Dashboard</a>
-<a onclick="showPage('tickets')">Tickets</a>
-<a onclick="showPage('create')">Create Ticket</a>
-<a onclick="showPage('ai')">AI Help</a>
-<a onclick="showPage('notes')">Notes</a>
-<a onclick="showPage('profile')">Profile</a>
+    <!-- TICKETS -->
+    <div id="tickets" class="page">
+      <h2>Tickets</h2>
+      <input id="search" placeholder="Search tickets..." onkeyup="renderTickets()">
+      <button onclick="exportCSV()" style="margin:12px 0">Export to CSV</button>
+      <table>
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Status</th>
+            <th>Priority</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="ticketTable"></tbody>
+      </table>
+    </div>
 
-<button onclick="logout()">Logout</button>
+    <!-- CREATE TICKET -->
+    <div id="create" class="page">
+      <h2>Create Ticket</h2>
+      <input id="tTitle" placeholder="Title">
+      <textarea id="tDesc" placeholder="Description"></textarea>
+      <button class="voice-btn" onclick="voiceInput()">🎤 Voice Input</button>
+      <select id="tPriority">
+        <option>Low</option>
+        <option>Medium</option>
+        <option>High</option>
+      </select>
+      <button onclick="createTicket()">Create Ticket</button>
+    </div>
 
+    <!-- AI HELPDESK -->
+    <div id="ai" class="page">
+      <h2>AI Helpdesk</h2>
+      <div class="chat" id="chat"></div>
+      <input id="chatInput" placeholder="Ask any IT question...">
+      <button onclick="askAI()">Ask AI</button>
+    </div>
+
+    <!-- NOTES -->
+    <div id="notes" class="page">
+      <h2>Notes</h2>
+      <textarea id="notesArea" rows="12"></textarea>
+      <button onclick="saveNotes()">Save Notes</button>
+    </div>
+
+    <!-- PROFILE -->
+    <div id="profile" class="page">
+      <h2>Profile</h2>
+      <input id="profileUser" placeholder="Username">
+      <input id="profilePass" type="password" placeholder="New Password">
+      <button onclick="saveProfile()">Save Profile</button>
+    </div>
+
+  </div>
 </div>
-
-
-<div class="main">
-
-<!-- DASHBOARD -->
-
-<div id="dashboard" class="page">
-
-<h2>Dashboard</h2>
-
-<div class="stats">
-
-<div class="card">
-Total Tickets
-<h3 id="statTotal"></h3>
-</div>
-
-<div class="card">
-Open
-<h3 id="statOpen"></h3>
-</div>
-
-<div class="card">
-Closed
-<h3 id="statClosed"></h3>
-</div>
-
-</div>
-
-</div>
-
-
-<!-- TICKETS -->
-
-<div id="tickets" class="page" style="display:none">
-
-<h2>Tickets</h2>
-
-<input id="search" placeholder="Search tickets" onkeyup="renderTickets()">
-
-<button onclick="exportCSV()">Export CSV</button>
-
-<table>
-
-<thead>
-<tr>
-<th>Title</th>
-<th>Status</th>
-<th>Priority</th>
-<th>Action</th>
-</tr>
-</thead>
-
-<tbody id="ticketTable"></tbody>
-
-</table>
-
-</div>
-
-
-<!-- CREATE -->
-
-<div id="create" class="page" style="display:none">
-
-<h2>Create Ticket</h2>
-
-<input id="tTitle" placeholder="Title">
-
-<textarea id="tDesc" placeholder="Description"></textarea>
-
-<button onclick="voiceInput()">🎤 Voice Input</button>
-
-<select id="tPriority">
-<option>Low</option>
-<option>Medium</option>
-<option>High</option>
-</select>
-
-<button onclick="createTicket()">Create Ticket</button>
-
-</div>
-
-
-<!-- AI -->
-
-<div id="ai" class="page" style="display:none">
-
-<h2>AI Helpdesk</h2>
-
-<div class="chat" id="chat"></div>
-
-<input id="chatInput" placeholder="Ask an IT question">
-
-<button onclick="askAI()">Ask AI</button>
-
-</div>
-
-
-<!-- NOTES -->
-
-<div id="notes" class="page" style="display:none">
-
-<h2>Notes</h2>
-
-<textarea id="notesArea" rows="10"></textarea>
-
-<button onclick="saveNotes()">Save</button>
-
-</div>
-
-
-<!-- PROFILE -->
-
-<div id="profile" class="page" style="display:none">
-
-<h2>Profile</h2>
-
-<input id="profileUser">
-<input id="profilePass">
-
-<button onclick="saveProfile()">Save</button>
-
-</div>
-
-</div>
-</div>
-
 
 <script>
-
-/* USER SYSTEM */
-
+// ==================== STATE ====================
 let users = JSON.parse(localStorage.getItem("users")) || [];
+let tickets = JSON.parse(localStorage.getItem("tickets")) || [];
+let currentUser = null;
 
-/* ensure admin exists */
+// Ensure default admin & user
+if (!users.find(u => u.username === "admin")) {
+  users.push({ username: "admin", password: "admin123", role: "admin" });
+}
+if (!users.find(u => u.username === "user1")) {
+  users.push({ username: "user1", password: "pass123", role: "user" });
+}
+localStorage.setItem("users", JSON.stringify(users));
 
-if(!users.find(u=>u.username==="admin")){
-users.push({username:"admin",password:"admin123",role:"admin"});
+// ==================== LOGIN ====================
+function doLogin() {
+  const usernameEl = document.getElementById('username');
+  const passwordEl = document.getElementById('password');
+  const errorEl = document.getElementById('loginError');
+
+  const u = usernameEl.value.trim();
+  const p = passwordEl.value.trim();
+
+  const user = users.find(x => x.username === u && x.password === p);
+
+  if (!user) {
+    errorEl.textContent = "Invalid username or password";
+    return;
+  }
+
+  currentUser = user;
+  localStorage.setItem("currentUser", JSON.stringify(currentUser));
+
+  document.getElementById('login').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+
+  initApp();
 }
 
-if(!users.find(u=>u.username==="user1")){
-users.push({username:"user1",password:"pass123",role:"user"});
+// Auto-login if session exists
+const storedUser = localStorage.getItem("currentUser");
+if (storedUser) {
+  currentUser = JSON.parse(storedUser);
+  if (users.some(u => u.username === currentUser.username)) {
+    document.getElementById('login').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    initApp();
+  }
 }
 
-localStorage.setItem("users",JSON.stringify(users));
-
-let currentUser=null;
-
-/* LOGIN */
-
-function login(){
-
-let u=username.value.trim();
-let p=password.value.trim();
-
-let user=users.find(x=>x.username===u && x.password===p);
-
-if(!user){
-alert("Invalid login");
-return;
+// ==================== LOGOUT ====================
+function logout() {
+  localStorage.removeItem("currentUser");
+  location.reload();
 }
 
-currentUser=user;
-
-login.style.display="none";
-app.style.display="block";
-
-init();
-
+// ==================== PAGE SWITCHER ====================
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
 }
 
-/* LOGOUT */
-
-function logout(){
-location.reload();
+// ==================== APP INIT ====================
+function initApp() {
+  updateStats();
+  renderTickets();
+  loadNotes();
 }
 
-/* NAV */
+// ==================== TICKETS ====================
+function createTicket() {
+  const title = document.getElementById('tTitle').value.trim();
+  const desc = document.getElementById('tDesc').value.trim();
+  const priority = document.getElementById('tPriority').value;
 
-function showPage(id){
+  if (!title || !desc) {
+    alert("Title and description required");
+    return;
+  }
 
-document.querySelectorAll(".page").forEach(p=>p.style.display="none");
+  const ticket = {
+    id: Date.now(),
+    title,
+    description: desc,
+    priority,
+    status: "Open",
+    createdBy: currentUser.username,
+    createdAt: new Date().toISOString()
+  };
 
-document.getElementById(id).style.display="block";
+  tickets.push(ticket);
+  localStorage.setItem("tickets", JSON.stringify(tickets));
 
+  document.getElementById('tTitle').value = '';
+  document.getElementById('tDesc').value = '';
+
+  renderTickets();
+  updateStats();
+  alert("Ticket created successfully!");
 }
 
-/* DATABASE */
+function renderTickets() {
+  const search = document.getElementById('search')?.value?.toLowerCase() || '';
+  const tbody = document.getElementById('ticketTable');
+  tbody.innerHTML = '';
 
-let tickets=JSON.parse(localStorage.getItem("tickets"))||[];
+  tickets
+    .filter(t => t.title.toLowerCase().includes(search) || t.description.toLowerCase().includes(search))
+    .forEach(t => {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${t.title}</td>
+        <td>${t.status}</td>
+        <td>${t.priority}</td>
+        <td>
+          ${currentUser.role === 'admin' ? `
+            <button onclick="closeTicket(${t.id})" style="background:#10b981;color:white">Close</button>
+            <button onclick="deleteTicket(${t.id})" style="background:#e53e3e;color:white">Delete</button>
+          ` : 'View Only'}
+        </td>
+      `;
+      tbody.appendChild(row);
+    });
 
-/* INIT */
-
-function init(){
-
-renderTickets();
-updateStats();
-loadNotes();
-
+  updateStats();
 }
 
-/* CREATE TICKET */
-
-function createTicket(){
-
-let ticket={
-
-id:Date.now(),
-title:tTitle.value,
-desc:tDesc.value,
-priority:tPriority.value,
-status:"Open"
-
-};
-
-tickets.push(ticket);
-
-localStorage.setItem("tickets",JSON.stringify(tickets));
-
-renderTickets();
-
-alert("Ticket created");
-
+function closeTicket(id) {
+  const ticket = tickets.find(t => t.id === id);
+  if (ticket) {
+    ticket.status = "Closed";
+    localStorage.setItem("tickets", JSON.stringify(tickets));
+    renderTickets();
+  }
 }
 
-/* RENDER */
-
-function renderTickets(){
-
-let search=document.getElementById("search")?.value?.toLowerCase()||"";
-
-ticketTable.innerHTML="";
-
-tickets
-.filter(t=>t.title.toLowerCase().includes(search))
-.forEach(t=>{
-
-ticketTable.innerHTML+=`
-
-<tr>
-<td>${t.title}</td>
-<td>${t.status}</td>
-<td>${t.priority}</td>
-<td>
-
-<button onclick="closeTicket(${t.id})">Close</button>
-<button onclick="deleteTicket(${t.id})">Delete</button>
-
-</td>
-</tr>
-
-`;
-
-});
-
-updateStats();
-
+function deleteTicket(id) {
+  if (!confirm("Delete this ticket?")) return;
+  tickets = tickets.filter(t => t.id !== id);
+  localStorage.setItem("tickets", JSON.stringify(tickets));
+  renderTickets();
 }
 
-/* CLOSE */
+function updateStats() {
+  const total = tickets.length;
+  const open = tickets.filter(t => t.status === "Open").length;
+  const closed = tickets.filter(t => t.status === "Closed").length;
 
-function closeTicket(id){
-
-let t=tickets.find(x=>x.id===id);
-
-t.status="Closed";
-
-localStorage.setItem("tickets",JSON.stringify(tickets));
-
-renderTickets();
-
+  document.getElementById('statTotal').textContent = total;
+  document.getElementById('statOpen').textContent = open;
+  document.getElementById('statClosed').textContent = closed;
 }
 
-/* DELETE */
+// ==================== CSV EXPORT ====================
+function exportCSV() {
+  let csv = "Title,Description,Status,Priority,Created By,Date\n";
+  tickets.forEach(t => {
+    csv += `"${t.title.replace(/"/g,'""')}","${t.description.replace(/"/g,'""')}",${t.status},${t.priority},${t.createdBy},${new Date(t.createdAt).toLocaleString()}\n`;
+  });
 
-function deleteTicket(id){
-
-tickets=tickets.filter(x=>x.id!==id);
-
-localStorage.setItem("tickets",JSON.stringify(tickets));
-
-renderTickets();
-
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'worldtech_tickets.csv';
+  a.click();
+  URL.revokeObjectURL(url);
 }
 
-/* STATS */
+// ==================== VOICE INPUT ====================
+function voiceInput() {
+  if (!('webkitSpeechRecognition' in window)) {
+    alert("Voice input not supported in this browser. Try Chrome.");
+    return;
+  }
 
-function updateStats(){
+  const recognition = new webkitSpeechRecognition();
+  recognition.continuous = false;
+  recognition.interimResults = false;
+  recognition.lang = 'en-US';
 
-statTotal.innerText=tickets.length;
-statOpen.innerText=tickets.filter(t=>t.status==="Open").length;
-statClosed.innerText=tickets.filter(t=>t.status==="Closed").length;
+  recognition.onresult = e => {
+    const transcript = e.results[0][0].transcript;
+    document.getElementById('tDesc').value += transcript + ' ';
+  };
 
+  recognition.onerror = e => alert("Voice error: " + e.error);
+
+  recognition.start();
 }
 
-/* CSV */
+// ==================== AI HELPDESK (Groq) ====================
+const GROQ_API_KEY = "gsk_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"; // ← PASTE YOUR REAL KEY HERE
 
-function exportCSV(){
+async function askAI() {
+  const input = document.getElementById('chatInput');
+  const chat = document.getElementById('chat');
+  const question = input.value.trim();
 
-let csv="Title,Status,Priority\n";
+  if (!question) return;
 
-tickets.forEach(t=>{
-csv+=`${t.title},${t.status},${t.priority}\n`;
-});
+  chat.innerHTML += `<div class="user">You: ${question}</div>`;
+  input.value = '';
 
-let blob=new Blob([csv]);
+  if (GROQ_API_KEY === "PASTE_GROQ_API_KEY") {
+    chat.innerHTML += `<div class="ai">AI: Please add your real Groq API key in the code!</div>`;
+    return;
+  }
 
-let a=document.createElement("a");
+  try {
+    const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${GROQ_API_KEY}`
+      },
+      body: JSON.stringify({
+        model: "llama3-8b-8192",
+        messages: [
+          { role: "system", content: "You are an expert IT support assistant. Give clear, numbered step-by-step answers." },
+          { role: "user", content: question }
+        ],
+        temperature: 0.7,
+        max_tokens: 500
+      })
+    });
 
-a.href=URL.createObjectURL(blob);
+    if (!res.ok) throw new Error(`API error ${res.status}`);
 
-a.download="tickets.csv";
+    const data = await res.json();
+    const answer = data.choices[0].message.content.trim();
 
-a.click();
+    chat.innerHTML += `<div class="ai">AI: ${answer}</div>`;
+  } catch (err) {
+    chat.innerHTML += `<div class="ai" style="color:#ff6b6b">AI Error: ${err.message}</div>`;
+  }
 
+  chat.scrollTop = chat.scrollHeight;
 }
 
-/* VOICE */
-
-function voiceInput(){
-
-let rec=new webkitSpeechRecognition();
-
-rec.onresult=e=>{
-tDesc.value+=e.results[0][0].transcript;
-};
-
-rec.start();
-
+// ==================== NOTES ====================
+function saveNotes() {
+  const notes = document.getElementById('notesArea').value;
+  localStorage.setItem("notes", notes);
+  alert("Notes saved!");
 }
 
-/* AI */
-
-const GROQ_API_KEY="PASTE_GROQ_API_KEY";
-
-async function askAI(){
-
-let q=chatInput.value;
-
-chat.innerHTML+=`<div>User: ${q}</div>`;
-
-if(GROQ_API_KEY==="PASTE_GROQ_API_KEY"){
-chat.innerHTML+=`<div>AI: Add Groq API key</div>`;
-return;
+function loadNotes() {
+  const notes = localStorage.getItem("notes") || "";
+  document.getElementById('notesArea').value = notes;
 }
 
-let res=await fetch("https://api.groq.com/openai/v1/chat/completions",{
+// ==================== PROFILE ====================
+function saveProfile() {
+  const newUser = document.getElementById('profileUser').value.trim();
+  const newPass = document.getElementById('profilePass').value.trim();
 
-method:"POST",
+  if (!newUser || !newPass) {
+    alert("Both fields required");
+    return;
+  }
 
-headers:{
-"Content-Type":"application/json",
-"Authorization":"Bearer "+GROQ_API_KEY
-},
+  currentUser.username = newUser;
+  currentUser.password = newPass;
 
-body:JSON.stringify({
-model:"llama3-8b-8192",
-messages:[{role:"user",content:q}]
-})
+  // Update in users array
+  const users = getUsers();
+  const idx = users.findIndex(u => u.id === currentUser.id);
+  if (idx !== -1) {
+    users[idx] = currentUser;
+    localStorage.setItem("users", JSON.stringify(users));
+  }
 
-});
-
-let data=await res.json();
-
-let reply=data.choices[0].message.content;
-
-chat.innerHTML+=`<div>AI: ${reply}</div>`;
-
+  localStorage.setItem("currentUser", JSON.stringify(currentUser));
+  alert("Profile updated! Please login again with new credentials.");
+  logout();
 }
 
-/* NOTES */
+// ==================== INIT ====================
+function init() {
+  // Load notes
+  loadNotes();
 
-function saveNotes(){
+  // Load profile fields
+  document.getElementById('profileUser').value = currentUser.username;
+  document.getElementById('profilePass').value = currentUser.password;
 
-localStorage.setItem("notes",notesArea.value);
-
+  updateStats();
+  renderTickets();
 }
 
-function loadNotes(){
-
-notesArea.value=localStorage.getItem("notes")||"";
-
-}
-
-/* PROFILE */
-
-function saveProfile(){
-
-currentUser.username=profileUser.value;
-currentUser.password=profilePass.value;
-
-localStorage.setItem("users",JSON.stringify(users));
-
-alert("Saved");
-
-}
-
-</script>
-
+// Make sure init runs after login
+if (currentUser) init();
+  </script>
 </body>
 </html>
