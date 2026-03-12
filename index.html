@@ -2,107 +2,211 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>FutureOS Dashboard</title>
+<title>WorldTech AI ServiceDesk</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.css" rel="stylesheet">
+
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
 
 <style>
 
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Arial,Helvetica,sans-serif;
+/* ==========================
+GLOBAL THEME
+==========================*/
+
+:root{
+--bg:#0f1117;
+--card:#1b1f2b;
+--neon:#00f2ff;
+--accent:#7a5cff;
+--text:#e6e8ee;
 }
 
 body{
-background:#0a0a0f;
-color:white;
+margin:0;
+font-family:Inter;
+background:linear-gradient(135deg,#0f1117,#121727);
+color:var(--text);
+}
+
+/* background glow */
+
+body::before{
+content:"";
+position:fixed;
+width:600px;
+height:600px;
+background:radial-gradient(circle,var(--neon),transparent);
+opacity:.15;
+filter:blur(120px);
+top:-200px;
+left:-200px;
+animation:float 20s infinite alternate;
+}
+
+@keyframes float{
+to{transform:translate(200px,200px)}
+}
+
+/* ==========================
+LOGIN
+==========================*/
+
+#login{
 display:flex;
-flex-direction:column;
 align-items:center;
+justify-content:center;
+height:100vh;
 }
 
-header{
+.login-box{
+background:rgba(255,255,255,.05);
+backdrop-filter:blur(20px);
+padding:40px;
+border-radius:12px;
+width:320px;
+}
+
+input,select,textarea{
 width:100%;
-padding:20px;
-text-align:center;
-font-size:28px;
-font-weight:bold;
-background:#111;
-letter-spacing:2px;
-}
-
-.dashboard{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
-gap:20px;
-padding:20px;
-width:95%;
-}
-
-.card{
-background:#151520;
-border-radius:15px;
-padding:20px;
-box-shadow:0 0 15px #00ffff22;
-}
-
-h2{
-margin-bottom:10px;
-color:#00ffff;
+padding:10px;
+margin-top:8px;
+border:none;
+border-radius:6px;
+background:#12161f;
+color:white;
 }
 
 button{
-background:#00ffff;
-border:none;
-padding:8px 15px;
-border-radius:8px;
-cursor:pointer;
-margin-top:5px;
-}
-
-input,textarea{
-width:100%;
-padding:8px;
-margin-top:5px;
-background:#222;
-color:white;
-border:none;
-border-radius:5px;
-}
-
-#chatbox{
-height:200px;
-overflow:auto;
-background:#111;
+margin-top:12px;
 padding:10px;
-margin-bottom:10px;
-border-radius:8px;
-}
-
-.message{
-margin-bottom:8px;
-}
-
-.calendar-day{
-display:inline-block;
-width:40px;
-height:40px;
-line-height:40px;
-text-align:center;
-margin:3px;
+border:none;
 border-radius:6px;
-background:#222;
+background:linear-gradient(45deg,var(--neon),var(--accent));
+color:white;
 cursor:pointer;
 }
 
-.calendar-day:hover{
-background:#00ffff;
-color:black;
+button:hover{opacity:.9}
+
+/* ==========================
+LAYOUT
+==========================*/
+
+#app{
+display:none;
+height:100vh;
 }
 
-.clock{
-font-size:35px;
-text-align:center;
+.sidebar{
+width:230px;
+background:#11151f;
+position:fixed;
+top:0;
+bottom:0;
+padding:20px;
+}
+
+.sidebar h2{
+font-family:Orbitron;
+color:var(--neon);
+}
+
+.sidebar a{
+display:block;
+padding:10px;
+margin-top:5px;
+color:white;
+text-decoration:none;
+border-radius:6px;
+}
+
+.sidebar a.active{
+background:rgba(0,255,255,.15);
+}
+
+.main{
+margin-left:240px;
+padding:20px;
+}
+
+/* ==========================
+CARDS
+==========================*/
+
+.card{
+background:rgba(255,255,255,.05);
+backdrop-filter:blur(20px);
+border-radius:12px;
+padding:20px;
+margin-bottom:20px;
+}
+
+.stats{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+gap:20px;
+}
+
+.stat{
+background:rgba(0,0,0,.4);
+padding:20px;
+border-radius:10px;
+}
+
+/* ==========================
+TABLE
+==========================*/
+
+table{
+width:100%;
+border-collapse:collapse;
+}
+
+td,th{
+padding:10px;
+border-bottom:1px solid #2a3040;
+}
+
+/* ==========================
+CALENDAR
+==========================*/
+
+#calendar{
+background:white;
+color:black;
+padding:10px;
+border-radius:10px;
+}
+
+/* ==========================
+CHAT
+==========================*/
+
+.chatbox{
+height:250px;
+overflow:auto;
+background:#0c0f16;
+padding:10px;
+border-radius:8px;
+margin-bottom:10px;
+}
+
+.message{margin-bottom:8px}
+
+/* ==========================
+RESPONSIVE
+==========================*/
+
+@media(max-width:900px){
+
+.sidebar{position:relative;width:100%;display:flex}
+
+.main{margin:0}
+
 }
 
 </style>
@@ -110,175 +214,557 @@ text-align:center;
 
 <body>
 
-<header>🚀 FUTURE AI DASHBOARD</header>
+<!-- ==========================
+LOGIN
+========================== -->
 
-<div class="dashboard">
+<div id="login">
 
-<!-- CLOCK -->
+<div class="login-box">
 
-<div class="card">
-<h2>⏰ Clock</h2>
-<div class="clock" id="clock"></div>
-</div>
+<h2>WorldTech ServiceDesk</h2>
 
-<!-- AI CHAT -->
+<input id="username" placeholder="Username">
 
-<div class="card">
-<h2>🤖 AI Assistant</h2>
+<input id="password" type="password" placeholder="Password">
 
-<div id="chatbox"></div>
-
-<input id="userInput" placeholder="Ask something...">
-<button onclick="sendMessage()">Send</button>
+<button onclick="login()">Login</button>
 
 </div>
 
-<!-- TODO -->
+</div>
 
-<div class="card">
-<h2>✅ Task Manager</h2>
 
-<input id="taskInput" placeholder="New task">
-<button onclick="addTask()">Add Task</button>
+<!-- ==========================
+APP
+========================== -->
 
-<ul id="taskList"></ul>
+<div id="app">
+
+<div class="sidebar">
+
+<h2>WorldTech</h2>
+
+<a onclick="show('dashboard')" class="active">Dashboard</a>
+<a onclick="show('tickets')">Tickets</a>
+<a onclick="show('createTicket')">Create Ticket</a>
+<a onclick="show('knowledge')">Knowledge Base</a>
+<a onclick="show('calendarPage')">Calendar</a>
+<a onclick="show('notesPage')">Notes</a>
+<a onclick="show('profilePage')">Profile</a>
+
+<button onclick="logout()">Logout</button>
 
 </div>
 
-<!-- NOTES -->
+<div class="main">
 
-<div class="card">
-<h2>📝 Notes</h2>
+<!-- ==========================
+DASHBOARD
+========================== -->
 
-<textarea id="notes" rows="8" placeholder="Write notes..."></textarea>
+<div id="dashboard" class="page">
+
+<h2>Dashboard</h2>
+
+<div class="stats">
+
+<div class="stat">Total Tickets <h3 id="totalTickets"></h3></div>
+<div class="stat">Open <h3 id="openTickets"></h3></div>
+<div class="stat">In Progress <h3 id="progressTickets"></h3></div>
+<div class="stat">Closed <h3 id="closedTickets"></h3></div>
+
+</div>
+
+</div>
+
+
+<!-- ==========================
+TICKETS
+========================== -->
+
+<div id="tickets" class="page" style="display:none">
+
+<h2>Tickets</h2>
+
+<button onclick="exportCSV()">Export CSV</button>
+
+<table id="ticketTable">
+
+<thead>
+<tr>
+<th>Title</th>
+<th>Status</th>
+<th>Priority</th>
+<th>Actions</th>
+</tr>
+</thead>
+
+<tbody></tbody>
+
+</table>
+
+</div>
+
+
+<!-- ==========================
+CREATE TICKET
+========================== -->
+
+<div id="createTicket" class="page" style="display:none">
+
+<h2>Create Ticket</h2>
+
+<input id="tTitle" placeholder="Title">
+
+<textarea id="tDesc" placeholder="Description"></textarea>
+
+<button onclick="voiceInput()">🎤 Voice</button>
+
+<select id="tPriority">
+<option>Low</option>
+<option>Medium</option>
+<option>High</option>
+</select>
+
+<select id="tCategory">
+<option>Network</option>
+<option>Software</option>
+<option>Hardware</option>
+</select>
+
+<button onclick="aiPriority()">AI Suggest Priority</button>
+
+<button onclick="createTicket()">Submit</button>
+
+</div>
+
+
+<!-- ==========================
+KNOWLEDGE + AI CHAT
+========================== -->
+
+<div id="knowledge" class="page" style="display:none">
+
+<h2>Self Service Portal</h2>
+
+<div class="chatbox" id="chat"></div>
+
+<input id="chatInput" placeholder="Ask IT question">
+
+<button onclick="askAI()">Ask AI</button>
+
+</div>
+
+
+<!-- ==========================
+CALENDAR
+========================== -->
+
+<div id="calendarPage" class="page" style="display:none">
+
+<h2>Calendar</h2>
+
+<div id="calendar"></div>
+
+</div>
+
+
+<!-- ==========================
+NOTES
+========================== -->
+
+<div id="notesPage" class="page" style="display:none">
+
+<h2>Notes</h2>
+
+<textarea id="notesArea" rows="10"></textarea>
+
 <button onclick="saveNotes()">Save</button>
 
 </div>
 
-<!-- CALENDAR -->
 
-<div class="card">
-<h2>📅 Calendar</h2>
-<div id="calendar"></div>
+<!-- ==========================
+PROFILE
+========================== -->
+
+<div id="profilePage" class="page" style="display:none">
+
+<h2>Profile</h2>
+
+<input id="profileName">
+
+<input id="profilePass">
+
+<button onclick="saveProfile()">Save</button>
+
+</div>
+
+
 </div>
 
 </div>
 
 <script>
 
-/////////////////////////
-//// CLOCK
-/////////////////////////
+/* ==========================
+CONFIG
+==========================*/
 
-function updateClock(){
-let now = new Date();
-document.getElementById("clock").innerHTML =
-now.toLocaleTimeString();
-}
+/* Paste your GROQ API key below */
 
-setInterval(updateClock,1000);
+const GROQ_API_KEY="PASTE_YOUR_GROQ_API_KEY_HERE"
 
-/////////////////////////
-//// AI CHAT
-/////////////////////////
+/* ==========================
+DATA
+==========================*/
 
-function sendMessage(){
+let users=JSON.parse(localStorage.users||`[
+{"username":"admin","password":"admin","role":"admin"},
+{"username":"user1","password":"pass","role":"user"}
+]`);
 
-let input = document.getElementById("userInput");
-let chat = document.getElementById("chatbox");
+let tickets=JSON.parse(localStorage.tickets||"[]")
 
-let userText = input.value;
+let currentUser=null
 
-if(!userText) return;
+/* ==========================
+LOGIN
+==========================*/
 
-chat.innerHTML += "<div class='message'>👤 "+userText+"</div>";
+function login(){
 
-let reply = aiReply(userText);
+let u=username.value
+let p=password.value
 
-chat.innerHTML += "<div class='message'>🤖 "+reply+"</div>";
+let user=users.find(x=>x.username==u&&x.password==p)
 
-chat.scrollTop = chat.scrollHeight;
+if(!user){alert("Invalid");return}
 
-input.value="";
-}
+currentUser=user
 
-function aiReply(text){
+login.style.display="none"
+app.style.display="block"
 
-text = text.toLowerCase();
-
-if(text.includes("hello")) return "Hello! How can I assist you today?";
-if(text.includes("time")) return new Date().toLocaleTimeString();
-if(text.includes("date")) return new Date().toDateString();
-if(text.includes("help")) return "You can manage tasks, notes and calendar.";
-
-return "I'm still learning. Ask something else!";
-}
-
-/////////////////////////
-//// TASK MANAGER
-/////////////////////////
-
-function addTask(){
-
-let input = document.getElementById("taskInput");
-let list = document.getElementById("taskList");
-
-let li = document.createElement("li");
-
-li.textContent = input.value;
-
-li.onclick = function(){
-li.remove();
-};
-
-list.appendChild(li);
-
-input.value="";
+init()
 
 }
 
-/////////////////////////
-//// NOTES
-/////////////////////////
+function logout(){
+
+location.reload()
+
+}
+
+/* ==========================
+NAV
+==========================*/
+
+function show(page){
+
+document.querySelectorAll(".page").forEach(p=>p.style.display="none")
+
+document.getElementById(page).style.display="block"
+
+}
+
+/* ==========================
+INIT
+==========================*/
+
+function init(){
+
+renderTickets()
+updateStats()
+loadNotes()
+initCalendar()
+
+}
+
+/* ==========================
+TICKETS
+==========================*/
+
+function createTicket(){
+
+let ticket={
+
+id:Date.now(),
+title:tTitle.value,
+desc:tDesc.value,
+priority:tPriority.value,
+category:tCategory.value,
+status:"Open",
+owner:currentUser.username
+
+}
+
+tickets.push(ticket)
+
+saveTickets()
+
+renderTickets()
+
+alert("Ticket created")
+
+}
+
+function renderTickets(){
+
+let tbody=document.querySelector("#ticketTable tbody")
+
+tbody.innerHTML=""
+
+tickets.forEach(t=>{
+
+let tr=document.createElement("tr")
+
+tr.innerHTML=`
+<td>${t.title}</td>
+<td>${t.status}</td>
+<td>${t.priority}</td>
+<td>
+<button onclick="fixAI('${t.desc}')">AI Fix</button>
+<button onclick="deleteTicket(${t.id})">Delete</button>
+</td>
+`
+
+tbody.appendChild(tr)
+
+})
+
+updateStats()
+
+}
+
+function deleteTicket(id){
+
+if(!confirm("Delete?"))return
+
+tickets=tickets.filter(t=>t.id!=id)
+
+saveTickets()
+
+renderTickets()
+
+}
+
+function saveTickets(){
+
+localStorage.tickets=JSON.stringify(tickets)
+
+}
+
+/* ==========================
+STATS
+==========================*/
+
+function updateStats(){
+
+totalTickets.innerText=tickets.length
+
+openTickets.innerText=tickets.filter(t=>t.status=="Open").length
+
+progressTickets.innerText=tickets.filter(t=>t.status=="In Progress").length
+
+closedTickets.innerText=tickets.filter(t=>t.status=="Closed").length
+
+}
+
+/* ==========================
+CSV EXPORT
+==========================*/
+
+function exportCSV(){
+
+let csv="Title,Status,Priority\n"
+
+tickets.forEach(t=>{
+
+csv+=`${t.title},${t.status},${t.priority}\n`
+
+})
+
+let blob=new Blob([csv])
+
+let a=document.createElement("a")
+
+a.href=URL.createObjectURL(blob)
+
+a.download="tickets.csv"
+
+a.click()
+
+}
+
+/* ==========================
+VOICE INPUT
+==========================*/
+
+function voiceInput(){
+
+let rec=new webkitSpeechRecognition()
+
+rec.onresult=e=>{
+
+tDesc.value+=e.results[0][0].transcript
+
+}
+
+rec.start()
+
+}
+
+/* ==========================
+AI CALL
+==========================*/
+
+async function callAI(prompt){
+
+if(GROQ_API_KEY=="PASTE_YOUR_GROQ_API_KEY_HERE"){
+
+alert("Add Groq API key")
+
+return
+
+}
+
+let res=await fetch("https://api.groq.com/openai/v1/chat/completions",{
+
+method:"POST",
+
+headers:{
+"Content-Type":"application/json",
+"Authorization":"Bearer "+GROQ_API_KEY
+},
+
+body:JSON.stringify({
+
+model:"llama3-8b-8192",
+
+messages:[
+{role:"user",content:prompt}
+]
+
+})
+
+})
+
+let data=await res.json()
+
+return data.choices[0].message.content
+
+}
+
+/* ==========================
+AI PRIORITY
+==========================*/
+
+async function aiPriority(){
+
+let text=tDesc.value
+
+let reply=await callAI("Suggest ticket priority: "+text)
+
+alert(reply)
+
+}
+
+/* ==========================
+AI FIX
+==========================*/
+
+async function fixAI(desc){
+
+let reply=await callAI("Give step by step IT fix for: "+desc)
+
+alert(reply)
+
+}
+
+/* ==========================
+CHAT
+==========================*/
+
+async function askAI(){
+
+let q=chatInput.value
+
+chat.innerHTML+=`<div>User: ${q}</div>`
+
+let reply=await callAI(q)
+
+chat.innerHTML+=`<div>AI: ${reply}</div>`
+
+}
+
+/* ==========================
+NOTES
+==========================*/
 
 function saveNotes(){
 
-let notes = document.getElementById("notes").value;
-
-localStorage.setItem("futureNotes",notes);
-
-alert("Notes Saved");
+localStorage.notes=notesArea.value
 
 }
 
-document.getElementById("notes").value =
-localStorage.getItem("futureNotes") || "";
+function loadNotes(){
 
-/////////////////////////
-//// CALENDAR
-/////////////////////////
-
-function generateCalendar(){
-
-let calendar = document.getElementById("calendar");
-
-let days = 31;
-
-for(let i=1;i<=days;i++){
-
-let day = document.createElement("div");
-
-day.className="calendar-day";
-
-day.innerText=i;
-
-calendar.appendChild(day);
+notesArea.value=localStorage.notes||""
 
 }
 
+/* ==========================
+PROFILE
+==========================*/
+
+function saveProfile(){
+
+currentUser.username=profileName.value
+currentUser.password=profilePass.value
+
+localStorage.users=JSON.stringify(users)
+
+alert("Saved")
+
 }
 
-generateCalendar();
+/* ==========================
+CALENDAR
+==========================*/
+
+function initCalendar(){
+
+let calendarEl=document.getElementById("calendar")
+
+let events=JSON.parse(localStorage.events||"[]")
+
+let calendar=new FullCalendar.Calendar(calendarEl,{
+
+initialView:"dayGridMonth",
+
+events:events,
+
+dateClick:function(info){
+
+let title=prompt("Event title")
+
+if(!title)return
+
+events.push({title:title,start:info.dateStr})
+
+localStorage.events=JSON.stringify(events)
+
+calendar.addEvent({title:title,start:info.dateStr})
+
+}
+
+})
+
+calendar.render()
+
+}
 
 </script>
 
