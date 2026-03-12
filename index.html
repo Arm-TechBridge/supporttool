@@ -10,56 +10,53 @@
 
   <style>
     :root {
-      --bg: #0a0a1a;
-      --card: rgba(20,20,40,0.92);
       --neon: #00eaff;
       --accent: #6366f1;
-      --text: #e2e8f0;
-      --muted: #94a3b8;
+      --bg: #0a0a1a;
+      --card: rgba(20,20,40,0.95);
     }
     * { margin:0; padding:0; box-sizing:border-box; }
     body {
       font-family: 'Roboto', sans-serif;
       background: var(--bg);
-      color: var(--text);
+      color: #e2e8f0;
       min-height: 100vh;
+      overflow-x: hidden;
     }
     body::before {
       content: '';
       position: fixed;
       inset: 0;
-      background: radial-gradient(circle at 20% 80%, rgba(99,102,241,0.22) 0%, transparent 50%),
-                  radial-gradient(circle at 80% 20%, rgba(139,92,246,0.22) 0%, transparent 50%);
+      background: radial-gradient(circle at 20% 80%, rgba(99,102,241,0.25) 0%, transparent 50%),
+                  radial-gradient(circle at 80% 20%, rgba(139,92,246,0.25) 0%, transparent 50%);
       z-index: -2;
+      animation: neonGlow 12s infinite alternate;
     }
+    @keyframes neonGlow { 0% { opacity: 0.6; } 100% { opacity: 1; } }
 
     .hidden { display: none !important; }
 
-    /* TOP BAR (with clock) */
+    /* TOP BAR WITH LIVE CLOCK */
     #topBar {
       position: fixed;
       top: 0;
       left: 280px;
       right: 0;
-      height: 60px;
-      background: rgba(10,10,25,0.9);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid rgba(0,234,255,0.15);
+      height: 64px;
+      background: rgba(10,10,25,0.95);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(0,234,255,0.2);
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding: 0 40px;
       z-index: 100;
     }
-    #topBar h1 {
-      font-family: 'Orbitron', sans-serif;
-      color: var(--neon);
-      font-size: 1.4rem;
-    }
     #liveClock {
       font-family: 'Orbitron', sans-serif;
       color: var(--neon);
-      font-size: 1.3rem;
+      font-size: 1.35rem;
+      letter-spacing: 2px;
     }
 
     /* SIDEBAR */
@@ -70,7 +67,7 @@
       border-right: 1px solid rgba(0,234,255,0.2);
       position: fixed;
       height: 100%;
-      padding: 80px 24px 24px;
+      padding: 90px 24px 24px;
       overflow-y: auto;
       z-index: 99;
     }
@@ -96,23 +93,19 @@
       color: var(--neon);
     }
 
-    /* MAIN */
+    /* MAIN CONTENT */
     #mainContent {
       margin-left: 280px;
-      padding: 80px 48px 48px;
+      padding: 90px 48px 48px;
     }
 
-    h1, h2 {
-      color: white;
-      margin-bottom: 24px;
-      font-weight: 500;
-    }
+    h1, h2 { color: white; margin-bottom: 24px; font-weight: 500; }
 
     .stats-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: 24px;
-      margin: 36px 0;
+      margin: 40px 0;
     }
     .card {
       background: var(--card);
@@ -122,7 +115,7 @@
       border-radius: 16px;
       text-align: center;
     }
-    .card h3 { color: var(--muted); margin-bottom: 12px; }
+    .card h3 { color: #94a3b8; }
     .card span { font-size: 2.8rem; font-weight: 700; color: var(--neon); }
 
     .section-card {
@@ -147,10 +140,8 @@
       border: none;
       cursor: pointer;
       font-weight: 600;
-      transition: all 0.3s;
     }
     button:hover { transform: scale(1.03); }
-
     button.ai-btn { background: linear-gradient(90deg, #10b981, #059669); }
 
     .ticket-item {
@@ -168,7 +159,7 @@
     .ai-response {
       margin-top: 20px;
       padding: 20px;
-      background: rgba(0,234,255,0.1);
+      background: rgba(0,234,255,0.12);
       border-radius: 12px;
       border-left: 5px solid var(--neon);
       white-space: pre-wrap;
@@ -177,7 +168,7 @@
     #calendar { background: rgba(0,0,0,0.3); border-radius: 12px; margin-top: 20px; }
 
     @media (max-width: 900px) {
-      #sidebar { width: 100%; height: auto; position: static; padding: 20px; }
+      #sidebar { width: 100%; position: static; height: auto; padding: 20px; }
       #mainContent { margin-left: 0; padding: 20px; }
       #topBar { left: 0; }
     }
@@ -185,30 +176,26 @@
 </head>
 <body>
 
-  <!-- TOP BAR with Live Clock -->
+  <!-- TOP BAR WITH LIVE CLOCK -->
   <div id="topBar">
     <h1>WorldTech ServiceDesk</h1>
-    <div id="liveClock"></div>
+    <div id="liveClock">00:00:00</div>
   </div>
 
   <!-- LOGIN -->
   <div id="loginPage">
     <div class="login-card">
       <h1>WORLDTECH</h1>
-      <h2 style="color:var(--neon);margin:20px 0">AI-Powered ITSM</h2>
-      <input type="text" id="username" placeholder="Username" required autocomplete="off">
-      <input type="password" id="password" placeholder="Password" required autocomplete="off">
+      <h2 style="color:#00eaff">AI ServiceDesk</h2>
+      <input type="text" id="username" placeholder="Username" required>
+      <input type="password" id="password" placeholder="Password" required>
       <button onclick="doLogin()">ENTER SYSTEM</button>
-      <p style="margin-top:24px;color:#94a3b8">
-        Default:<br>
-        admin / admin<br>
-        user1 / pass
-      </p>
+      <p style="margin-top:24px;color:#94a3b8">admin / admin<br>user1 / pass</p>
       <p id="loginError" style="color:#ff6b6b;margin-top:16px"></p>
     </div>
   </div>
 
-  <!-- MAIN APP -->
+  <!-- APP -->
   <div id="appLayout" class="hidden">
     <div id="sidebar">
       <h2>WORLDTECH</h2>
@@ -218,14 +205,14 @@
       <a onclick="showPage('ai')"><i class="fas fa-robot"></i> AI Self-Service</a>
       <a onclick="showPage('calendar')"><i class="fas fa-calendar-alt"></i> Calendar</a>
       <a onclick="showPage('notes')"><i class="fas fa-note-sticky"></i> Notes</a>
-      <a onclick="showPage('profile')"><i class="fas fa-user-circle"></i> Profile</a>
-      <a onclick="logout()"><i class="fas fa-power-off"></i> Logout</a>
+      <a onclick="showPage('profile')"><i class="fas fa-user"></i> Profile</a>
+      <a onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
     </div>
 
     <div id="mainContent">
 
       <!-- DASHBOARD -->
-      <div id="dashboard" class="page active">
+      <div id="dashboard" class="page active section-card">
         <h1>Control Center</h1>
         <div class="stats-grid">
           <div class="card"><h3>Total Tickets</h3><span id="statTotal">0</span></div>
@@ -235,53 +222,53 @@
         </div>
       </div>
 
-      <!-- TICKETS LIST -->
-      <div id="tickets" class="page">
+      <!-- TICKETS -->
+      <div id="tickets" class="page section-card">
         <h1>All Tickets</h1>
-        <input type="text" id="searchInput" placeholder="Search by title or description..." style="width:100%;margin-bottom:20px">
-        <button onclick="exportCSV()" style="margin-bottom:20px">Export to CSV</button>
+        <input type="text" id="searchInput" placeholder="Search tickets..." style="width:100%;margin-bottom:20px">
+        <button onclick="exportCSV()" style="margin-bottom:20px">Export CSV</button>
         <div id="ticketsList"></div>
       </div>
 
       <!-- CREATE TICKET -->
-      <div id="create" class="page">
-        <h1>Create New Incident</h1>
+      <div id="create" class="page section-card">
+        <h1>New Ticket</h1>
         <form id="createTicketForm">
-          <input type="text" id="ticketTitle" placeholder="Incident Title" required>
-          <textarea id="ticketDesc" placeholder="Detailed description of the issue..." rows="6" required></textarea>
+          <input type="text" id="ticketTitle" placeholder="Title" required>
+          <textarea id="ticketDesc" placeholder="Description" rows="6" required></textarea>
           <button type="button" class="ai-btn" onclick="aiSuggestPriority()">AI Suggest Priority</button>
           <select id="ticketPriority">
             <option value="Low">Low</option>
             <option value="Medium">Medium</option>
             <option value="High">High</option>
           </select>
-          <button type="submit">Submit Incident</button>
+          <button type="submit">Create Ticket</button>
         </form>
       </div>
 
       <!-- AI SELF-SERVICE -->
-      <div id="ai" class="page">
-        <h1>AI Knowledge Assistant</h1>
-        <input type="text" id="aiQuery" placeholder="Describe your issue (e.g. 'My PC is slow')" style="width:100%;margin-bottom:16px">
-        <button class="ai-btn" onclick="aiSelfService()">Get Step-by-Step Solution</button>
+      <div id="ai" class="page section-card">
+        <h1>AI Self-Service Portal</h1>
+        <input type="text" id="aiQuery" placeholder="Type any IT issue..." style="width:100%;margin-bottom:16px">
+        <button class="ai-btn" onclick="aiSelfService()">Get Step-by-Step Fix</button>
         <div id="aiResponse" class="ai-response hidden"></div>
       </div>
 
       <!-- CALENDAR -->
-      <div id="calendar" class="page">
+      <div id="calendar" class="page section-card">
         <h1>Operations Calendar</h1>
         <div id="calendarContainer"></div>
       </div>
 
       <!-- NOTES -->
-      <div id="notes" class="page">
+      <div id="notes" class="page section-card">
         <h1>Quick Notes</h1>
-        <textarea id="notesArea" rows="14" placeholder="Write anything... (saved automatically)"></textarea>
+        <textarea id="notesArea" rows="12"></textarea>
         <button onclick="saveNotes()">Save Notes</button>
       </div>
 
       <!-- PROFILE -->
-      <div id="profile" class="page">
+      <div id="profile" class="page section-card">
         <h1>User Profile</h1>
         <input type="text" id="profileUsername" placeholder="Username">
         <input type="password" id="profilePassword" placeholder="New Password">
@@ -292,10 +279,10 @@
 
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
   <script>
-    // ==================== CONFIG ====================
-    const GROQ_API_KEY = 'gsk_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'; // ← PASTE YOUR REAL KEY HERE
+    // ==================== GROQ KEY ====================
+    const GROQ_API_KEY = 'gsk_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'; // ← PASTE YOUR REAL GROQ KEY HERE
 
-    // ==================== DATA ====================
+    // ==================== DATA STORAGE ====================
     let users = JSON.parse(localStorage.getItem('users')) || [
       {id:1, username:'admin', password:'admin', role:'admin'},
       {id:2, username:'user1', password:'pass', role:'user'}
@@ -323,11 +310,9 @@
     const stored = localStorage.getItem('currentUser');
     if (stored) {
       currentUser = JSON.parse(stored);
-      if (users.some(u => u.id === currentUser.id)) {
-        document.getElementById('loginPage').classList.add('hidden');
-        document.getElementById('appLayout').classList.remove('hidden');
-        initApp();
-      }
+      document.getElementById('loginPage').classList.add('hidden');
+      document.getElementById('appLayout').classList.remove('hidden');
+      initApp();
     }
 
     function logout() {
@@ -349,22 +334,17 @@
       renderTickets();
       initCalendar();
       loadNotes();
-      updateClock();
+      updateLiveClock();
     }
 
     // ==================== LIVE CLOCK ====================
-    function updateClock() {
+    function updateLiveClock() {
       const now = new Date();
-      document.getElementById('liveClock').textContent = now.toLocaleTimeString('en-IN', {
-        hour12: true,
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit'
-      });
+      document.getElementById('liveClock').textContent = now.toLocaleTimeString('en-IN', { hour12: true });
     }
-    setInterval(updateClock, 1000);
+    setInterval(updateLiveClock, 1000);
 
-    // ==================== DASHBOARD STATS ====================
+    // ==================== DASHBOARD ====================
     function updateDashboard() {
       const myTickets = tickets.filter(t => currentUser.role === 'admin' || t.createdBy === currentUser.username);
       document.getElementById('statTotal').textContent = myTickets.length;
@@ -377,22 +357,14 @@
     function renderTickets() {
       const search = document.getElementById('searchInput').value.toLowerCase().trim();
       let list = tickets.filter(t => currentUser.role === 'admin' || t.createdBy === currentUser.username);
-
-      if (search) {
-        list = list.filter(t => 
-          t.title.toLowerCase().includes(search) || 
-          t.description.toLowerCase().includes(search)
-        );
-      }
+      if (search) list = list.filter(t => t.title.toLowerCase().includes(search) || t.description.toLowerCase().includes(search));
 
       document.getElementById('ticketsList').innerHTML = list.map(t => `
         <div class="ticket-item">
           <div style="flex:1">
             <h3>${t.title}</h3>
             <p>${t.description}</p>
-            <div class="meta">
-              <strong>${t.status}</strong> • ${t.priority} • ${new Date(t.createdAt).toLocaleString()}
-            </div>
+            <div class="meta"><strong>${t.status}</strong> • ${t.priority} • ${new Date(t.createdAt).toLocaleString()}</div>
           </div>
           ${currentUser.role === 'admin' ? `
             <div class="actions">
@@ -405,7 +377,7 @@
               <button class="danger" onclick="deleteTicket(${t.id})">Delete</button>
             </div>` : ''}
         </div>
-      `).join('') || '<p style="color:#94a3b8;text-align:center;padding:40px">No tickets found</p>';
+      `).join('') || '<p style="color:#94a3b8;text-align:center">No tickets yet</p>';
     }
 
     document.getElementById('createTicketForm').addEventListener('submit', e => {
@@ -418,8 +390,7 @@
 
       tickets.push({
         id: Date.now(),
-        title,
-        description: desc,
+        title, description: desc,
         status: 'Open',
         priority: prio,
         createdBy: currentUser.username,
@@ -427,7 +398,7 @@
       });
       localStorage.setItem('tickets', JSON.stringify(tickets));
       e.target.reset();
-      alert("Ticket created!");
+      alert("Ticket created successfully!");
       renderTickets();
       updateDashboard();
     });
@@ -443,62 +414,54 @@
     }
 
     function deleteTicket(id) {
-      if (!confirm("Delete this ticket permanently?")) return;
+      if (!confirm("Delete permanently?")) return;
       tickets = tickets.filter(t => t.id !== id);
       localStorage.setItem('tickets', JSON.stringify(tickets));
       renderTickets();
       updateDashboard();
     }
 
-    // ==================== AI FUNCTIONS ====================
+    // ==================== REAL AI (Groq) ====================
     async function callAI(prompt) {
-      if (!GROQ_API_KEY || GROQ_API_KEY.includes('xxxx')) {
-        return "Please add your real Groq API key in the code.";
-      }
+      if (!GROQ_API_KEY || GROQ_API_KEY.includes('xxxx')) return "Please add your real Groq API key.";
       try {
         const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${GROQ_API_KEY}`
-          },
+          headers: {'Content-Type':'application/json', 'Authorization':`Bearer ${GROQ_API_KEY}`},
           body: JSON.stringify({
             model: 'llama3-8b-8192',
-            messages: [
-              { role: 'system', content: 'You are WorldTech AI. Provide clear, numbered, step-by-step troubleshooting solutions like ChatGPT.' },
-              { role: 'user', content: prompt }
-            ],
+            messages: [{role:'system', content:'You are WorldTech AI. Give clear numbered step-by-step fixes.'}, {role:'user', content:prompt}],
             temperature: 0.7,
-            max_tokens: 600
+            max_tokens: 500
           })
         });
         const data = await res.json();
         return data.choices[0].message.content.trim();
       } catch (e) {
-        return "AI service unavailable. Check your Groq key or internet.";
+        return "AI service unavailable.";
       }
     }
 
     async function aiSuggestPriority() {
       const desc = document.getElementById('ticketDesc').value.trim();
-      if (!desc) return alert("Describe the issue first");
-      const response = await callAI(`Suggest priority (Low, Medium, High) and reason for this IT issue: ${desc}`);
+      if (!desc) return alert("Write description first");
+      const response = await callAI(`Suggest priority and reason for: ${desc}`);
       alert("AI Suggestion:\n\n" + response);
     }
 
     async function aiFix(id) {
       const ticket = tickets.find(t => t.id === id);
-      if (!ticket) return alert("Ticket not found");
-      const response = await callAI(`Provide detailed step-by-step fix for this ticket:\nTitle: ${ticket.title}\nDescription: ${ticket.description}`);
+      if (!ticket) return;
+      const response = await callAI(`Provide step-by-step fix for: ${ticket.title} - ${ticket.description}`);
       alert("AI Step-by-Step Fix:\n\n" + response);
     }
 
     async function aiSelfService() {
       const query = document.getElementById('aiQuery').value.trim();
-      if (!query) return alert("Type your IT issue");
+      if (!query) return alert("Type your issue");
       const container = document.getElementById('aiResponse');
       container.classList.remove('hidden');
-      container.textContent = "WorldTech AI is analyzing...";
+      container.textContent = "AI is thinking...";
       const response = await callAI(query);
       container.textContent = response;
     }
@@ -506,23 +469,17 @@
     // ==================== CALENDAR ====================
     let calendar;
     function initCalendar() {
-      const calEl = document.getElementById('calendarContainer');
+      const el = document.getElementById('calendarContainer');
       if (calendar) calendar.destroy();
-      calendar = new FullCalendar.Calendar(calEl, {
+      calendar = new FullCalendar.Calendar(el, {
         initialView: 'dayGridMonth',
-        headerToolbar: {
-          left: 'prev,next today',
-          center: 'title',
-          right: 'dayGridMonth,timeGridWeek'
-        },
         events: JSON.parse(localStorage.getItem('calendarEvents') || '[]'),
-        editable: true,
         selectable: true,
         select: info => {
-          const title = prompt("Event title (e.g. Maintenance, Ticket Deadline):");
+          const title = prompt("Event title?");
           if (title) {
-            const events = JSON.parse(localStorage.getItem('calendarEvents') || '[]');
-            events.push({ title, start: info.startStr });
+            let events = JSON.parse(localStorage.getItem('calendarEvents') || '[]');
+            events.push({title, start: info.startStr});
             localStorage.setItem('calendarEvents', JSON.stringify(events));
             calendar.refetchEvents();
           }
@@ -534,36 +491,29 @@
     // ==================== NOTES ====================
     function saveNotes() {
       localStorage.setItem('notes', document.getElementById('notesArea').value);
-      alert("Notes saved successfully");
+      alert("Notes saved");
     }
 
     function loadNotes() {
       document.getElementById('notesArea').value = localStorage.getItem('notes') || '';
     }
 
-    // ==================== PROFILE ====================
-    function saveProfile() {
-      alert("Profile updated (demo mode)");
-    }
-
     // ==================== CSV EXPORT ====================
     function exportCSV() {
-      let csv = "ID,Title,Description,Status,Priority,Created By,Date\n";
+      let csv = "Title,Description,Status,Priority,CreatedAt\n";
       tickets.forEach(t => {
-        csv += `${t.id},"${t.title.replace(/"/g,'""')}","${t.description.replace(/"/g,'""')}",${t.status},${t.priority},${t.createdBy},${new Date(t.createdAt).toLocaleString()}\n`;
+        csv += `"${t.title}","${t.description}",${t.status},${t.priority},${t.createdAt}\n`;
       });
-      const blob = new Blob([csv], { type: 'text/csv' });
-      const url = URL.createObjectURL(blob);
+      const blob = new Blob([csv], {type: 'text/csv'});
       const a = document.createElement('a');
-      a.href = url;
+      a.href = URL.createObjectURL(blob);
       a.download = 'worldtech_tickets.csv';
       a.click();
-      URL.revokeObjectURL(url);
     }
 
     // ==================== FINAL INIT ====================
     document.addEventListener('DOMContentLoaded', () => {
-      // Auto-login if session exists
+      // Auto-login
       const stored = localStorage.getItem('currentUser');
       if (stored) {
         currentUser = JSON.parse(stored);
@@ -583,19 +533,14 @@
       renderTickets();
       initCalendar();
       loadNotes();
-      updateClock();
+      updateLiveClock();
     }
 
-    function updateClock() {
+    function updateLiveClock() {
       const now = new Date();
-      document.getElementById('liveClock').textContent = now.toLocaleTimeString('en-IN', {
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-        hour12: true
-      });
+      document.getElementById('liveClock').textContent = now.toLocaleTimeString('en-IN', {hour12:true});
     }
-    setInterval(updateClock, 1000);
+    setInterval(updateLiveClock, 1000);
   </script>
 </body>
 </html>
