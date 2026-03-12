@@ -1,15 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 
 <meta charset="UTF-8">
-<title>WorldTech AI ServiceDesk</title>
+<title>WorldTech ServiceDesk</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
-<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron&family=Inter&display=swap" rel="stylesheet">
 
 <style>
 
@@ -22,10 +18,31 @@ color:white;
 
 h2{font-family:Orbitron}
 
+input,textarea,select{
+width:100%;
+padding:10px;
+margin-top:8px;
+border:none;
+border-radius:5px;
+background:#1f253a;
+color:white;
+}
+
+button{
+padding:10px;
+margin-top:10px;
+background:#00eaff;
+border:none;
+border-radius:5px;
+cursor:pointer;
+}
+
+/* LOGIN */
+
 #login{
 display:flex;
-align-items:center;
 justify-content:center;
+align-items:center;
 height:100vh;
 }
 
@@ -33,34 +50,20 @@ height:100vh;
 background:#151a2b;
 padding:40px;
 border-radius:10px;
-width:320px;
+width:300px;
 }
 
-input,select,textarea{
-width:100%;
-padding:10px;
-margin-top:10px;
-background:#1f253a;
-border:none;
-border-radius:6px;
-color:white;
-}
+/* LAYOUT */
 
-button{
-margin-top:10px;
-padding:10px;
-border:none;
-border-radius:6px;
-background:#00eaff;
-color:black;
-cursor:pointer;
+#app{
+display:none;
 }
 
 .sidebar{
 position:fixed;
-width:220px;
 top:0;
 bottom:0;
+width:220px;
 background:#121727;
 padding:20px;
 }
@@ -68,8 +71,8 @@ padding:20px;
 .sidebar a{
 display:block;
 padding:10px;
-margin-top:6px;
 cursor:pointer;
+margin-top:6px;
 }
 
 .main{
@@ -84,12 +87,6 @@ border-radius:10px;
 margin-bottom:20px;
 }
 
-.stats{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
-gap:20px;
-}
-
 table{
 width:100%;
 border-collapse:collapse;
@@ -100,20 +97,19 @@ padding:10px;
 border-bottom:1px solid #333;
 }
 
+.stats{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+gap:20px;
+}
+
 .chat{
+background:#0c0f16;
 height:200px;
 overflow:auto;
-background:#0c0f16;
 padding:10px;
 border-radius:8px;
 margin-bottom:10px;
-}
-
-#calendar{
-background:white;
-color:black;
-padding:10px;
-border-radius:10px;
 }
 
 </style>
@@ -121,7 +117,6 @@ border-radius:10px;
 </head>
 
 <body>
-
 
 <!-- LOGIN -->
 
@@ -136,9 +131,7 @@ border-radius:10px;
 
 <button onclick="login()">Login</button>
 
-<p style="font-size:12px">
-admin / admin123
-</p>
+<p>admin / admin123</p>
 
 </div>
 
@@ -147,7 +140,7 @@ admin / admin123
 
 <!-- APP -->
 
-<div id="app" style="display:none">
+<div id="app">
 
 <div class="sidebar">
 
@@ -157,7 +150,6 @@ admin / admin123
 <a onclick="showPage('tickets')">Tickets</a>
 <a onclick="showPage('create')">Create Ticket</a>
 <a onclick="showPage('ai')">AI Help</a>
-<a onclick="showPage('calendarPage')">Calendar</a>
 <a onclick="showPage('notes')">Notes</a>
 <a onclick="showPage('profile')">Profile</a>
 
@@ -176,9 +168,20 @@ admin / admin123
 
 <div class="stats">
 
-<div class="card">Total <h3 id="statTotal"></h3></div>
-<div class="card">Open <h3 id="statOpen"></h3></div>
-<div class="card">Closed <h3 id="statClosed"></h3></div>
+<div class="card">
+Total Tickets
+<h3 id="statTotal"></h3>
+</div>
+
+<div class="card">
+Open
+<h3 id="statOpen"></h3>
+</div>
+
+<div class="card">
+Closed
+<h3 id="statClosed"></h3>
+</div>
 
 </div>
 
@@ -191,7 +194,7 @@ admin / admin123
 
 <h2>Tickets</h2>
 
-<input id="searchTicket" placeholder="Search ticket" onkeyup="renderTickets()">
+<input id="search" placeholder="Search tickets" onkeyup="renderTickets()">
 
 <button onclick="exportCSV()">Export CSV</button>
 
@@ -202,7 +205,7 @@ admin / admin123
 <th>Title</th>
 <th>Status</th>
 <th>Priority</th>
-<th>Actions</th>
+<th>Action</th>
 </tr>
 </thead>
 
@@ -220,9 +223,10 @@ admin / admin123
 <h2>Create Ticket</h2>
 
 <input id="tTitle" placeholder="Title">
+
 <textarea id="tDesc" placeholder="Description"></textarea>
 
-<button onclick="voiceInput()">🎤 Voice</button>
+<button onclick="voiceInput()">🎤 Voice Input</button>
 
 <select id="tPriority">
 <option>Low</option>
@@ -230,7 +234,7 @@ admin / admin123
 <option>High</option>
 </select>
 
-<button onclick="createTicket()">Create</button>
+<button onclick="createTicket()">Create Ticket</button>
 
 </div>
 
@@ -243,20 +247,9 @@ admin / admin123
 
 <div class="chat" id="chat"></div>
 
-<input id="chatInput" placeholder="Ask IT question">
+<input id="chatInput" placeholder="Ask an IT question">
 
 <button onclick="askAI()">Ask AI</button>
-
-</div>
-
-
-<!-- CALENDAR -->
-
-<div id="calendarPage" class="page" style="display:none">
-
-<h2>Calendar</h2>
-
-<div id="calendar"></div>
 
 </div>
 
@@ -288,97 +281,79 @@ admin / admin123
 </div>
 
 </div>
-
 </div>
 
 
 <script>
 
-/* =========================
-USER SYSTEM (FIXED LOGIN)
-========================= */
+/* USER SYSTEM */
 
-let users = JSON.parse(localStorage.getItem("users")) || []
+let users = JSON.parse(localStorage.getItem("users")) || [];
+
+/* ensure admin exists */
 
 if(!users.find(u=>u.username==="admin")){
-
-users.push({
-username:"admin",
-password:"admin123",
-role:"admin"
-})
-
+users.push({username:"admin",password:"admin123",role:"admin"});
 }
 
 if(!users.find(u=>u.username==="user1")){
-
-users.push({
-username:"user1",
-password:"pass123",
-role:"user"
-})
-
+users.push({username:"user1",password:"pass123",role:"user"});
 }
 
-localStorage.setItem("users",JSON.stringify(users))
+localStorage.setItem("users",JSON.stringify(users));
 
-let currentUser=null
+let currentUser=null;
 
 /* LOGIN */
 
 function login(){
 
-let u=document.getElementById("username").value.trim()
-let p=document.getElementById("password").value.trim()
+let u=username.value.trim();
+let p=password.value.trim();
 
-let user=users.find(x=>x.username===u && x.password===p)
+let user=users.find(x=>x.username===u && x.password===p);
 
 if(!user){
-
-alert("Invalid login")
-return
-
+alert("Invalid login");
+return;
 }
 
-currentUser=user
+currentUser=user;
 
-document.getElementById("login").style.display="none"
-document.getElementById("app").style.display="block"
+login.style.display="none";
+app.style.display="block";
 
-init()
+init();
 
 }
 
 /* LOGOUT */
 
 function logout(){
-
-location.reload()
-
+location.reload();
 }
 
-/* NAVIGATION */
+/* NAV */
 
-function showPage(p){
+function showPage(id){
 
-document.querySelectorAll(".page").forEach(x=>x.style.display="none")
+document.querySelectorAll(".page").forEach(p=>p.style.display="none");
 
-document.getElementById(p).style.display="block"
+document.getElementById(id).style.display="block";
 
 }
 
 /* DATABASE */
 
-let tickets=JSON.parse(localStorage.getItem("tickets"))||[]
+let tickets=JSON.parse(localStorage.getItem("tickets"))||[];
 
 /* INIT */
 
 function init(){
 
-renderTickets()
-updateStats()
-loadNotes()
-initCalendar()
+renderTickets();
+updateStats();
+loadNotes();
 
 }
 
@@ -392,28 +367,27 @@ id:Date.now(),
 title:tTitle.value,
 desc:tDesc.value,
 priority:tPriority.value,
-status:"Open",
-owner:currentUser.username
+status:"Open"
+
+};
+
+tickets.push(ticket);
+
+localStorage.setItem("tickets",JSON.stringify(tickets));
+
+renderTickets();
+
+alert("Ticket created");
 
 }
 
-tickets.push(ticket)
-
-localStorage.setItem("tickets",JSON.stringify(tickets))
-
-renderTickets()
-
-alert("Ticket created")
-
-}
-
-/* RENDER TICKETS */
+/* RENDER */
 
 function renderTickets(){
 
-let search=document.getElementById("searchTicket").value.toLowerCase()
+let search=document.getElementById("search")?.value?.toLowerCase()||"";
 
-ticketTable.innerHTML=""
+ticketTable.innerHTML="";
 
 tickets
 .filter(t=>t.title.toLowerCase().includes(search))
@@ -433,11 +407,11 @@ ticketTable.innerHTML+=`
 </td>
 </tr>
 
-`
+`;
 
-})
+});
 
-updateStats()
+updateStats();
 
 }
 
@@ -445,13 +419,13 @@ updateStats()
 
 function closeTicket(id){
 
-let t=tickets.find(x=>x.id===id)
+let t=tickets.find(x=>x.id===id);
 
-t.status="Closed"
+t.status="Closed";
 
-localStorage.setItem("tickets",JSON.stringify(tickets))
+localStorage.setItem("tickets",JSON.stringify(tickets));
 
-renderTickets()
+renderTickets();
 
 }
 
@@ -459,11 +433,11 @@ renderTickets()
 
 function deleteTicket(id){
 
-tickets=tickets.filter(x=>x.id!==id)
+tickets=tickets.filter(x=>x.id!==id);
 
-localStorage.setItem("tickets",JSON.stringify(tickets))
+localStorage.setItem("tickets",JSON.stringify(tickets));
 
-renderTickets()
+renderTickets();
 
 }
 
@@ -471,31 +445,31 @@ renderTickets()
 
 function updateStats(){
 
-statTotal.innerText=tickets.length
-statOpen.innerText=tickets.filter(t=>t.status==="Open").length
-statClosed.innerText=tickets.filter(t=>t.status==="Closed").length
+statTotal.innerText=tickets.length;
+statOpen.innerText=tickets.filter(t=>t.status==="Open").length;
+statClosed.innerText=tickets.filter(t=>t.status==="Closed").length;
 
 }
 
-/* CSV EXPORT */
+/* CSV */
 
 function exportCSV(){
 
-let csv="Title,Status,Priority\n"
+let csv="Title,Status,Priority\n";
 
 tickets.forEach(t=>{
-csv+=`${t.title},${t.status},${t.priority}\n`
-})
+csv+=`${t.title},${t.status},${t.priority}\n`;
+});
 
-let blob=new Blob([csv])
+let blob=new Blob([csv]);
 
-let a=document.createElement("a")
+let a=document.createElement("a");
 
-a.href=URL.createObjectURL(blob)
+a.href=URL.createObjectURL(blob);
 
-a.download="tickets.csv"
+a.download="tickets.csv";
 
-a.click()
+a.click();
 
 }
 
@@ -503,31 +477,29 @@ a.click()
 
 function voiceInput(){
 
-let rec=new webkitSpeechRecognition()
+let rec=new webkitSpeechRecognition();
 
 rec.onresult=e=>{
-tDesc.value+=e.results[0][0].transcript
-}
+tDesc.value+=e.results[0][0].transcript;
+};
 
-rec.start()
+rec.start();
 
 }
 
 /* AI */
 
-const GROQ_API_KEY="PASTE_GROQ_API_KEY"
+const GROQ_API_KEY="PASTE_GROQ_API_KEY";
 
 async function askAI(){
 
-let q=chatInput.value
+let q=chatInput.value;
 
-chat.innerHTML+=`<div>User: ${q}</div>`
+chat.innerHTML+=`<div>User: ${q}</div>`;
 
 if(GROQ_API_KEY==="PASTE_GROQ_API_KEY"){
-
-chat.innerHTML+=`<div>AI: Add Groq API key</div>`
-return
-
+chat.innerHTML+=`<div>AI: Add Groq API key</div>`;
+return;
 }
 
 let res=await fetch("https://api.groq.com/openai/v1/chat/completions",{
@@ -544,13 +516,13 @@ model:"llama3-8b-8192",
 messages:[{role:"user",content:q}]
 })
 
-})
+});
 
-let data=await res.json()
+let data=await res.json();
 
-let reply=data.choices[0].message.content
+let reply=data.choices[0].message.content;
 
-chat.innerHTML+=`<div>AI: ${reply}</div>`
+chat.innerHTML+=`<div>AI: ${reply}</div>`;
 
 }
 
@@ -558,13 +530,13 @@ chat.innerHTML+=`<div>AI: ${reply}</div>`
 
 function saveNotes(){
 
-localStorage.setItem("notes",notesArea.value)
+localStorage.setItem("notes",notesArea.value);
 
 }
 
 function loadNotes(){
 
-notesArea.value=localStorage.getItem("notes")||""
+notesArea.value=localStorage.getItem("notes")||"";
 
 }
 
@@ -572,48 +544,12 @@ notesArea.value=localStorage.getItem("notes")||""
 
 function saveProfile(){
 
-currentUser.username=profileUser.value
-currentUser.password=profilePass.value
+currentUser.username=profileUser.value;
+currentUser.password=profilePass.value;
 
-localStorage.setItem("users",JSON.stringify(users))
+localStorage.setItem("users",JSON.stringify(users));
 
-alert("Saved")
-
-}
-
-/* CALENDAR */
-
-function initCalendar(){
-
-let calendarEl=document.getElementById("calendar")
-
-let events=JSON.parse(localStorage.getItem("events")||"[]")
-
-let calendar=new FullCalendar.Calendar(calendarEl,{
-
-initialView:"dayGridMonth",
-
-events:events,
-
-dateClick:function(info){
-
-let title=prompt("Event title")
-
-if(!title)return
-
-let event={title:title,start:info.dateStr}
-
-events.push(event)
-
-localStorage.setItem("events",JSON.stringify(events))
-
-calendar.addEvent(event)
-
-}
-
-})
-
-calendar.render()
+alert("Saved");
 
 }
 
