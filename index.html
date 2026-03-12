@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
 <meta charset="UTF-8">
 <title>WorldTech AI ServiceDesk</title>
 
@@ -12,21 +13,14 @@
 
 <style>
 
-:root{
---bg:#0f1117;
---card:#1c2230;
---accent:#00eaff;
---text:#e6e8ee;
-}
-
 body{
 margin:0;
 font-family:Inter;
-background:linear-gradient(135deg,#0f1117,#151a2b);
-color:var(--text);
+background:#0f1117;
+color:white;
 }
 
-/* LOGIN */
+h2{font-family:Orbitron}
 
 #login{
 display:flex;
@@ -36,63 +30,46 @@ height:100vh;
 }
 
 .login-box{
-background:rgba(255,255,255,.05);
+background:#151a2b;
 padding:40px;
-border-radius:12px;
-backdrop-filter:blur(15px);
-width:300px;
+border-radius:10px;
+width:320px;
 }
 
 input,select,textarea{
 width:100%;
 padding:10px;
 margin-top:10px;
-background:#111520;
+background:#1f253a;
 border:none;
 border-radius:6px;
 color:white;
 }
 
 button{
-margin-top:12px;
+margin-top:10px;
 padding:10px;
 border:none;
 border-radius:6px;
-background:linear-gradient(45deg,#00eaff,#7a5cff);
-color:white;
+background:#00eaff;
+color:black;
 cursor:pointer;
 }
 
-/* LAYOUT */
-
-#app{
-display:none;
-}
-
 .sidebar{
-width:220px;
-background:#111520;
 position:fixed;
+width:220px;
 top:0;
 bottom:0;
+background:#121727;
 padding:20px;
-}
-
-.sidebar h2{
-font-family:Orbitron;
-color:#00eaff;
 }
 
 .sidebar a{
 display:block;
 padding:10px;
 margin-top:6px;
-border-radius:6px;
 cursor:pointer;
-}
-
-.sidebar a:hover{
-background:#20263a;
 }
 
 .main{
@@ -100,10 +77,8 @@ margin-left:240px;
 padding:20px;
 }
 
-/* CARDS */
-
 .card{
-background:rgba(255,255,255,.05);
+background:#151a2b;
 padding:20px;
 border-radius:10px;
 margin-bottom:20px;
@@ -111,17 +86,9 @@ margin-bottom:20px;
 
 .stats{
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
 gap:20px;
 }
-
-.stat{
-background:#121727;
-padding:20px;
-border-radius:10px;
-}
-
-/* TABLE */
 
 table{
 width:100%;
@@ -130,11 +97,11 @@ border-collapse:collapse;
 
 td,th{
 padding:10px;
-border-bottom:1px solid #2a3040;
+border-bottom:1px solid #333;
 }
 
-.chatbox{
-height:220px;
+.chat{
+height:200px;
 overflow:auto;
 background:#0c0f16;
 padding:10px;
@@ -145,18 +112,21 @@ margin-bottom:10px;
 #calendar{
 background:white;
 color:black;
-border-radius:10px;
 padding:10px;
+border-radius:10px;
 }
 
 </style>
+
 </head>
 
 <body>
 
+
 <!-- LOGIN -->
 
 <div id="login">
+
 <div class="login-box">
 
 <h2>WorldTech Login</h2>
@@ -166,17 +136,18 @@ padding:10px;
 
 <button onclick="login()">Login</button>
 
-<p style="font-size:12px;margin-top:10px;">
-Admin: admin / admin123
+<p style="font-size:12px">
+admin / admin123
 </p>
 
 </div>
+
 </div>
 
 
 <!-- APP -->
 
-<div id="app">
+<div id="app" style="display:none">
 
 <div class="sidebar">
 
@@ -184,14 +155,16 @@ Admin: admin / admin123
 
 <a onclick="showPage('dashboard')">Dashboard</a>
 <a onclick="showPage('tickets')">Tickets</a>
-<a onclick="showPage('createTicket')">Create Ticket</a>
-<a onclick="showPage('knowledge')">AI Help</a>
+<a onclick="showPage('create')">Create Ticket</a>
+<a onclick="showPage('ai')">AI Help</a>
 <a onclick="showPage('calendarPage')">Calendar</a>
-<a onclick="showPage('notesPage')">Notes</a>
+<a onclick="showPage('notes')">Notes</a>
+<a onclick="showPage('profile')">Profile</a>
 
 <button onclick="logout()">Logout</button>
 
 </div>
+
 
 <div class="main">
 
@@ -203,10 +176,9 @@ Admin: admin / admin123
 
 <div class="stats">
 
-<div class="stat">Total <h3 id="totalTickets"></h3></div>
-<div class="stat">Open <h3 id="openTickets"></h3></div>
-<div class="stat">In Progress <h3 id="progressTickets"></h3></div>
-<div class="stat">Closed <h3 id="closedTickets"></h3></div>
+<div class="card">Total <h3 id="statTotal"></h3></div>
+<div class="card">Open <h3 id="statOpen"></h3></div>
+<div class="card">Closed <h3 id="statClosed"></h3></div>
 
 </div>
 
@@ -218,6 +190,8 @@ Admin: admin / admin123
 <div id="tickets" class="page" style="display:none">
 
 <h2>Tickets</h2>
+
+<input id="searchTicket" placeholder="Search ticket" onkeyup="renderTickets()">
 
 <button onclick="exportCSV()">Export CSV</button>
 
@@ -239,9 +213,9 @@ Admin: admin / admin123
 </div>
 
 
-<!-- CREATE TICKET -->
+<!-- CREATE -->
 
-<div id="createTicket" class="page" style="display:none">
+<div id="create" class="page" style="display:none">
 
 <h2>Create Ticket</h2>
 
@@ -256,26 +230,20 @@ Admin: admin / admin123
 <option>High</option>
 </select>
 
-<select id="tCategory">
-<option>Network</option>
-<option>Software</option>
-<option>Hardware</option>
-</select>
-
-<button onclick="createTicket()">Submit Ticket</button>
+<button onclick="createTicket()">Create</button>
 
 </div>
 
 
-<!-- AI HELP -->
+<!-- AI -->
 
-<div id="knowledge" class="page" style="display:none">
+<div id="ai" class="page" style="display:none">
 
-<h2>AI IT Assistant</h2>
+<h2>AI Helpdesk</h2>
 
-<div class="chatbox" id="chat"></div>
+<div class="chat" id="chat"></div>
 
-<input id="chatInput" placeholder="Ask any IT issue">
+<input id="chatInput" placeholder="Ask IT question">
 
 <button onclick="askAI()">Ask AI</button>
 
@@ -295,92 +263,122 @@ Admin: admin / admin123
 
 <!-- NOTES -->
 
-<div id="notesPage" class="page" style="display:none">
+<div id="notes" class="page" style="display:none">
 
 <h2>Notes</h2>
 
 <textarea id="notesArea" rows="10"></textarea>
 
-<button onclick="saveNotes()">Save Notes</button>
+<button onclick="saveNotes()">Save</button>
+
+</div>
+
+
+<!-- PROFILE -->
+
+<div id="profile" class="page" style="display:none">
+
+<h2>Profile</h2>
+
+<input id="profileUser">
+<input id="profilePass">
+
+<button onclick="saveProfile()">Save</button>
 
 </div>
 
 </div>
+
 </div>
 
 
 <script>
 
-/* ==========================
-DEFAULT USERS AUTO CREATE
-========================== */
+/* =========================
+USER SYSTEM (FIXED LOGIN)
+========================= */
 
-let users = JSON.parse(localStorage.getItem("users"));
+let users = JSON.parse(localStorage.getItem("users")) || []
 
-if(!users){
+if(!users.find(u=>u.username==="admin")){
 
-users = [
-
-{username:"admin",password:"admin123",role:"admin"},
-{username:"user1",password:"pass123",role:"user"}
-
-];
-
-localStorage.setItem("users",JSON.stringify(users));
+users.push({
+username:"admin",
+password:"admin123",
+role:"admin"
+})
 
 }
 
-let tickets = JSON.parse(localStorage.getItem("tickets")) || [];
+if(!users.find(u=>u.username==="user1")){
 
-let currentUser=null;
+users.push({
+username:"user1",
+password:"pass123",
+role:"user"
+})
+
+}
+
+localStorage.setItem("users",JSON.stringify(users))
+
+let currentUser=null
 
 /* LOGIN */
 
 function login(){
 
-let u=username.value;
-let p=password.value;
+let u=document.getElementById("username").value.trim()
+let p=document.getElementById("password").value.trim()
 
-let user=users.find(x=>x.username===u && x.password===p);
+let user=users.find(x=>x.username===u && x.password===p)
 
 if(!user){
-alert("Invalid login");
-return;
+
+alert("Invalid login")
+return
+
 }
 
-currentUser=user;
+currentUser=user
 
-login.style.display="none";
-app.style.display="block";
+document.getElementById("login").style.display="none"
+document.getElementById("app").style.display="block"
 
-init();
+init()
 
 }
 
 /* LOGOUT */
 
 function logout(){
-location.reload();
+
+location.reload()
+
 }
 
 /* NAVIGATION */
 
-function showPage(page){
+function showPage(p){
 
-document.querySelectorAll(".page").forEach(p=>p.style.display="none");
+document.querySelectorAll(".page").forEach(x=>x.style.display="none")
 
-document.getElementById(page).style.display="block";
+document.getElementById(p).style.display="block"
 
 }
+
+/* DATABASE */
+
+let tickets=JSON.parse(localStorage.getItem("tickets"))||[]
 
 /* INIT */
 
 function init(){
 
-renderTickets();
-updateStats();
-loadNotes();
-initCalendar();
+renderTickets()
+updateStats()
+loadNotes()
+initCalendar()
 
 }
 
@@ -394,19 +392,18 @@ id:Date.now(),
 title:tTitle.value,
 desc:tDesc.value,
 priority:tPriority.value,
-category:tCategory.value,
 status:"Open",
 owner:currentUser.username
 
-};
+}
 
-tickets.push(ticket);
+tickets.push(ticket)
 
-saveTickets();
+localStorage.setItem("tickets",JSON.stringify(tickets))
 
-renderTickets();
+renderTickets()
 
-alert("Ticket created");
+alert("Ticket created")
 
 }
 
@@ -414,58 +411,69 @@ alert("Ticket created");
 
 function renderTickets(){
 
-ticketTable.innerHTML="";
+let search=document.getElementById("searchTicket").value.toLowerCase()
 
-tickets.forEach(t=>{
+ticketTable.innerHTML=""
 
-let row=`
+tickets
+.filter(t=>t.title.toLowerCase().includes(search))
+.forEach(t=>{
+
+ticketTable.innerHTML+=`
+
 <tr>
 <td>${t.title}</td>
 <td>${t.status}</td>
 <td>${t.priority}</td>
 <td>
+
+<button onclick="closeTicket(${t.id})">Close</button>
 <button onclick="deleteTicket(${t.id})">Delete</button>
+
 </td>
 </tr>
-`;
 
-ticketTable.innerHTML+=row;
+`
 
-});
+})
 
-updateStats();
+updateStats()
 
 }
+
+/* CLOSE */
+
+function closeTicket(id){
+
+let t=tickets.find(x=>x.id===id)
+
+t.status="Closed"
+
+localStorage.setItem("tickets",JSON.stringify(tickets))
+
+renderTickets()
+
+}
+
+/* DELETE */
 
 function deleteTicket(id){
 
-if(!confirm("Delete ticket?"))return;
+tickets=tickets.filter(x=>x.id!==id)
 
-tickets=tickets.filter(t=>t.id!=id);
+localStorage.setItem("tickets",JSON.stringify(tickets))
 
-saveTickets();
-
-renderTickets();
+renderTickets()
 
 }
 
-function saveTickets(){
-
-localStorage.setItem("tickets",JSON.stringify(tickets));
-
-}
-
-/* DASHBOARD STATS */
+/* STATS */
 
 function updateStats(){
 
-totalTickets.innerText=tickets.length;
-
-openTickets.innerText=tickets.filter(t=>t.status==="Open").length;
-
-progressTickets.innerText=tickets.filter(t=>t.status==="In Progress").length;
-
-closedTickets.innerText=tickets.filter(t=>t.status==="Closed").length;
+statTotal.innerText=tickets.length
+statOpen.innerText=tickets.filter(t=>t.status==="Open").length
+statClosed.innerText=tickets.filter(t=>t.status==="Closed").length
 
 }
 
@@ -473,72 +481,76 @@ closedTickets.innerText=tickets.filter(t=>t.status==="Closed").length;
 
 function exportCSV(){
 
-let csv="Title,Status,Priority\n";
+let csv="Title,Status,Priority\n"
 
 tickets.forEach(t=>{
-csv+=`${t.title},${t.status},${t.priority}\n`;
-});
+csv+=`${t.title},${t.status},${t.priority}\n`
+})
 
-let blob=new Blob([csv]);
+let blob=new Blob([csv])
 
-let a=document.createElement("a");
+let a=document.createElement("a")
 
-a.href=URL.createObjectURL(blob);
+a.href=URL.createObjectURL(blob)
 
-a.download="tickets.csv";
+a.download="tickets.csv"
 
-a.click();
+a.click()
 
 }
 
-/* VOICE INPUT */
+/* VOICE */
 
 function voiceInput(){
 
-let rec=new webkitSpeechRecognition();
+let rec=new webkitSpeechRecognition()
 
 rec.onresult=e=>{
-tDesc.value+=e.results[0][0].transcript;
-};
+tDesc.value+=e.results[0][0].transcript
+}
 
-rec.start();
+rec.start()
 
 }
 
-/* AI PLACEHOLDER */
+/* AI */
 
-const GROQ_API_KEY="PASTE_GROQ_API_KEY_HERE";
+const GROQ_API_KEY="PASTE_GROQ_API_KEY"
 
 async function askAI(){
 
-if(GROQ_API_KEY==="PASTE_GROQ_API_KEY_HERE"){
-alert("Add Groq API key in code");
-return;
+let q=chatInput.value
+
+chat.innerHTML+=`<div>User: ${q}</div>`
+
+if(GROQ_API_KEY==="PASTE_GROQ_API_KEY"){
+
+chat.innerHTML+=`<div>AI: Add Groq API key</div>`
+return
+
 }
-
-let q=chatInput.value;
-
-chat.innerHTML+=`<div>User: ${q}</div>`;
 
 let res=await fetch("https://api.groq.com/openai/v1/chat/completions",{
 
 method:"POST",
+
 headers:{
 "Content-Type":"application/json",
 "Authorization":"Bearer "+GROQ_API_KEY
 },
+
 body:JSON.stringify({
 model:"llama3-8b-8192",
 messages:[{role:"user",content:q}]
 })
 
-});
+})
 
-let data=await res.json();
+let data=await res.json()
 
-let reply=data.choices[0].message.content;
+let reply=data.choices[0].message.content
 
-chat.innerHTML+=`<div>AI: ${reply}</div>`;
+chat.innerHTML+=`<div>AI: ${reply}</div>`
 
 }
 
@@ -546,13 +558,26 @@ chat.innerHTML+=`<div>AI: ${reply}</div>`;
 
 function saveNotes(){
 
-localStorage.setItem("notes",notesArea.value);
+localStorage.setItem("notes",notesArea.value)
 
 }
 
 function loadNotes(){
 
-notesArea.value=localStorage.getItem("notes") || "";
+notesArea.value=localStorage.getItem("notes")||""
+
+}
+
+/* PROFILE */
+
+function saveProfile(){
+
+currentUser.username=profileUser.value
+currentUser.password=profilePass.value
+
+localStorage.setItem("users",JSON.stringify(users))
+
+alert("Saved")
 
 }
 
@@ -560,9 +585,9 @@ notesArea.value=localStorage.getItem("notes") || "";
 
 function initCalendar(){
 
-let calendarEl=document.getElementById("calendar");
+let calendarEl=document.getElementById("calendar")
 
-let events=JSON.parse(localStorage.getItem("events")||"[]");
+let events=JSON.parse(localStorage.getItem("events")||"[]")
 
 let calendar=new FullCalendar.Calendar(calendarEl,{
 
@@ -572,23 +597,23 @@ events:events,
 
 dateClick:function(info){
 
-let title=prompt("Event title");
+let title=prompt("Event title")
 
-if(!title)return;
+if(!title)return
 
-let event={title:title,start:info.dateStr};
+let event={title:title,start:info.dateStr}
 
-events.push(event);
+events.push(event)
 
-localStorage.setItem("events",JSON.stringify(events));
+localStorage.setItem("events",JSON.stringify(events))
 
-calendar.addEvent(event);
+calendar.addEvent(event)
 
 }
 
-});
+})
 
-calendar.render();
+calendar.render()
 
 }
 
