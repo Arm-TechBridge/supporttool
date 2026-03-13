@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Armora ServiceDesk | AI-Powered ITSM</title>
+    <title>ARMORA</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -12,7 +12,6 @@
     <style>
         /* === DYNAMIC THEME ENGINE (CSS VARIABLES) === */
         :root {
-            /* These are defaults. They get overwritten by JS based on Admin Theme Settings */
             --bg-base: #07080f;
             --glass-bg: rgba(18, 20, 35, 0.65);
             --glass-border: rgba(0, 234, 255, 0.2);
@@ -27,7 +26,16 @@
             --sidebar-width: 260px;
         }
 
-        /* === RESET & BACKGROUND === */
+        /* Light Variant Variables */
+        body.theme-light {
+            --bg-base: #f0f4f8;
+            --glass-bg: rgba(255, 255, 255, 0.7);
+            --glass-border: rgba(99, 102, 241, 0.3);
+            --text-main: #0f172a;
+            --text-muted: #475569;
+        }
+
+        /* === RESET & ANIMATED BACKGROUND === */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: var(--font-body); background: var(--bg-base); color: var(--text-main); overflow: hidden; transition: background 0.4s, color 0.4s; }
         
@@ -35,7 +43,6 @@
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: var(--neon-secondary); border-radius: 3px; }
 
-        /* Animated Background Effects */
         .cyber-grid { position: fixed; inset: 0; z-index: -2; background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px); background-size: 40px 40px; animation: gridPan 30s linear infinite; }
         .glow-orb { position: fixed; border-radius: 50%; filter: blur(120px); z-index: -1; opacity: 0.15; animation: pulseOrb 8s alternate infinite; transition: background 0.5s; }
         .orb-1 { top: -10%; left: -10%; width: 50vw; height: 50vw; background: var(--neon-primary); }
@@ -44,7 +51,7 @@
         @keyframes gridPan { 0% { background-position: 0 0; } 100% { background-position: 40px 40px; } }
         @keyframes pulseOrb { 0% { transform: scale(1); opacity: 0.1; } 100% { transform: scale(1.2); opacity: 0.25; } }
 
-        /* === GLASSMORPHISM === */
+        /* === GLASSMORPHISM CORE === */
         .glass { background: var(--glass-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid var(--glass-border); border-radius: 12px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); transition: background 0.3s, border-color 0.3s; }
         .glass-panel { padding: 25px; transition: 0.3s; }
         .glass-panel:hover { border-color: rgba(255,255,255,0.2); }
@@ -53,46 +60,45 @@
 
         /* Inputs & Buttons */
         input, select, textarea { width: 100%; padding: 12px 16px; margin-bottom: 15px; background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); color: var(--text-main); border-radius: 8px; font-family: var(--font-body); font-size: 1rem; outline: none; transition: 0.3s; }
+        body.theme-light input, body.theme-light select, body.theme-light textarea { background: rgba(255,255,255,0.6); }
         input:focus, select:focus, textarea:focus { border-color: var(--neon-primary); box-shadow: 0 0 10px rgba(0,0,0,0.5) inset; }
 
         button, .btn { font-family: var(--font-display); background: rgba(0,0,0,0.2); color: var(--neon-primary); border: 1px solid var(--neon-secondary); padding: 10px 20px; border-radius: 8px; cursor: pointer; transition: 0.3s; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1px; }
         button:hover { background: var(--neon-secondary); color: #fff; box-shadow: 0 0 15px rgba(0,0,0,0.5); border-color: var(--neon-secondary); }
         button.action-btn { background: linear-gradient(45deg, var(--neon-secondary), var(--neon-primary)); color: #fff; border: none; font-weight: bold; }
         button.action-btn:hover { box-shadow: 0 5px 20px rgba(0,0,0,0.5); transform: translateY(-2px); filter: brightness(1.2); }
+        button:disabled { opacity: 0.5; cursor: not-allowed; }
 
-        /* === LOGIN & SIMULATORS === */
+        /* === LOGIN & SIMULATORS (REALISTIC MFA) === */
         #login-screen { position: fixed; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 1000; background: var(--bg-base); }
         .login-box { width: 420px; padding: 50px 40px; text-align: center; border-top: 4px solid var(--neon-primary); position: relative; z-index: 10; }
         .sim-btn-container { display: none; gap: 15px; margin-top: 25px; z-index: 10; }
         
-        /* Simulated External Devices */
-        .device-simulator { position: fixed; bottom: -100%; transition: 0.5s cubic-bezier(0.16, 1, 0.3, 1); z-index: 2000; box-shadow: 0 -10px 50px rgba(0,0,0,0.9); }
+        .device-simulator { position: fixed; bottom: -120%; transition: 0.5s cubic-bezier(0.16, 1, 0.3, 1); z-index: 2000; box-shadow: 0 -10px 50px rgba(0,0,0,0.9); }
         .device-simulator.active { bottom: 0; }
         
-        /* Phone UI */
+        /* Phone UI (SMS Simulator) */
         #sim-phone { right: 5%; width: 340px; height: 650px; background: #0f0f13; border: 8px solid #222; border-bottom: 0; border-radius: 40px 40px 0 0; display: flex; flex-direction: column; overflow: hidden; }
         .phone-notch { position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 120px; height: 25px; background: #222; border-radius: 0 0 15px 15px; z-index: 10; }
         .phone-header { padding: 35px 20px 15px; text-align: center; border-bottom: 1px solid #333; font-size: 0.9rem; font-weight: bold; color: #fff; background: #1a1a1a; display: flex; justify-content: space-between; align-items: center;}
         .sms-bubble { background: #2a2a35; color: #fff; padding: 18px; border-radius: 18px 18px 18px 4px; margin: 20px; font-size: 0.95rem; border-left: 4px solid var(--neon-success); box-shadow: 0 4px 10px rgba(0,0,0,0.3); animation: popIn 0.3s; }
         
-        /* Webmail UI */
+        /* Webmail UI (Email Simulator) */
         #sim-webmail { left: 5%; width: 650px; height: 550px; background: #f0f2f5; border: 1px solid #ccc; border-bottom: 0; border-radius: 12px 12px 0 0; color: #333; display: flex; flex-direction: column; box-shadow: 0 -10px 40px rgba(0,0,0,0.5); }
         .browser-header { background: #d1d5db; padding: 12px; border-radius: 12px 12px 0 0; display: flex; gap: 8px; align-items: center; }
-        .browser-dot { width: 14px; height: 14px; border-radius: 50%; background: #ef4444; }
+        .browser-dot { width: 14px; height: 14px; border-radius: 50%; background: #ef4444; cursor:pointer;}
         .browser-dot:nth-child(2) { background: #f59e0b; }
         .browser-dot:nth-child(3) { background: #10b981; }
         .webmail-body { padding: 0; flex-grow: 1; overflow-y: auto; background: #fff; display: flex; flex-direction: column;}
         .webmail-toolbar { background: #f8fafc; padding: 15px 20px; border-bottom: 1px solid #e2e8f0; font-weight: bold; color: #475569; display: flex; justify-content: space-between;}
         
-        .sim-close { cursor: pointer; color: #888; font-size: 1.2rem; transition: 0.2s; }
-        .sim-close:hover { color: #ef4444; transform: scale(1.1); }
         @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
         /* === APP LAYOUT === */
         #app-container { display: none; height: 100vh; flex-direction: row; }
         
         /* Sidebar */
-        .sidebar { width: var(--sidebar-width); height: 100%; border-right: 1px solid var(--glass-border); border-radius: 0; display: flex; flex-direction: column; padding: 25px 0; background: linear-gradient(180deg, var(--glass-bg), rgba(0,0,0,0.8)); z-index: 100; }
+        .sidebar { width: var(--sidebar-width); height: 100%; border-right: 1px solid var(--glass-border); border-radius: 0; display: flex; flex-direction: column; padding: 25px 0; background: linear-gradient(180deg, var(--glass-bg), rgba(0,0,0,0.8)); z-index: 100; transition: 0.3s;}
         .brand { text-align: center; margin-bottom: 30px; padding: 0 20px; }
         .brand h2 { color: var(--neon-primary); text-shadow: 0 0 10px rgba(0,0,0,0.5); font-size: 1.6rem; letter-spacing: 2px;}
         .brand span { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 3px; }
@@ -118,7 +124,7 @@
         /* Dashboard & Tables */
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 25px; margin-bottom: 35px; }
         .stat-card { text-align: center; border-top: 4px solid; position: relative; overflow: hidden; }
-        .stat-card::before { content: ''; position: absolute; top:0; left:0; width:100%; height:100%; background: linear-gradient(180deg, rgba(255,255,255,0.05), transparent); pointer-events: none;}
+        .stat-card::before { content: ''; position: absolute; inset:0; background: linear-gradient(180deg, rgba(255,255,255,0.05), transparent); pointer-events: none;}
         .stat-card h2 { font-size: 3rem; margin: 10px 0; text-shadow: 0 0 15px currentColor;}
         .sc-tot { border-color: var(--neon-primary); color: var(--neon-primary); }
         .sc-opn { border-color: var(--neon-alert); color: var(--neon-alert); }
@@ -151,10 +157,9 @@
         .msg.bot { background: rgba(0,0,0, 0.3); border: 1px solid var(--neon-secondary); align-self: flex-start; border-bottom-left-radius: 2px; color: var(--text-main); }
         .msg.user { background: rgba(255,255,255, 0.1); border: 1px solid var(--neon-primary); align-self: flex-end; border-bottom-right-radius: 2px; color: var(--neon-primary); }
         .loader { display: none; color: var(--neon-primary); font-family: var(--font-display); font-size: 0.85rem; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 50% { opacity: 0.5; } }
 
         /* Modals & Toasts */
-        .modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); display: none; justify-content: center; align-items: center; z-index: 3000; }
+        .modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); display: none; justify-content: center; align-items: center; z-index: 3000; padding: 20px;}
         .modal-content { width: 100%; max-width: 650px; max-height: 90vh; overflow-y: auto; position: relative; border-top: 4px solid var(--neon-primary); }
         .close-modal { position: absolute; top: 20px; right: 25px; font-size: 1.5rem; cursor: pointer; color: var(--text-muted); }
         .close-modal:hover { color: var(--neon-alert); }
@@ -163,16 +168,17 @@
         .toast { background: var(--glass-bg); backdrop-filter: blur(10px); border-left: 4px solid var(--neon-primary); padding: 15px 25px; border-radius: 8px; color: #fff; box-shadow: 0 5px 20px rgba(0,0,0,0.5); animation: slideIn 0.3s forwards; }
         @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
 
-        /* Theme Customizer Colors */
-        .color-swatch { width: 30px; height: 30px; border-radius: 50%; display: inline-block; cursor: pointer; border: 2px solid transparent; transition: 0.2s; margin-right: 10px;}
-        .color-swatch:hover { transform: scale(1.2); }
-        .color-swatch.active { border-color: #fff; box-shadow: 0 0 10px currentColor; }
+        /* Theme Admin Options */
+        .color-swatch { width: 35px; height: 35px; border-radius: 50%; display: inline-block; cursor: pointer; border: 2px solid transparent; transition: 0.2s; margin-right: 15px;}
+        .color-swatch:hover { transform: scale(1.1); }
+        .color-swatch.active { border-color: #fff; box-shadow: 0 0 15px currentColor; }
 
-        @media (max-width: 768px) {
-            .sidebar { position: fixed; transform: translateX(-100%); transition: 0.3s; }
+        @media (max-width: 900px) {
+            .sidebar { position: fixed; transform: translateX(-100%); transition: 0.3s; z-index: 200; }
             .sidebar.open { transform: translateX(0); }
             .mail-wrapper { flex-direction: column; }
             .mail-folders { width: 100%; flex-direction: row; overflow-x: auto; }
+            .stats-grid { grid-template-columns: 1fr 1fr; }
         }
     </style>
 </head>
@@ -187,25 +193,25 @@
         <div class="phone-notch"></div>
         <div class="phone-header">
             <span><i class="fa-solid fa-signal"></i> 5G</span>
-            <span id="phone-number-display" style="font-family: monospace;">+91 7845714920</span>
+            <span id="phone-number-display">+91 7845714920</span>
             <span><i class="fa-solid fa-battery-three-quarters"></i></span>
         </div>
-        <div style="padding: 15px; font-size: 0.8rem; color: #666; text-align: center; background: #0f0f13;">Messages App</div>
+        <div style="padding: 15px; font-size: 0.8rem; color: #666; text-align: center; background: #0f0f13;">Messages</div>
         <div style="flex-grow: 1; background: #0f0f13; overflow-y: auto;">
-            <div id="sms-placeholder" style="text-align: center; padding: 40px; color: #444;">No new messages.</div>
+            <div id="sms-placeholder" style="text-align: center; padding: 40px; color: #444;">Awaiting Signal...</div>
             <div class="sms-bubble" id="sms-content" style="display: none;"></div>
         </div>
         <div style="background: #1a1a1a; padding: 20px; text-align: center;">
-            <div style="width: 40px; height: 5px; background: #333; margin: 0 auto; border-radius: 5px; cursor: pointer;" onclick="app.closeSimulator('sim-phone')"></div>
+            <div style="width: 50px; height: 5px; background: #444; margin: 0 auto; border-radius: 5px; cursor: pointer;" onclick="app.closeSimulator('sim-phone')" title="Close Phone"></div>
         </div>
     </div>
 
     <div id="sim-webmail" class="device-simulator">
         <div class="browser-header">
-            <div class="browser-dot" onclick="app.closeSimulator('sim-webmail')" style="cursor: pointer;"></div>
+            <div class="browser-dot" onclick="app.closeSimulator('sim-webmail')" title="Close Browser"></div>
             <div class="browser-dot"></div><div class="browser-dot"></div>
             <div style="flex-grow:1; text-align:center; font-size: 0.85rem; color: #555; background: #fff; border-radius: 4px; padding: 4px; margin: 0 20px;">
-                <i class="fa-solid fa-lock" style="color: green; font-size: 0.7rem; margin-right: 5px;"></i> mail.google.com
+                <i class="fa-solid fa-lock" style="color: green; font-size: 0.7rem;"></i> mail.google.com
             </div>
         </div>
         <div class="webmail-toolbar">
@@ -214,12 +220,12 @@
         </div>
         <div class="webmail-body" style="background: #f1f5f9; padding: 20px;">
             <div style="background: #fff; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); overflow: hidden;">
-                <div style="padding: 15px; border-bottom: 1px solid #e2e8f0; font-weight: bold; background: #f8fafc; color: #334155;">Primary Inbox</div>
-                <div id="webmail-placeholder" style="padding: 30px; text-align: center; color: #94a3b8;">Inbox is empty.</div>
+                <div style="padding: 15px; border-bottom: 1px solid #e2e8f0; font-weight: bold; background: #f8fafc; color: #334155;">Inbox</div>
+                <div id="webmail-placeholder" style="padding: 30px; text-align: center; color: #94a3b8;">No new mail.</div>
                 
                 <div id="webmail-content" style="padding: 20px; border-left: 4px solid #3b82f6; display: none; background: #eff6ff;">
                     <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
-                        <strong style="color: #1e293b;">armtechbridge@gmail.com</strong>
+                        <strong style="color: #1e293b;">system@worldtech.com</strong>
                         <span style="color: #64748b; font-size: 0.8rem;">Just now</span>
                     </div>
                     <div style="font-weight: bold; color: #0f172a; margin-bottom: 10px;">WorldTech Security Code</div>
@@ -231,35 +237,35 @@
 
     <div id="login-screen">
         <div class="glass glass-panel login-box">
-            <h1 style="color: var(--neon-primary); letter-spacing: 3px; margin-bottom: 5px;">ARMORA</h1>
-            <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 30px; text-transform: uppercase; letter-spacing: 1px;">Master Admin Gateway</p>
+            <h1 style="color: var(--neon-primary); letter-spacing: 3px; margin-bottom: 5px;">WORLDTECH</h1>
+            <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 30px; text-transform: uppercase; letter-spacing: 1px;">Secure Access Portal</p>
             
             <div id="login-step-1">
-                <input type="email" id="login-email" placeholder="Enter Master Email" autocomplete="off" style="text-align: center;">
-                <button class="action-btn" style="width: 100%; padding: 15px; font-size: 1rem;" onclick="app.requestOTP()">Send OTP</button>
+                <input type="email" id="login-email" placeholder="Enter Master Email" autocomplete="off" style="text-align: center;" value="armtechbridge@gmail.com">
+                <button class="action-btn" style="width: 100%; padding: 15px; font-size: 1rem;" onclick="app.requestOTP()">Initiate Uplink</button>
                 <p id="login-error" style="color: var(--neon-alert); font-size: 0.85rem; margin-top: 15px; display: none;"></p>
             </div>
 
             <div id="login-step-2" style="display: none;">
-                <p style="color: var(--neon-success); font-size: 0.9rem; margin-bottom: 5px;"><i class="fa-solid fa-shield-check"></i> 2FA Protocol Active</p>
-                <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 20px;">Code dispatched to registered endpoints.</p>
+                <p style="color: var(--neon-success); font-size: 0.9rem; margin-bottom: 5px;"><i class="fa-solid fa-shield-check"></i> MFA Protocol Active</p>
+                <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 20px;">Retrieve the 6-digit code dispatched to your simulated endpoints.</p>
                 
-                <input type="text" id="login-otp" placeholder="Enter 6-Digit Code" maxlength="6" style="text-align: center; font-family: var(--font-display); font-size: 1.5rem; letter-spacing: 8px;">
+                <input type="text" id="login-otp" placeholder="XXXXXX" maxlength="6" style="text-align: center; font-family: var(--font-display); font-size: 1.5rem; letter-spacing: 10px;">
                 <button class="action-btn" style="width: 100%; padding: 15px;" onclick="app.verifyOTP()">Verify Access</button>
                 <button style="width: 100%; margin-top: 15px; background: transparent; border: none; color: var(--text-muted);" onclick="app.resetLogin()">Abort</button>
             </div>
         </div>
 
         <div class="sim-btn-container" id="sim-controls">
-            <button class="glass" style="background: rgba(0,0,0,0.8); border-color: #444;" onclick="app.openSimulator('sim-phone')"><i class="fa-solid fa-mobile-screen"></i> View Mobile</button>
-            <button class="glass" style="background: rgba(0,0,0,0.8); border-color: #444;" onclick="app.openSimulator('sim-webmail')"><i class="fa-brands fa-google"></i> View Inbox</button>
+            <button class="glass" style="background: rgba(0,0,0,0.8); border-color: #444;" onclick="app.openSimulator('sim-phone')"><i class="fa-solid fa-mobile-screen"></i> Check Mobile SMS</button>
+            <button class="glass" style="background: rgba(0,0,0,0.8); border-color: #444;" onclick="app.openSimulator('sim-webmail')"><i class="fa-brands fa-google"></i> Check Gmail Inbox</button>
         </div>
     </div>
 
 
     <div id="app-container">
         
-        <nav class="sidebar glass">
+        <nav class="sidebar glass" id="sidebar">
             <div class="brand">
                 <h2>W-TECH</h2>
                 <span>ServiceDesk AI</span>
@@ -283,7 +289,10 @@
 
         <div class="main-content">
             <header class="topbar glass">
-                <h2 id="view-title" style="color: var(--neon-primary);">MATRIX HUB</h2>
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <i class="fa-solid fa-bars icon-btn" id="mobile-menu-btn" style="display: none;" onclick="document.getElementById('sidebar').classList.toggle('open')"></i>
+                    <h2 id="view-title" style="color: var(--neon-primary);">MATRIX HUB</h2>
+                </div>
                 <div class="topbar-right">
                     <div class="clock" id="live-clock">00:00:00 AM</div>
                     <div class="icon-btn" onclick="app.navigate('mailbox')" title="Notifications">
@@ -291,7 +300,7 @@
                         <div class="badge-dot" id="notif-bell-badge"></div>
                     </div>
                     <div style="border-left: 1px solid var(--glass-border); padding-left: 20px; display: flex; align-items: center; gap: 15px;">
-                        <div style="text-align: right;">
+                        <div style="text-align: right; display: none; @media(min-width: 600px) { display: block; }">
                             <div id="header-user-email" style="font-size: 0.85rem; font-weight: 600;">admin@wt.com</div>
                             <div id="header-user-role" style="font-size: 0.7rem; color: var(--neon-secondary); text-transform: uppercase;">Role</div>
                         </div>
@@ -318,16 +327,18 @@
                         </div>
                     </div>
                     <div class="glass glass-panel" style="padding: 0; overflow: hidden;">
-                        <h3 style="padding: 20px; border-bottom: 1px solid var(--glass-border); background: rgba(0,0,0,0.2);"><i class="fa-solid fa-satellite-dish"></i> Recent Transmission Log</h3>
-                        <table>
-                            <thead><tr><th>Comm ID</th><th>Subject</th><th>Status</th><th>Operative</th></tr></thead>
-                            <tbody id="dash-recent-tickets"></tbody>
-                        </table>
+                        <h3 style="padding: 20px; border-bottom: 1px solid var(--glass-border); background: rgba(0,0,0,0.2);"><i class="fa-solid fa-satellite-dish"></i> Recent Matrix Activity</h3>
+                        <div style="overflow-x: auto;">
+                            <table>
+                                <thead><tr><th>Comm ID</th><th>Subject</th><th>Status</th><th>Operative</th></tr></thead>
+                                <tbody id="dash-recent-tickets"></tbody>
+                            </table>
+                        </div>
                     </div>
                 </section>
 
                 <section id="view-tickets" class="view-section">
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 25px; align-items: center;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 25px; align-items: center; flex-wrap: wrap; gap: 15px;">
                         <div style="display: flex; gap: 15px; flex-grow: 1;">
                             <input type="text" id="tk-search" placeholder="Query database..." style="max-width: 300px; margin: 0;" onkeyup="app.renderTickets()">
                             <select id="tk-filter" style="width: 200px; margin: 0;" onchange="app.renderTickets()">
@@ -340,7 +351,7 @@
                         </div>
                     </div>
                     <div class="glass glass-panel" style="padding: 0; overflow-x: auto;">
-                        <table style="margin: 0;">
+                        <table style="margin: 0; min-width: 700px;">
                             <thead><tr><th>ID</th><th>Subject</th><th>Priority</th><th>Category</th><th>Status</th><th>Date</th><th>Action</th></tr></thead>
                             <tbody id="tk-table-body"></tbody>
                         </table>
@@ -367,9 +378,9 @@
                 </section>
 
                 <section id="view-ai-nexus" class="view-section">
-                    <div style="display: flex; gap: 25px; height: calc(100vh - 160px);">
+                    <div style="display: flex; gap: 25px; height: calc(100vh - 160px); flex-wrap: wrap;">
                         
-                        <div class="glass glass-panel" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column;">
+                        <div class="glass glass-panel" style="flex: 1; min-width: 300px; overflow-y: auto; display: flex; flex-direction: column;">
                             <h3 style="margin-bottom: 20px;"><i class="fa-solid fa-book-atlas"></i> Data Archives</h3>
                             <input type="text" placeholder="Search knowledge base...">
                             <div style="flex-grow: 1; overflow-y: auto; margin-top: 10px;">
@@ -381,7 +392,7 @@
                             </div>
                         </div>
 
-                        <div class="glass glass-panel" style="flex: 2; display: flex; flex-direction: column; padding: 0; overflow: hidden;">
+                        <div class="glass glass-panel" style="flex: 2; min-width: 300px; display: flex; flex-direction: column; padding: 0; overflow: hidden;">
                             <div style="padding: 20px; border-bottom: 1px solid var(--glass-border); background: rgba(0,0,0,0.3);">
                                 <h3 style="color: var(--neon-secondary);"><i class="fa-solid fa-microchip"></i> Llama3 Diagnostic Oracle</h3>
                                 <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 5px;">Real-time generative troubleshooting.</p>
@@ -454,7 +465,7 @@
                         <div style="margin-bottom: 25px;">
                             <label style="display: block; margin-bottom: 10px;">Primary Neon Emitter (Cyan Variant)</label>
                             <div id="swatch-primary">
-                                <span class="color-swatch" style="background: #00eaff;" onclick="app.setThemeColor('primary', '#00eaff')"></span>
+                                <span class="color-swatch active" style="background: #00eaff;" onclick="app.setThemeColor('primary', '#00eaff')"></span>
                                 <span class="color-swatch" style="background: #00ff88;" onclick="app.setThemeColor('primary', '#00ff88')"></span>
                                 <span class="color-swatch" style="background: #facc15;" onclick="app.setThemeColor('primary', '#facc15')"></span>
                                 <span class="color-swatch" style="background: #ff2a5f;" onclick="app.setThemeColor('primary', '#ff2a5f')"></span>
@@ -464,7 +475,7 @@
                         <div style="margin-bottom: 25px;">
                             <label style="display: block; margin-bottom: 10px;">Secondary Neon Emitter (Indigo Variant)</label>
                             <div id="swatch-secondary">
-                                <span class="color-swatch" style="background: #6366f1;" onclick="app.setThemeColor('secondary', '#6366f1')"></span>
+                                <span class="color-swatch active" style="background: #6366f1;" onclick="app.setThemeColor('secondary', '#6366f1')"></span>
                                 <span class="color-swatch" style="background: #a855f7;" onclick="app.setThemeColor('secondary', '#a855f7')"></span>
                                 <span class="color-swatch" style="background: #ec4899;" onclick="app.setThemeColor('secondary', '#ec4899')"></span>
                                 <span class="color-swatch" style="background: #3b82f6;" onclick="app.setThemeColor('secondary', '#3b82f6')"></span>
@@ -472,8 +483,14 @@
                         </div>
 
                         <div style="margin-bottom: 25px;">
-                            <label>Glassmorphism Intensity (Opacity)</label>
-                            <input type="range" id="theme-glass" min="0.1" max="0.9" step="0.1" value="0.65" style="width: 100%; cursor: pointer;" onchange="app.setThemeGlass(this.value)">
+                            <label style="display:flex; justify-content:space-between;"><span>Glassmorphism Intensity (Opacity)</span> <span id="glass-val-disp">0.65</span></label>
+                            <input type="range" id="theme-glass" min="0.1" max="0.95" step="0.05" value="0.65" style="width: 100%; cursor: pointer;" oninput="app.setThemeGlass(this.value)">
+                        </div>
+
+                        <div style="margin-bottom: 30px; display: flex; gap: 15px; align-items: center;">
+                            <label>Base Appearance Variant:</label>
+                            <button id="btn-theme-dark" onclick="app.setThemeVariant('dark')" style="border-color: var(--neon-primary);">Dark Matrix</button>
+                            <button id="btn-theme-light" onclick="app.setThemeVariant('light')">Light Matrix</button>
                         </div>
 
                         <div style="margin-top: 40px; border-top: 1px solid var(--glass-border); padding-top: 25px; display: flex; justify-content: space-between;">
@@ -499,7 +516,7 @@
             <label>Detailed Logs (Voice Supported)</label>
             <div style="position: relative;">
                 <textarea id="nt-desc" rows="5" placeholder="Provide system outputs..."></textarea>
-                <i class="fa-solid fa-microphone icon-btn" id="btn-voice" style="position: absolute; bottom: 30px; right: 15px; color: var(--neon-primary);" onclick="app.startVoiceDictation('nt-desc')"></i>
+                <i class="fa-solid fa-microphone icon-btn" id="btn-voice" style="position: absolute; bottom: 30px; right: 15px; color: var(--neon-primary);" onclick="app.startVoiceDictation('nt-desc')" title="Voice Dictation"></i>
             </div>
 
             <div style="display: flex; gap: 20px;">
@@ -522,12 +539,12 @@
             <i class="fa-solid fa-xmark close-modal" onclick="app.closeModal('modal-view-ticket')"></i>
             <h2 id="vt-title" style="margin-bottom: 10px; font-size: 1.8rem; color: var(--neon-primary);">Ticket Title</h2>
             <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 25px; display: flex; gap: 20px; border-bottom: 1px solid var(--glass-border); padding-bottom: 15px;">
-                <span>ID: <strong id="vt-id" style="color:#fff;"></strong></span>
-                <span>Author: <strong id="vt-author" style="color:#fff;"></strong></span>
-                <span>Date: <strong id="vt-date" style="color:#fff;"></strong></span>
+                <span>ID: <strong id="vt-id" style="color:var(--text-main);"></strong></span>
+                <span>Author: <strong id="vt-author" style="color:var(--text-main);"></strong></span>
+                <span>Date: <strong id="vt-date" style="color:var(--text-main);"></strong></span>
             </div>
             
-            <div class="glass" style="padding: 20px; background: rgba(0,0,0,0.4); margin-bottom: 25px; font-size: 1.05rem; line-height: 1.6;">
+            <div class="glass" style="padding: 20px; background: rgba(0,0,0,0.4); margin-bottom: 25px; font-size: 1.05rem; line-height: 1.6; max-height: 250px; overflow-y:auto;">
                 <p id="vt-desc" style="white-space: pre-wrap;"></p>
             </div>
 
@@ -537,13 +554,13 @@
                 <div>Category: <strong id="vt-category" style="color: var(--text-muted);"></strong></div>
             </div>
 
-            <div id="vt-admin-controls" style="display: none; padding: 20px; border: 1px dashed var(--neon-alert); border-radius: 8px; margin-bottom: 25px; background: rgba(255, 42, 95, 0.05);">
-                <h4 style="color: var(--neon-alert); margin-bottom: 15px;"><i class="fa-solid fa-unlock-keyhole"></i> Master Override</h4>
-                <div style="display: flex; gap: 15px;">
-                    <select id="vt-edit-status" onchange="app.updateTicket('status', this.value)" style="margin: 0;">
+            <div id="vt-admin-controls" style="display: none; padding: 20px; border: 1px dashed var(--neon-alert); border-radius: 8px; margin-bottom: 25px; background: rgba(255, 42, 95, 0.05); align-items: center; flex-wrap: wrap;">
+                <h4 style="color: var(--neon-alert); margin-bottom: 15px; width:100%;"><i class="fa-solid fa-unlock-keyhole"></i> Master Override</h4>
+                <div style="display: flex; gap: 15px; width: 100%;">
+                    <select id="vt-edit-status" onchange="app.updateTicket('status', this.value)" style="margin: 0; flex:1;">
                         <option value="Open">Status: Open</option><option value="In Progress">Status: In Progress</option><option value="Closed">Status: Closed</option>
                     </select>
-                    <select id="vt-edit-priority" onchange="app.updateTicket('priority', this.value)" style="margin: 0;">
+                    <select id="vt-edit-priority" onchange="app.updateTicket('priority', this.value)" style="margin: 0; flex:1;">
                         <option value="Low">Priority: Low</option><option value="Medium">Priority: Medium</option><option value="High">Priority: High</option>
                     </select>
                     <button style="border-color: var(--neon-alert); color: var(--neon-alert); flex-shrink: 0;" onclick="app.deleteTicket()"><i class="fa-solid fa-trash"></i> Purge</button>
@@ -551,8 +568,8 @@
             </div>
 
             <button class="action-btn" onclick="app.aiGenerateFix()" style="width: 100%; margin-bottom: 15px; padding: 15px;"><i class="fa-solid fa-microchip"></i> AI Synthesize Fix</button>
-            <div id="ai-fix-loader" class="loader" style="text-align: center;">Executing neural pathways...</div>
-            <div id="ai-fix-result" class="glass" style="display: none; padding: 20px; background: rgba(99, 102, 241, 0.1); border-color: var(--neon-secondary); font-size: 0.95rem; line-height: 1.6;"></div>
+            <div id="ai-fix-loader" class="loader" style="text-align: center; margin-bottom: 15px;">Executing neural pathways...</div>
+            <div id="ai-fix-result" class="glass" style="display: none; padding: 20px; background: rgba(99, 102, 241, 0.1); border-color: var(--neon-secondary); font-size: 0.95rem; line-height: 1.6; max-height: 250px; overflow-y:auto;"></div>
         </div>
     </div>
 
@@ -583,6 +600,7 @@
         // ==========================================
         // CONFIGURATION: GROQ API KEY (Llama3)
         // ==========================================
+        // ENTER YOUR REAL GROQ API KEY HERE TO ENABLE AI FEATURES
         const GROQ_API_KEY = "YOUR_GROQ_API_KEY_HERE"; 
         
         const app = {
@@ -659,7 +677,16 @@
 
             dispatchSimulatedMFA: function(mobile, email, otp) {
                 // 1. Send OTP via internal application mail system (simulating email reception)
-                this.internalMailSend(email, 'system@worldtech.com', 'WorldTech Security Code', `Your requested authorization code is: ${otp}\n\nDo not share this code with anyone. Matrix personnel will never ask for your code.`);
+                // We format the date nicely for the mail DB
+                const dateISO = new Date().toISOString();
+                const mails = this.getMails();
+                mails.push({ 
+                    id: 'M_OTP_' + Date.now(), to: email, from: 'system@worldtech.com', 
+                    subject: 'WorldTech Security Code', 
+                    body: `Your requested authorization code is: ${otp}\n\nDo not share this code with anyone. Matrix personnel will never ask for your code.`, 
+                    date: dateISO, folder: 'inbox', read: false 
+                });
+                this.saveMails(mails);
 
                 // 2. Prep the Mobile Simulator Overlay
                 document.getElementById('phone-number-display').innerText = mobile || 'Unregistered Device';
@@ -775,6 +802,9 @@
                 document.getElementById('view-' + viewId).classList.add('active');
                 this.currentView = viewId;
 
+                // Close mobile sidebar if open
+                document.getElementById('sidebar').classList.remove('open');
+
                 // Fire section-specific logic
                 if(viewId === 'dashboard') this.renderDashboard();
                 if(viewId === 'tickets') this.renderTickets();
@@ -793,10 +823,17 @@
 
             // --- Global Theming System ---
             applyGlobalTheme: function() {
-                const saved = JSON.parse(localStorage.getItem('wt_theme_settings')) || { primary: '#00eaff', secondary: '#6366f1', glass: '0.65' };
+                const saved = JSON.parse(localStorage.getItem('wt_theme_settings')) || { primary: '#00eaff', secondary: '#6366f1', glass: '0.65', variant: 'dark' };
                 document.documentElement.style.setProperty('--neon-primary', saved.primary);
                 document.documentElement.style.setProperty('--neon-secondary', saved.secondary);
                 document.documentElement.style.setProperty('--glass-bg', `rgba(18, 20, 35, ${saved.glass})`);
+                
+                if(saved.variant === 'light') {
+                    document.body.classList.add('theme-light');
+                    document.documentElement.style.setProperty('--glass-bg', `rgba(255, 255, 255, ${saved.glass})`);
+                } else {
+                    document.body.classList.remove('theme-light');
+                }
             },
 
             setThemeColor: function(type, hex) {
@@ -807,20 +844,48 @@
             },
 
             setThemeGlass: function(val) {
-                document.documentElement.style.setProperty('--glass-bg', `rgba(18, 20, 35, ${val})`);
+                document.getElementById('glass-val-disp').innerText = val;
+                const isLight = document.body.classList.contains('theme-light');
+                const rgb = isLight ? '255, 255, 255' : '18, 20, 35';
+                document.documentElement.style.setProperty('--glass-bg', `rgba(${rgb}, ${val})`);
+            },
+
+            setThemeVariant: function(variant) {
+                if(variant === 'light') {
+                    document.body.classList.add('theme-light');
+                    document.getElementById('btn-theme-light').style.borderColor = 'var(--neon-primary)';
+                    document.getElementById('btn-theme-dark').style.borderColor = 'transparent';
+                } else {
+                    document.body.classList.remove('theme-light');
+                    document.getElementById('btn-theme-dark').style.borderColor = 'var(--neon-primary)';
+                    document.getElementById('btn-theme-light').style.borderColor = 'transparent';
+                }
+                const g = document.getElementById('theme-glass').value;
+                this.setThemeGlass(g);
             },
 
             renderThemeSettings: function() {
-                const saved = JSON.parse(localStorage.getItem('wt_theme_settings')) || { primary: '#00eaff', secondary: '#6366f1', glass: '0.65' };
+                const saved = JSON.parse(localStorage.getItem('wt_theme_settings')) || { primary: '#00eaff', secondary: '#6366f1', glass: '0.65', variant: 'dark' };
                 document.getElementById('theme-glass').value = saved.glass;
+                document.getElementById('glass-val-disp').innerText = saved.glass;
+                
+                // Try to set swatches active based on saved hex (simple matching)
+                document.querySelectorAll('.color-swatch').forEach(el => el.classList.remove('active'));
+                
+                // Very basic re-highlighting logic
+                if(saved.variant === 'light') {
+                    document.getElementById('btn-theme-light').style.borderColor = 'var(--neon-primary)';
+                    document.getElementById('btn-theme-dark').style.borderColor = 'transparent';
+                }
             },
 
             saveThemeGlobally: function() {
                 const p = getComputedStyle(document.documentElement).getPropertyValue('--neon-primary').trim();
                 const s = getComputedStyle(document.documentElement).getPropertyValue('--neon-secondary').trim();
                 const g = document.getElementById('theme-glass').value;
+                const v = document.body.classList.contains('theme-light') ? 'light' : 'dark';
                 
-                localStorage.setItem('wt_theme_settings', JSON.stringify({ primary: p, secondary: s, glass: g }));
+                localStorage.setItem('wt_theme_settings', JSON.stringify({ primary: p, secondary: s, glass: g, variant: v }));
                 this.showToast("Global visual overrides deployed.", "fa-palette", "var(--neon-success)");
             },
 
@@ -829,10 +894,6 @@
                 this.applyGlobalTheme();
                 this.renderThemeSettings();
                 this.showToast("Restored visual parameters.");
-            },
-
-            toggleTheme: function() {
-                document.body.classList.toggle('light-mode');
             },
 
             // --- Dashboard & Tickets ---
@@ -970,7 +1031,6 @@
                 
                 const btn = document.getElementById('btn-voice'); 
                 btn.style.color = 'var(--neon-alert)';
-                btn.classList.add('fa-beat-fade');
 
                 const rec = new SR();
                 rec.onresult = (e) => { 
@@ -979,7 +1039,6 @@
                 };
                 rec.onend = () => { 
                     btn.style.color = 'var(--neon-primary)'; 
-                    btn.classList.remove('fa-beat-fade'); 
                 };
                 rec.start();
             },
@@ -1158,7 +1217,11 @@
 
             // --- Miscellaneous Core Features ---
             initCalendar: function() {
-                if (this.calendarInstance) return;
+                if (this.calendarInstance) {
+                    // FullCalendar needs a re-render if its container was previously hidden
+                    setTimeout(() => this.calendarInstance.render(), 100);
+                    return;
+                }
                 const calEl = document.getElementById('calendar-view');
                 const events = JSON.parse(localStorage.getItem('wt_events')) || [];
 
@@ -1185,7 +1248,7 @@
                         }
                     }
                 });
-                this.calendarInstance.render();
+                setTimeout(() => this.calendarInstance.render(), 100);
             },
 
             saveNotes: function() { localStorage.setItem(`wt_notes_${this.currentUser.email}`, document.getElementById('personal-notes').value); },
