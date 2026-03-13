@@ -1,1332 +1,654 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WorldTech ServiceDesk | Enterprise ITSM</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
+<meta charset="UTF-8">
+<title>WorldTech ServiceDesk</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <style>
-        /* === ENTERPRISE THEME ENGINE === */
-        :root {
-            /* Base Dark Theme - Professional Blues/Grays */
-            --bg-body: #0b0f19;
-            --bg-surface: rgba(30, 41, 59, 0.7);
-            --bg-surface-hover: rgba(51, 65, 85, 0.8);
-            --border-color: rgba(255, 255, 255, 0.08);
-            
-            /* Brand Colors */
-            --primary: #2563eb;
-            --primary-hover: #1d4ed8;
-            --primary-light: rgba(37, 99, 235, 0.15);
-            
-            /* Semantic Colors */
-            --success: #10b981;
-            --success-bg: rgba(16, 185, 129, 0.15);
-            --warning: #f59e0b;
-            --warning-bg: rgba(245, 158, 11, 0.15);
-            --danger: #ef4444;
-            --danger-bg: rgba(239, 68, 68, 0.15);
-            
-            /* Text */
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --text-inverse: #ffffff;
-            
-            /* Layout */
-            --sidebar-width: 260px;
-            --header-height: 64px;
-            --radius-md: 8px;
-            --radius-lg: 12px;
-            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-            --shadow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
-            --blur-md: blur(12px);
-        }
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 
-        /* === GLOBAL RESET & TYPOGRAPHY === */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
-            font-family: 'Inter', sans-serif; 
-            background-color: var(--bg-body); 
-            color: var(--text-main); 
-            overflow: hidden; 
-            font-size: 14px;
-            line-height: 1.5;
-            transition: background-color 0.3s;
-        }
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-        /* Subtle animated background for depth */
-        .ambient-bg {
-            position: fixed; inset: 0; z-index: -1;
-            background: radial-gradient(circle at 15% 50%, rgba(37, 99, 235, 0.08), transparent 25%),
-                        radial-gradient(circle at 85% 30%, rgba(16, 185, 129, 0.05), transparent 25%);
-            animation: ambientShift 20s infinite alternate ease-in-out;
-        }
-        @keyframes ambientShift { 0% { transform: scale(1); } 100% { transform: scale(1.1); } }
+<!-- FullCalendar -->
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
 
-        /* Scrollbar */
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.3); }
+<style>
 
-        /* === GLASSMORPHISM COMPONENTS === */
-        .surface {
-            background: var(--bg-surface);
-            backdrop-filter: var(--blur-md);
-            -webkit-backdrop-filter: var(--blur-md);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-lg);
-            box-shadow: var(--shadow-glass);
-        }
+:root{
+--bg:#0f172a;
+--card:#1e293b;
+--accent:#3b82f6;
+--text:#e5e7eb;
+--border:#334155;
+}
 
-        h1, h2, h3, h4 { font-weight: 600; letter-spacing: -0.02em; color: var(--text-main); }
-        
-        /* Form Controls */
-        input, select, textarea {
-            width: 100%; padding: 10px 14px; margin-bottom: 16px;
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid var(--border-color);
-            color: var(--text-main);
-            border-radius: var(--radius-md);
-            font-family: 'Inter', sans-serif;
-            font-size: 14px;
-            transition: all 0.2s;
-            outline: none;
-        }
-        input:focus, select:focus, textarea:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px var(--primary-light);
-        }
+*{box-sizing:border-box;font-family:'Inter',sans-serif}
 
-        /* Buttons */
-        .btn {
-            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-            padding: 8px 16px; font-weight: 500; border-radius: var(--radius-md);
-            cursor: pointer; transition: all 0.2s; font-size: 14px; border: 1px solid transparent;
-        }
-        .btn-primary { background: var(--primary); color: var(--text-inverse); }
-        .btn-primary:hover { background: var(--primary-hover); box-shadow: var(--shadow-md); transform: translateY(-1px); }
-        .btn-outline { background: transparent; border-color: var(--border-color); color: var(--text-main); }
-        .btn-outline:hover { background: var(--bg-surface-hover); }
-        .btn-danger { background: var(--danger-bg); color: var(--danger); border-color: rgba(239,68,68,0.3); }
-        .btn-danger:hover { background: var(--danger); color: white; }
+body{
+margin:0;
+background:var(--bg);
+color:var(--text);
+}
 
-        /* Badges */
-        .badge {
-            padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; text-transform: uppercase;
-        }
-        .badge-success { background: var(--success-bg); color: var(--success); }
-        .badge-warning { background: var(--warning-bg); color: var(--warning); }
-        .badge-danger { background: var(--danger-bg); color: var(--danger); }
-        .badge-primary { background: var(--primary-light); color: var(--primary); }
+header{
+height:60px;
+display:flex;
+align-items:center;
+justify-content:space-between;
+padding:0 20px;
+background:rgba(30,41,59,.8);
+backdrop-filter:blur(8px);
+border-bottom:1px solid var(--border);
+}
 
-        /* === LOGIN SCREEN & MFA SIMULATORS === */
-        #login-view { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; z-index: 1000; }
-        .login-card { width: 100%; max-width: 400px; padding: 40px 30px; text-align: center; }
-        .brand-logo { font-size: 24px; font-weight: 700; color: var(--primary); margin-bottom: 8px; letter-spacing: -0.05em; display: flex; align-items: center; justify-content: center; gap: 10px;}
-        
-        .simulator-toggle-bar { display: none; gap: 10px; margin-top: 24px; justify-content: center; }
-        
-        /* Device Simulators (The "External" Devices) */
-        .device-sim { position: fixed; bottom: -100%; transition: bottom 0.4s cubic-bezier(0.16, 1, 0.3, 1); z-index: 2000; box-shadow: 0 -20px 40px rgba(0,0,0,0.5); }
-        .device-sim.active { bottom: 0; }
-        
-        /* Phone SMS UI */
-        #sim-phone { right: 5%; width: 320px; height: 600px; background: #0f172a; border: 6px solid #334155; border-bottom: 0; border-radius: 30px 30px 0 0; display: flex; flex-direction: column; }
-        .phone-header { padding: 15px 20px; background: #1e293b; display: flex; justify-content: space-between; align-items: center; font-size: 12px; font-weight: 600; border-radius: 24px 24px 0 0;}
-        .sms-bubble { background: #334155; padding: 16px; border-radius: 16px 16px 16px 4px; margin: 20px; font-size: 14px; border-left: 4px solid var(--primary); display: none; animation: slideUp 0.3s ease; }
-        
-        /* Webmail UI */
-        #sim-webmail { left: 5%; width: 600px; height: 500px; background: #f8fafc; border: 1px solid #cbd5e1; border-bottom: 0; border-radius: 12px 12px 0 0; color: #0f172a; display: flex; flex-direction: column; }
-        .browser-bar { background: #e2e8f0; padding: 10px 16px; display: flex; align-items: center; gap: 8px; border-radius: 12px 12px 0 0; }
-        .b-dot { width: 12px; height: 12px; border-radius: 50%; background: #ef4444; cursor: pointer; }
-        .b-dot:nth-child(2) { background: #f59e0b; }
-        .b-dot:nth-child(3) { background: #10b981; }
-        .mail-content { background: white; margin: 20px; border-radius: 8px; box-shadow: var(--shadow-sm); border: 1px solid #e2e8f0; display: none; }
-        
-        @keyframes slideUp { from { transform: translateY(10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+.logo{
+font-weight:600;
+font-size:18px;
+}
 
-        /* === APP LAYOUT === */
-        #app-layout { display: none; height: 100vh; flex-direction: row; }
-        
-        /* Sidebar */
-        .sidebar { width: var(--sidebar-width); height: 100%; border-right: 1px solid var(--border-color); display: flex; flex-direction: column; background: rgba(15, 23, 42, 0.8); backdrop-filter: var(--blur-md); z-index: 100; transition: transform 0.3s; }
-        .sidebar-header { height: var(--header-height); display: flex; align-items: center; padding: 0 24px; border-bottom: 1px solid var(--border-color); }
-        .nav-menu { list-style: none; flex-grow: 1; overflow-y: auto; padding: 16px 0; }
-        .nav-item { padding: 10px 24px; margin: 4px 12px; border-radius: var(--radius-md); cursor: pointer; display: flex; align-items: center; gap: 12px; color: var(--text-muted); font-weight: 500; transition: all 0.2s; }
-        .nav-item:hover, .nav-item.active { background: var(--primary-light); color: var(--primary); }
-        .nav-section-title { padding: 16px 24px 8px; font-size: 11px; text-transform: uppercase; font-weight: 600; color: rgba(255,255,255,0.3); letter-spacing: 0.05em; }
-        
-        /* Main Content */
-        .main-wrapper { flex-grow: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; }
-        .topbar { height: var(--header-height); border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; padding: 0 32px; background: rgba(15, 23, 42, 0.4); backdrop-filter: var(--blur-md); z-index: 90; }
-        
-        .view-pane { flex-grow: 1; padding: 32px; overflow-y: auto; display: none; animation: fadeIn 0.3s ease; }
-        .view-pane.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.clock{
+font-size:14px;
+}
 
-        /* Dashboard Stats */
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; margin-bottom: 32px; }
-        .stat-card { padding: 24px; border-left: 4px solid var(--primary); display: flex; flex-direction: column; gap: 8px; }
-        .stat-card h3 { font-size: 13px; color: var(--text-muted); text-transform: uppercase; }
-        .stat-card .val { font-size: 32px; font-weight: 700; color: var(--text-main); }
+.container{
+display:flex;
+height:calc(100vh - 60px);
+}
 
-        /* Tables */
-        .table-container { overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; text-align: left; }
-        th, td { padding: 14px 16px; border-bottom: 1px solid var(--border-color); }
-        th { font-size: 12px; text-transform: uppercase; color: var(--text-muted); font-weight: 600; background: rgba(0,0,0,0.2); }
-        tr:hover td { background: rgba(255,255,255,0.02); }
-        .row-clickable { cursor: pointer; }
+.sidebar{
+width:240px;
+background:var(--card);
+border-right:1px solid var(--border);
+padding-top:20px;
+}
 
-        /* Mail System */
-        .mail-layout { display: flex; height: calc(100vh - 180px); gap: 24px; }
-        .mail-sidebar { width: 220px; display: flex; flex-direction: column; gap: 8px; }
-        .mail-list { flex: 1; border-right: 1px solid var(--border-color); padding-right: 16px; overflow-y: auto; }
-        .mail-row { padding: 16px; border-bottom: 1px solid var(--border-color); cursor: pointer; border-radius: var(--radius-md); transition: 0.2s; border-left: 3px solid transparent; }
-        .mail-row:hover { background: rgba(255,255,255,0.03); }
-        .mail-row.unread { border-left-color: var(--primary); background: var(--primary-light); }
-        .mail-body-pane { flex: 1.5; padding-left: 16px; overflow-y: auto; display: none; }
+.sidebar a{
+display:block;
+padding:12px 20px;
+color:var(--text);
+text-decoration:none;
+font-size:14px;
+}
 
-        /* AI Chat */
-        .ai-chat-box { display: flex; flex-direction: column; height: calc(100vh - 200px); }
-        .chat-history { flex-grow: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 16px; }
-        .msg-bubble { max-width: 80%; padding: 14px 18px; border-radius: 12px; font-size: 14px; line-height: 1.6; }
-        .msg-ai { background: rgba(30, 41, 59, 0.8); border: 1px solid var(--border-color); align-self: flex-start; border-bottom-left-radius: 2px; }
-        .msg-user { background: var(--primary); color: white; align-self: flex-end; border-bottom-right-radius: 2px; }
-        .chat-input-area { display: flex; gap: 12px; padding-top: 16px; border-top: 1px solid var(--border-color); }
-        .loader-dots { display: none; color: var(--primary); font-weight: bold; padding: 10px 20px; animation: pulse 1.5s infinite; }
+.sidebar a:hover{
+background:rgba(255,255,255,.05);
+}
 
-        /* Modals & Overlays */
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); display: none; justify-content: center; align-items: center; z-index: 3000; padding: 20px; }
-        .modal-card { width: 100%; max-width: 600px; max-height: 90vh; overflow-y: auto; position: relative; }
-        .modal-close { position: absolute; top: 20px; right: 20px; font-size: 18px; cursor: pointer; color: var(--text-muted); }
-        .modal-close:hover { color: var(--danger); }
+.main{
+flex:1;
+padding:20px;
+overflow:auto;
+}
 
-        /* Toast Notifications */
-        #toast-zone { position: fixed; bottom: 24px; right: 24px; display: flex; flex-direction: column; gap: 12px; z-index: 4000; }
-        .toast { background: var(--bg-surface); backdrop-filter: var(--blur-md); border: 1px solid var(--border-color); padding: 16px 20px; border-radius: var(--radius-md); box-shadow: var(--shadow-lg); display: flex; align-items: center; gap: 12px; animation: slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        @keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+.card{
+background:var(--card);
+border-radius:10px;
+padding:20px;
+margin-bottom:20px;
+box-shadow:0 4px 20px rgba(0,0,0,.2);
+}
 
-        /* Responsive */
-        @media (max-width: 768px) {
-            .sidebar { position: fixed; transform: translateX(-100%); }
-            .sidebar.active { transform: translateX(0); }
-            #mobile-menu-toggle { display: block !important; }
-            .mail-layout { flex-direction: column; }
-            .mail-sidebar { width: 100%; flex-direction: row; overflow-x: auto; }
-        }
-        #mobile-menu-toggle { display: none; cursor: pointer; font-size: 20px; margin-right: 16px; }
-    </style>
+.stats{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:15px;
+}
+
+.stat{
+background:var(--card);
+padding:20px;
+border-radius:10px;
+text-align:center;
+}
+
+button{
+background:var(--accent);
+border:none;
+padding:10px 14px;
+border-radius:6px;
+color:white;
+cursor:pointer;
+}
+
+input,textarea,select{
+width:100%;
+padding:8px;
+margin:5px 0 10px;
+border-radius:6px;
+border:1px solid var(--border);
+background:#020617;
+color:white;
+}
+
+.table{
+width:100%;
+border-collapse:collapse;
+}
+
+.table th,.table td{
+border-bottom:1px solid var(--border);
+padding:10px;
+text-align:left;
+}
+
+.login{
+display:flex;
+align-items:center;
+justify-content:center;
+height:100vh;
+}
+
+.login-box{
+background:var(--card);
+padding:40px;
+border-radius:10px;
+width:300px;
+}
+
+.mail{
+border-bottom:1px solid var(--border);
+padding:10px;
+cursor:pointer;
+}
+
+.chatbox{
+height:300px;
+overflow:auto;
+background:#020617;
+padding:10px;
+border-radius:6px;
+margin-bottom:10px;
+}
+
+.note{
+background:#020617;
+padding:10px;
+margin-bottom:10px;
+border-radius:6px;
+}
+
+</style>
 </head>
+
 <body>
 
-    <div class="ambient-bg"></div>
-
-    <div id="toast-zone"></div>
-
-    <div id="sim-phone" class="device-sim">
-        <div class="phone-notch"></div>
-        <div class="phone-header">
-            <span><i class="fa-solid fa-signal"></i> Airtel 5G</span>
-            <span style="font-family: monospace;">+91 7845714920</span>
-            <span>100% <i class="fa-solid fa-battery-full"></i></span>
-        </div>
-        <div style="background: #0f172a; flex-grow: 1; overflow-y: auto;">
-            <div style="padding: 10px; text-align: center; color: #64748b; font-size: 12px; border-bottom: 1px solid #1e293b;">Messages</div>
-            <div id="sms-waiting" style="padding: 40px; text-align: center; color: #475569;">Awaiting network signal...</div>
-            <div class="sms-bubble" id="sms-content"></div>
-        </div>
-        <div style="background: #1e293b; padding: 15px; display: flex; justify-content: center;">
-            <div style="width: 40px; height: 5px; background: #475569; border-radius: 10px; cursor: pointer;" onclick="app.closeSimulator('sim-phone')"></div>
-        </div>
-    </div>
-
-    <div id="sim-webmail" class="device-sim">
-        <div class="browser-bar">
-            <div class="b-dot" onclick="app.closeSimulator('sim-webmail')"></div><div class="b-dot"></div><div class="b-dot"></div>
-            <div style="background: white; flex-grow: 1; margin: 0 16px; padding: 4px 12px; border-radius: 4px; font-size: 12px; color: #475569; display: flex; align-items: center; gap: 8px;">
-                <i class="fa-solid fa-lock" style="color: #10b981;"></i> mail.google.com
-            </div>
-        </div>
-        <div style="background: #f1f5f9; padding: 12px 20px; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; gap: 12px;">
-            <i class="fa-solid fa-bars" style="color: #64748b;"></i>
-            <img src="https://upload.wikimedia.org/wikipedia/commons/7/7e/Gmail_icon_%282020%29.svg" style="width: 20px;" alt="Gmail">
-            <span style="font-weight: 500; font-size: 16px;">Gmail</span>
-        </div>
-        <div style="flex-grow: 1; background: #f8fafc; padding: 20px; overflow-y: auto;">
-            <h3 style="margin-bottom: 16px; color: #334155;">Inbox <span style="font-size: 12px; font-weight: normal; color: #64748b;">(armtechbridge@gmail.com)</span></h3>
-            <div id="webmail-waiting" style="text-align: center; padding: 40px; color: #94a3b8;">No new mail.</div>
-            
-            <div class="mail-content" id="webmail-content">
-                <div style="padding: 16px; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between;">
-                    <div><strong style="color: #0f172a;">WorldTech System</strong> &lt;system@worldtech.com&gt;</div>
-                    <div style="color: #64748b; font-size: 12px;">Just now</div>
-                </div>
-                <div style="padding: 24px; color: #334155;">
-                    <h2 style="margin-bottom: 16px; color: #0f172a;">WorldTech Security Code</h2>
-                    <p>Your requested MFA authorization code is:</p>
-                    <div style="font-size: 28px; font-weight: bold; letter-spacing: 4px; color: var(--primary); margin: 16px 0;" id="webmail-otp-display"></div>
-                    <p style="font-size: 12px; color: #64748b;">Do not share this code. Master Matrix admins will never ask for it.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-    <div id="login-view">
-        <div class="surface login-card">
-            <div class="brand-logo"><i class="fa-solid fa-layer-group"></i> WorldTech</div>
-            <p style="color: var(--text-muted); margin-bottom: 32px; font-size: 13px;">Enterprise ServiceDesk Portal</p>
-            
-            <div id="login-step-email">
-                <label style="display: block; text-align: left; margin-bottom: 8px; font-size: 12px; font-weight: 500; color: var(--text-muted);">Master Authorization Email</label>
-                <input type="email" id="auth-email" placeholder="armtechbridge@gmail.com" value="armtechbridge@gmail.com">
-                <button class="btn btn-primary" style="width: 100%; padding: 12px;" onclick="app.triggerMFA()">Send OTP</button>
-                <div id="login-err" style="color: var(--danger); font-size: 12px; margin-top: 12px; display: none;"></div>
-            </div>
-
-            <div id="login-step-otp" style="display: none;">
-                <div style="background: var(--success-bg); color: var(--success); padding: 12px; border-radius: var(--radius-md); margin-bottom: 24px; font-size: 13px;">
-                    <i class="fa-solid fa-shield-check"></i> OTP securely dispatched.
-                </div>
-                <label style="display: block; text-align: left; margin-bottom: 8px; font-size: 12px; font-weight: 500;">Enter 6-Digit Code</label>
-                <input type="text" id="auth-otp" placeholder="••••••" maxlength="6" style="text-align: center; font-size: 24px; letter-spacing: 8px; font-weight: bold;">
-                <button class="btn btn-primary" style="width: 100%; padding: 12px;" onclick="app.verifyLogin()">Verify & Authenticate</button>
-                <button class="btn btn-outline" style="width: 100%; margin-top: 12px;" onclick="app.resetLogin()">Cancel</button>
-            </div>
-
-            <div class="simulator-toggle-bar" id="sim-toggles">
-                <button class="btn btn-outline" style="flex: 1; font-size: 12px;" onclick="app.openSimulator('sim-phone')"><i class="fa-solid fa-mobile-screen"></i> Check SMS</button>
-                <button class="btn btn-outline" style="flex: 1; font-size: 12px;" onclick="app.openSimulator('sim-webmail')"><i class="fa-brands fa-google"></i> Check Inbox</button>
-            </div>
-        </div>
-    </div>
-
-
-    <div id="app-layout">
-        
-        <nav class="sidebar" id="app-sidebar">
-            <div class="sidebar-header">
-                <div class="brand-logo" style="margin:0; font-size: 18px;"><i class="fa-solid fa-layer-group"></i> WorldTech</div>
-            </div>
-            <ul class="nav-menu">
-                <div class="nav-section-title">Core Operations</div>
-                <li class="nav-item active" onclick="app.navigate('dashboard')"><i class="fa-solid fa-chart-pie" style="width:20px;"></i> Dashboard</li>
-                <li class="nav-item" onclick="app.navigate('tickets')"><i class="fa-solid fa-ticket-simple" style="width:20px;"></i> IT Tickets</li>
-                <li class="nav-item" onclick="app.navigate('mailbox')">
-                    <i class="fa-solid fa-envelope" style="width:20px;"></i> Inbox 
-                    <span id="inbox-badge" style="margin-left:auto; background:var(--danger); color:white; font-size:10px; padding:2px 6px; border-radius:10px; display:none;">New</span>
-                </li>
-                
-                <div class="nav-section-title">Intelligence & Tools</div>
-                <li class="nav-item" onclick="app.navigate('ai-portal')"><i class="fa-solid fa-brain" style="width:20px;"></i> AI Nexus</li>
-                <li class="nav-item" onclick="app.navigate('calendar')"><i class="fa-regular fa-calendar" style="width:20px;"></i> Calendar</li>
-                <li class="nav-item" onclick="app.navigate('notes')"><i class="fa-solid fa-pen-to-square" style="width:20px;"></i> My Notes</li>
-                
-                <div class="nav-section-title">Administration</div>
-                <li class="nav-item" onclick="app.navigate('profile')"><i class="fa-solid fa-user" style="width:20px;"></i> Profile</li>
-                
-                <div id="admin-nav-group" style="display: none;">
-                    <li class="nav-item" onclick="app.navigate('admin-users')"><i class="fa-solid fa-users-gear" style="width:20px; color:var(--warning);"></i> Manage Users</li>
-                    <li class="nav-item" onclick="app.navigate('admin-theme')"><i class="fa-solid fa-palette" style="width:20px; color:var(--warning);"></i> Global Theme</li>
-                </div>
-            </ul>
-        </nav>
-
-        <main class="main-wrapper">
-            <header class="topbar">
-                <div style="display: flex; align-items: center;">
-                    <i class="fa-solid fa-bars" id="mobile-menu-toggle" onclick="document.getElementById('app-sidebar').classList.toggle('active')"></i>
-                    <h2 id="topbar-title" style="font-size: 16px; font-weight: 500;">DASHBOARD</h2>
-                </div>
-                <div style="display: flex; align-items: center; gap: 20px;">
-                    <div id="live-clock" style="font-family: monospace; font-size: 13px; color: var(--text-muted);">12:00:00 AM</div>
-                    
-                    <div style="position: relative; cursor: pointer;" onclick="app.navigate('mailbox')">
-                        <i class="fa-regular fa-bell" style="font-size: 16px; color: var(--text-muted);"></i>
-                        <div id="bell-dot" style="position: absolute; top:-2px; right:-2px; width:8px; height:8px; background:var(--danger); border-radius:50%; display:none;"></div>
-                    </div>
-
-                    <div style="height: 32px; width: 1px; background: var(--border-color);"></div>
-
-                    <div style="display: flex; align-items: center; gap: 12px;">
-                        <div style="text-align: right; display: none; @media(min-width:600px){display:block;}">
-                            <div id="header-email" style="font-size: 13px; font-weight: 600;">admin@worldtech.com</div>
-                            <div id="header-role" style="font-size: 11px; color: var(--primary);">Master Admin</div>
-                        </div>
-                        <button class="btn btn-outline" style="padding: 6px 12px;" onclick="app.logout()"><i class="fa-solid fa-arrow-right-from-bracket"></i></button>
-                    </div>
-                </div>
-            </header>
-
-            <div id="view-dashboard" class="view-pane active">
-                <div class="stats-grid">
-                    <div class="surface stat-card" style="border-left-color: var(--primary);">
-                        <h3>Total Tickets</h3><div class="val" id="dash-tot">0</div>
-                    </div>
-                    <div class="surface stat-card" style="border-left-color: var(--danger);">
-                        <h3>Open</h3><div class="val" id="dash-opn">0</div>
-                    </div>
-                    <div class="surface stat-card" style="border-left-color: var(--warning);">
-                        <h3>In Progress</h3><div class="val" id="dash-prg">0</div>
-                    </div>
-                    <div class="surface stat-card" style="border-left-color: var(--success);">
-                        <h3>Resolved</h3><div class="val" id="dash-cls">0</div>
-                    </div>
-                </div>
-                
-                <div class="surface glass-panel">
-                    <h3 style="margin-bottom: 16px; font-size: 14px;"><i class="fa-solid fa-bolt" style="color:var(--warning); margin-right:8px;"></i> Recent Activity</h3>
-                    <div class="table-container">
-                        <table>
-                            <thead><tr><th>Ticket ID</th><th>Subject</th><th>Status</th><th>Date</th></tr></thead>
-                            <tbody id="dash-recent-table"></tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <div id="view-tickets" class="view-pane">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 16px;">
-                    <div style="display: flex; gap: 12px; flex-grow: 1; max-width: 500px;">
-                        <input type="text" id="tk-search" placeholder="Search tickets..." style="margin:0;" onkeyup="app.renderTickets()">
-                        <select id="tk-filter" style="margin:0; width:150px;" onchange="app.renderTickets()">
-                            <option value="All">All Status</option><option value="Open">Open</option><option value="In Progress">In Progress</option><option value="Closed">Closed</option>
-                        </select>
-                    </div>
-                    <div style="display: flex; gap: 12px;">
-                        <button class="btn btn-outline" onclick="app.exportCSV()"><i class="fa-solid fa-download"></i> Export</button>
-                        <button class="btn btn-primary" onclick="app.openModal('modal-create-ticket')"><i class="fa-solid fa-plus"></i> New Ticket</button>
-                    </div>
-                </div>
-                <div class="surface glass-panel" style="padding: 0;">
-                    <div class="table-container">
-                        <table style="margin:0;">
-                            <thead><tr><th>ID</th><th>Subject</th><th>Priority</th><th>Category</th><th>Status</th><th>Author</th><th>Action</th></tr></thead>
-                            <tbody id="tk-table-body"></tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <div id="view-mailbox" class="view-pane">
-                <div class="surface mail-layout">
-                    <div class="mail-sidebar" style="padding: 24px; border-right: 1px solid var(--border-color);">
-                        <button class="btn btn-primary" style="width: 100%; margin-bottom: 24px;" onclick="app.openModal('modal-compose-mail')"><i class="fa-solid fa-pen"></i> Compose</button>
-                        <div class="nav-item active" id="tab-inbox" onclick="app.switchMailFolder('inbox')"><i class="fa-solid fa-inbox"></i> Inbox</div>
-                        <div class="nav-item" id="tab-sent" onclick="app.switchMailFolder('sent')"><i class="fa-regular fa-paper-plane"></i> Sent</div>
-                    </div>
-                    <div class="mail-list" id="mail-list-view" style="padding: 24px 16px 24px 0;"></div>
-                    <div class="mail-body-pane" id="mail-read-view" style="padding: 24px;">
-                        <h2 id="read-subj" style="margin-bottom: 8px;">Subject</h2>
-                        <div style="display: flex; justify-content: space-between; color: var(--text-muted); font-size: 12px; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--border-color);">
-                            <span>From: <strong id="read-from" style="color: var(--text-main);"></strong></span>
-                            <span id="read-date"></span>
-                        </div>
-                        <div id="read-body" style="white-space: pre-wrap; font-size: 14px; line-height: 1.6;"></div>
-                    </div>
-                </div>
-            </div>
-
-            <div id="view-ai-portal" class="view-pane">
-                <div style="display: flex; gap: 24px; height: 100%; flex-wrap: wrap;">
-                    
-                    <div class="surface glass-panel" style="flex: 1; min-width: 300px; display: flex; flex-direction: column;">
-                        <h3 style="margin-bottom: 16px;">Knowledge Base</h3>
-                        <input type="text" placeholder="Search self-service articles...">
-                        <div style="flex-grow: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;">
-                            <div class="surface" style="padding: 12px; cursor: pointer; border-color: transparent;"><i class="fa-brands fa-windows" style="color:#00a4ef; margin-right:8px;"></i> Windows Bootloop Recovery</div>
-                            <div class="surface" style="padding: 12px; cursor: pointer; border-color: transparent;"><i class="fa-solid fa-network-wired" style="color:var(--primary); margin-right:8px;"></i> VPN Access Troubleshooting</div>
-                            <div class="surface" style="padding: 12px; cursor: pointer; border-color: transparent;"><i class="fa-solid fa-shield-halved" style="color:var(--danger); margin-right:8px;"></i> MFA Synchronization Protocol</div>
-                        </div>
-                    </div>
-
-                    <div class="surface glass-panel ai-chat-box" style="flex: 2; min-width: 400px; padding: 0;">
-                        <div style="padding: 16px 24px; border-bottom: 1px solid var(--border-color); background: rgba(0,0,0,0.1);">
-                            <h3 style="color: var(--primary);"><i class="fa-solid fa-sparkles"></i> Llama3 Diagnostic AI</h3>
-                            <p style="font-size: 12px; color: var(--text-muted);">Real-time generative ITSM resolution.</p>
-                        </div>
-                        <div class="chat-history" id="ai-chat-history">
-                            <div class="msg-bubble msg-ai">Hello. I am the WorldTech AI. Describe the technical issue for step-by-step resolution.</div>
-                        </div>
-                        <div id="ai-chat-loader" class="loader-dots">Processing...</div>
-                        <div class="chat-input-area" style="padding: 16px 24px;">
-                            <input type="text" id="ai-chat-input" placeholder="e.g. How do I clear the DNS cache?" style="margin: 0; flex-grow: 1;" onkeypress="if(event.key==='Enter') app.sendChatMessage()">
-                            <button class="btn btn-primary" onclick="app.sendChatMessage()"><i class="fa-solid fa-paper-plane"></i></button>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
-            <div id="view-calendar" class="view-pane">
-                <div class="surface glass-panel" style="background: white; color: black; /* Fullcalendar default styling override */ border: none;">
-                    <div id="calendar-wrapper"></div>
-                </div>
-            </div>
-
-            <div id="view-notes" class="view-pane">
-                <div class="surface glass-panel" style="height: calc(100vh - 150px); display: flex; flex-direction: column;">
-                    <h3 style="margin-bottom: 8px;">Secure Workspace Notes</h3>
-                    <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Data encrypted and bound to your local session.</p>
-                    <textarea id="personal-notes" placeholder="Start typing..." style="flex-grow: 1; resize: none; font-family: monospace; font-size: 14px;" onkeyup="app.saveNotes()"></textarea>
-                </div>
-            </div>
-
-            <div id="view-profile" class="view-pane">
-                <div class="surface glass-panel" style="max-width: 500px; margin: 0 auto;">
-                    <div style="text-align: center; margin-bottom: 32px;">
-                        <div style="width: 80px; height: 80px; border-radius: 50%; background: var(--primary-light); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 32px; margin: 0 auto 16px;">
-                            <i class="fa-solid fa-user-tie"></i>
-                        </div>
-                        <h3>Operative Details</h3>
-                    </div>
-                    <label style="font-size: 12px; color: var(--text-muted);">Registered Email (Immutable)</label>
-                    <input type="email" id="prof-email" disabled style="opacity: 0.6;">
-                    
-                    <label style="font-size: 12px; color: var(--text-muted);">Full Name</label>
-                    <input type="text" id="prof-name">
-                    
-                    <label style="font-size: 12px; color: var(--text-muted);">Contact Number (MFA Endpoint)</label>
-                    <input type="text" id="prof-mobile">
-                    
-                    <button class="btn btn-primary" style="width: 100%; margin-top: 16px;" onclick="app.saveProfile()">Update Profile</button>
-                </div>
-            </div>
-
-            <div id="view-admin-users" class="view-pane">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
-                    <h3><i class="fa-solid fa-users-gear" style="color: var(--warning);"></i> Identity Management</h3>
-                    <button class="btn btn-primary" style="background: var(--warning); color: black;" onclick="app.openModal('modal-add-user')"><i class="fa-solid fa-user-plus"></i> Add User</button>
-                </div>
-                <div class="surface glass-panel" style="padding: 0;">
-                    <div class="table-container">
-                        <table style="margin: 0;">
-                            <thead><tr><th>Email</th><th>Name</th><th>Role</th><th>Actions</th></tr></thead>
-                            <tbody id="admin-user-table"></tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <div id="view-admin-theme" class="view-pane">
-                <div class="surface glass-panel" style="max-width: 600px; margin: 0 auto;">
-                    <h3 style="margin-bottom: 8px; color: var(--warning);"><i class="fa-solid fa-palette"></i> Global Theme Configuration</h3>
-                    <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 32px;">Changes apply to all enterprise users globally.</p>
-
-                    <div style="margin-bottom: 24px;">
-                        <label style="display: block; margin-bottom: 12px; font-weight: 500;">Brand Primary Color</label>
-                        <div style="display: flex; gap: 12px;">
-                            <div class="color-swatch" style="width:32px; height:32px; border-radius:50%; cursor:pointer; background: #2563eb; border: 2px solid white;" onclick="app.setThemeColor('#2563eb', this)"></div>
-                            <div class="color-swatch" style="width:32px; height:32px; border-radius:50%; cursor:pointer; background: #4f46e5; border: 2px solid transparent;" onclick="app.setThemeColor('#4f46e5', this)"></div>
-                            <div class="color-swatch" style="width:32px; height:32px; border-radius:50%; cursor:pointer; background: #0ea5e9; border: 2px solid transparent;" onclick="app.setThemeColor('#0ea5e9', this)"></div>
-                            <div class="color-swatch" style="width:32px; height:32px; border-radius:50%; cursor:pointer; background: #10b981; border: 2px solid transparent;" onclick="app.setThemeColor('#10b981', this)"></div>
-                        </div>
-                    </div>
-
-                    <div style="margin-bottom: 32px;">
-                        <label style="display: block; margin-bottom: 12px; font-weight: 500;">Glassmorphism Blur Intensity</label>
-                        <select id="theme-blur" class="input">
-                            <option value="blur(4px)">Low</option>
-                            <option value="blur(12px)" selected>Medium (Standard)</option>
-                            <option value="blur(24px)">High</option>
-                        </select>
-                    </div>
-
-                    <div style="border-top: 1px solid var(--border-color); padding-top: 24px; display: flex; justify-content: flex-end;">
-                        <button class="btn btn-primary" onclick="app.saveTheme()"><i class="fa-solid fa-cloud-arrow-up"></i> Deploy Globally</button>
-                    </div>
-                </div>
-            </div>
-
-        </main>
-    </div>
-
-    <div class="modal-overlay" id="modal-create-ticket">
-        <div class="surface modal-card glass-panel">
-            <i class="fa-solid fa-xmark modal-close" onclick="app.closeModal('modal-create-ticket')"></i>
-            <h3 style="margin-bottom: 24px;">New Service Ticket</h3>
-            
-            <label style="font-size: 12px; color: var(--text-muted);">Subject</label>
-            <input type="text" id="nt-title" placeholder="Brief description of the issue">
-            
-            <label style="font-size: 12px; color: var(--text-muted);">Details</label>
-            <div style="position: relative;">
-                <textarea id="nt-desc" rows="4" placeholder="Provide system logs or exact symptoms..."></textarea>
-                <i class="fa-solid fa-microphone" id="btn-voice" style="position: absolute; bottom: 28px; right: 16px; color: var(--text-muted); cursor: pointer;" onclick="app.startVoice('nt-desc')" title="Dictate"></i>
-            </div>
-
-            <div style="display: flex; gap: 16px;">
-                <div style="flex: 1;">
-                    <label style="font-size: 12px; color: var(--text-muted);">Category</label>
-                    <select id="nt-category"><option>Hardware</option><option>Software</option><option>Network</option><option>Access</option></select>
-                </div>
-                <div style="flex: 1;">
-                    <label style="font-size: 12px; color: var(--text-muted);">Priority</label>
-                    <select id="nt-priority"><option>Low</option><option>Medium</option><option>High</option></select>
-                </div>
-            </div>
-
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--border-color);">
-                <button class="btn btn-outline" onclick="app.aiSuggestPriority()"><i class="fa-solid fa-wand-magic-sparkles" style="color:var(--warning);"></i> AI Triage</button>
-                <button class="btn btn-primary" onclick="app.createTicket()">Create Ticket</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="modal-view-ticket">
-        <div class="surface modal-card glass-panel" style="max-width: 700px;">
-            <i class="fa-solid fa-xmark modal-close" onclick="app.closeModal('modal-view-ticket')"></i>
-            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
-                <span class="badge badge-primary" id="vt-id"></span>
-                <h3 id="vt-title" style="margin: 0;">Ticket Title</h3>
-            </div>
-            
-            <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 24px; display: flex; gap: 24px; border-bottom: 1px solid var(--border-color); padding-bottom: 16px;">
-                <span>Reported by: <strong id="vt-author" style="color:var(--text-main);"></strong></span>
-                <span id="vt-date"></span>
-            </div>
-            
-            <div style="background: rgba(0,0,0,0.2); padding: 16px; border-radius: var(--radius-md); margin-bottom: 24px; font-size: 14px; line-height: 1.6; max-height: 200px; overflow-y: auto;">
-                <p id="vt-desc" style="white-space: pre-wrap;"></p>
-            </div>
-
-            <div style="display: flex; gap: 16px; margin-bottom: 24px;">
-                <div>Status: <span id="vt-status" class="badge"></span></div>
-                <div>Priority: <span id="vt-priority" class="badge"></span></div>
-                <div>Category: <strong id="vt-category" style="color: var(--text-muted); font-size: 12px; text-transform: uppercase;"></strong></div>
-            </div>
-
-            <div id="vt-admin-controls" style="display: none; padding: 16px; border: 1px solid var(--border-color); border-radius: var(--radius-md); background: rgba(255,255,255,0.02); margin-bottom: 24px;">
-                <h4 style="font-size: 12px; color: var(--warning); margin-bottom: 12px; text-transform: uppercase;">Admin Controls</h4>
-                <div style="display: flex; gap: 12px;">
-                    <select id="vt-edit-status" onchange="app.updateTicket('status', this.value)" style="margin:0; flex:1;">
-                        <option value="Open">Open</option><option value="In Progress">In Progress</option><option value="Closed">Closed</option>
-                    </select>
-                    <select id="vt-edit-priority" onchange="app.updateTicket('priority', this.value)" style="margin:0; flex:1;">
-                        <option value="Low">Low</option><option value="Medium">Medium</option><option value="High">High</option>
-                    </select>
-                    <button class="btn btn-danger" onclick="app.deleteTicket()"><i class="fa-solid fa-trash"></i></button>
-                </div>
-            </div>
-
-            <button class="btn btn-outline" style="width: 100%; border-color: var(--primary); color: var(--primary);" onclick="app.aiGenerateFix()"><i class="fa-solid fa-robot"></i> AI Generate Resolution</button>
-            <div id="ai-fix-loader" class="loader-dots" style="text-align: center;">Analyzing...</div>
-            <div id="ai-fix-result" style="display: none; padding: 16px; background: var(--primary-light); border-radius: var(--radius-md); margin-top: 16px; font-size: 14px; line-height: 1.6; border: 1px solid var(--primary); max-height: 200px; overflow-y:auto;"></div>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="modal-compose-mail">
-        <div class="surface modal-card glass-panel">
-            <i class="fa-solid fa-xmark modal-close" onclick="app.closeModal('modal-compose-mail')"></i>
-            <h3 style="margin-bottom: 24px;">Compose Message</h3>
-            <input type="email" id="mail-to" placeholder="To (Email Address)">
-            <input type="text" id="mail-subject" placeholder="Subject">
-            <textarea id="mail-body" rows="6" placeholder="Type your message..."></textarea>
-            <div style="text-align: right;">
-                <button class="btn btn-primary" onclick="app.sendMail()"><i class="fa-solid fa-paper-plane"></i> Send</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="modal-add-user">
-        <div class="surface modal-card glass-panel" style="border-top: 4px solid var(--warning);">
-            <i class="fa-solid fa-xmark modal-close" onclick="app.closeModal('modal-add-user')"></i>
-            <h3 style="margin-bottom: 24px;">Register New User</h3>
-            <input type="email" id="nu-email" placeholder="User Email (Login ID)">
-            <input type="text" id="nu-name" placeholder="Full Name">
-            <input type="text" id="nu-mobile" placeholder="Mobile Number (+91...)">
-            <select id="nu-role"><option value="user">Standard User</option><option value="admin">Administrator</option></select>
-            <button class="btn btn-primary" style="width: 100%; background: var(--warning); color: black;" onclick="app.adminCreateUser()">Create User</button>
-        </div>
-    </div>
-
-    <script>
-        // ==========================================
-        // CONFIGURATION: GROQ API KEY (Llama3)
-        // ==========================================
-        // ENTER YOUR REAL GROQ API KEY HERE TO ENABLE AI FEATURES
-        const GROQ_API_KEY = "YOUR_GROQ_API_KEY_HERE"; 
-        
-        const app = {
-            currentUser: null,
-            tempLoginEmail: null,
-            tempOTP: null,
-            currentView: 'dashboard',
-            currentMailFolder: 'inbox',
-            currentTicketId: null,
-            calendarInstance: null,
-
-            // --- Initialization & Database ---
-            initData: function() {
-                // Ensure Master Admin exists
-                if (!localStorage.getItem('wt_users')) {
-                    localStorage.setItem('wt_users', JSON.stringify([
-                        { email: 'armtechbridge@gmail.com', fullname: 'Alagu Ragul M', mobile: '+91 7845714920', role: 'admin' },
-                        { email: 'user@worldtech.com', fullname: 'Demo User', mobile: '+1 555-0000', role: 'user' }
-                    ]));
-                }
-                if (!localStorage.getItem('wt_tickets')) {
-                    localStorage.setItem('wt_tickets', JSON.stringify([{ id: 'WT-1001', title: 'Exchange Server Sync Issue', desc: 'ActiveSync is failing for mobile clients.', priority: 'High', category: 'Software', status: 'Open', author: 'user@worldtech.com', date: new Date().toISOString() }]));
-                }
-                if (!localStorage.getItem('wt_mails')) {
-                    localStorage.setItem('wt_mails', JSON.stringify([]));
-                }
-
-                this.applyGlobalTheme();
-            },
-
-            // --- UI Helpers ---
-            showToast: function(msg, type = 'success') {
-                const hub = document.getElementById('toast-zone');
-                const toast = document.createElement('div');
-                toast.className = 'toast';
-                
-                let icon = '<i class="fa-solid fa-circle-check" style="color:var(--success)"></i>';
-                if(type === 'error') icon = '<i class="fa-solid fa-circle-exclamation" style="color:var(--danger)"></i>';
-                if(type === 'info') icon = '<i class="fa-solid fa-circle-info" style="color:var(--primary)"></i>';
-                
-                toast.innerHTML = `${icon} <span style="font-size:13px; font-weight:500;">${msg}</span>`;
-                hub.appendChild(toast);
-                setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 300); }, 3000);
-            },
-
-            // --- Master Admin Authentication (MFA) ---
-            triggerMFA: function() {
-                const email = document.getElementById('auth-email').value.trim().toLowerCase();
-                if(!email) { this.showLoginErr("Email is required."); return; }
-
-                const users = JSON.parse(localStorage.getItem('wt_users'));
-                const user = users.find(u => u.email === email);
-
-                if (user) {
-                    this.tempLoginEmail = email;
-                    document.getElementById('login-err').style.display = 'none';
-                    
-                    // Generate 6-Digit Code
-                    this.tempOTP = Math.floor(100000 + Math.random() * 900000).toString();
-
-                    // Send to simulators
-                    this.dispatchSimulatedOTP(user.mobile, email, this.tempOTP);
-
-                    // Switch Login UI
-                    document.getElementById('login-step-email').style.display = 'none';
-                    document.getElementById('login-step-otp').style.display = 'block';
-                    document.getElementById('sim-toggles').style.display = 'flex';
-                } else {
-                    this.showLoginErr("Email not found in system.");
-                }
-            },
-
-            showLoginErr: function(msg) {
-                const err = document.getElementById('login-err');
-                err.innerText = msg; err.style.display = 'block';
-            },
-
-            dispatchSimulatedOTP: function(mobile, email, otp) {
-                // 1. Mail System Backend (For real app usage & webmail simulator)
-                const mails = JSON.parse(localStorage.getItem('wt_mails')) || [];
-                mails.push({ 
-                    id: 'M_OTP_' + Date.now(), to: email, from: 'system@worldtech.com', 
-                    subject: 'Action Required: Security Code', 
-                    body: `Your secure authorization code is:\n\n${otp}\n\nDo not share this code.`, 
-                    date: new Date().toISOString(), folder: 'inbox', read: false 
-                });
-                localStorage.setItem('wt_mails', JSON.stringify(mails));
-
-                // 2. Mobile SMS Simulator
-                document.getElementById('sms-waiting').style.display = 'block';
-                document.getElementById('sms-content').style.display = 'none';
-                setTimeout(() => {
-                    document.getElementById('sms-waiting').style.display = 'none';
-                    document.getElementById('sms-content').innerHTML = `WorldTech Auth Code:<br><strong style="font-size:20px; letter-spacing:2px; display:block; margin-top:8px;">${otp}</strong>`;
-                    document.getElementById('sms-content').style.display = 'block';
-                }, 1000);
-                
-                // 3. Webmail Simulator
-                document.getElementById('webmail-waiting').style.display = 'none';
-                document.getElementById('webmail-content').style.display = 'block';
-                document.getElementById('webmail-otp-display').innerText = otp;
-            },
-
-            verifyLogin: function() {
-                const inputOTP = document.getElementById('auth-otp').value;
-                if (inputOTP === this.tempOTP) {
-                    const users = JSON.parse(localStorage.getItem('wt_users'));
-                    this.currentUser = users.find(u => u.email === this.tempLoginEmail);
-                    localStorage.setItem('wt_currentUser', JSON.stringify({ email: this.currentUser.email }));
-                    
-                    document.getElementById('login-view').style.display = 'none';
-                    document.getElementById('app-layout').style.display = 'flex';
-                    
-                    this.closeSimulator('sim-phone'); this.closeSimulator('sim-webmail');
-                    this.loadApp();
-                } else {
-                    this.showToast("Invalid Authorization Code.", "error");
-                    document.getElementById('auth-otp').value = '';
-                }
-            },
-
-            resetLogin: function() {
-                this.tempLoginEmail = null; this.tempOTP = null;
-                document.getElementById('login-step-email').style.display = 'block';
-                document.getElementById('login-step-otp').style.display = 'none';
-                document.getElementById('sim-toggles').style.display = 'none';
-                document.getElementById('auth-otp').value = '';
-                document.getElementById('login-err').style.display = 'none';
-                this.closeSimulator('sim-phone'); this.closeSimulator('sim-webmail');
-            },
-
-            logout: function() {
-                this.currentUser = null; localStorage.removeItem('wt_currentUser');
-                document.getElementById('login-view').style.display = 'flex';
-                document.getElementById('app-layout').style.display = 'none';
-                document.getElementById('auth-email').value = 'armtechbridge@gmail.com';
-                this.resetLogin();
-            },
-
-            checkAuth: function() {
-                const saved = localStorage.getItem('wt_currentUser');
-                if (saved) {
-                    const parsed = JSON.parse(saved);
-                    const users = JSON.parse(localStorage.getItem('wt_users'));
-                    this.currentUser = users.find(u => u.email === parsed.email);
-                    if(this.currentUser) {
-                        document.getElementById('login-view').style.display = 'none';
-                        document.getElementById('app-layout').style.display = 'flex';
-                        this.loadApp();
-                    }
-                }
-            },
-
-            // --- Simulators ---
-            openSimulator: function(id) { 
-                document.getElementById('sim-phone').classList.remove('active');
-                document.getElementById('sim-webmail').classList.remove('active');
-                document.getElementById(id).classList.add('active'); 
-            },
-            closeSimulator: function(id) { document.getElementById(id).classList.remove('active'); },
-
-            // --- App Core & RBAC ---
-            loadApp: function() {
-                document.getElementById('header-email').innerText = this.currentUser.email;
-                document.getElementById('header-role').innerText = this.currentUser.role === 'admin' ? 'Master Admin' : 'Standard User';
-                
-                document.getElementById('personal-notes').value = localStorage.getItem(`wt_notes_${this.currentUser.email}`) || '';
-
-                // RBAC: Show admin tabs only if master
-                if(this.currentUser.email === 'armtechbridge@gmail.com' || this.currentUser.role === 'admin') {
-                    document.getElementById('admin-nav-group').style.display = 'block';
-                } else {
-                    document.getElementById('admin-nav-group').style.display = 'none';
-                }
-
-                this.navigate('dashboard');
-                this.checkUnreadMails();
-            },
-
-            navigate: function(viewId) {
-                // Nav active state
-                document.querySelectorAll('.nav-item').forEach(li => li.classList.remove('active'));
-                const activeLi = Array.from(document.querySelectorAll('.nav-item')).find(li => li.getAttribute('onclick')?.includes(viewId));
-                if(activeLi) {
-                    activeLi.classList.add('active');
-                    document.getElementById('topbar-title').innerText = activeLi.innerText.trim().toUpperCase();
-                }
-                
-                // Toggle panes
-                document.querySelectorAll('.view-pane').forEach(sec => sec.classList.remove('active'));
-                document.getElementById('view-' + viewId).classList.add('active');
-                this.currentView = viewId;
-
-                // Mobile close
-                document.getElementById('app-sidebar').classList.remove('active');
-
-                // Context logic
-                if(viewId === 'dashboard') this.renderDashboard();
-                if(viewId === 'tickets') this.renderTickets();
-                if(viewId === 'mailbox') { this.renderMailbox(); document.getElementById('inbox-badge').style.display = 'none'; }
-                if(viewId === 'calendar') this.initCalendar();
-                if(viewId === 'profile') this.renderProfile();
-                if(viewId === 'admin-users') this.renderAdminUsers();
-            },
-
-            openModal: function(id) { document.getElementById(id).style.display = 'flex'; },
-            closeModal: function(id) { 
-                document.getElementById(id).style.display = 'none'; 
-                if(id === 'modal-view-ticket') document.getElementById('ai-fix-result').style.display = 'none';
-            },
-
-            // --- Theme Engine ---
-            applyGlobalTheme: function() {
-                const theme = JSON.parse(localStorage.getItem('wt_theme_config')) || { primary: '#2563eb', blur: 'blur(12px)' };
-                document.documentElement.style.setProperty('--primary', theme.primary);
-                document.documentElement.style.setProperty('--blur-md', theme.blur);
-                
-                // Update Select element if on theme page
-                const blurSelect = document.getElementById('theme-blur');
-                if(blurSelect) blurSelect.value = theme.blur;
-                
-                // Update Swatches
-                document.querySelectorAll('.color-swatch').forEach(sw => {
-                    sw.style.borderColor = 'transparent';
-                    if(sw.style.backgroundColor.replace(/\s/g, '') === this.hexToRgb(theme.primary)) {
-                        sw.style.borderColor = 'white';
-                    }
-                });
-            },
-            
-            // Helper for inline style color matching
-            hexToRgb: function(hex) {
-                let r = 0, g = 0, b = 0;
-                if (hex.length == 4) { r = "0x" + hex[1] + hex[1]; g = "0x" + hex[2] + hex[2]; b = "0x" + hex[3] + hex[3]; } 
-                else if (hex.length == 7) { r = "0x" + hex[1] + hex[2]; g = "0x" + hex[3] + hex[4]; b = "0x" + hex[5] + hex[6]; }
-                return `rgb(${+r},${+g},${+b})`;
-            },
-
-            setThemeColor: function(hex, el) {
-                document.documentElement.style.setProperty('--primary', hex);
-                document.querySelectorAll('.color-swatch').forEach(sw => sw.style.borderColor = 'transparent');
-                el.style.borderColor = 'white';
-            },
-
-            saveTheme: function() {
-                const primary = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim();
-                const blur = document.getElementById('theme-blur').value;
-                localStorage.setItem('wt_theme_config', JSON.stringify({ primary, blur }));
-                this.applyGlobalTheme();
-                this.showToast("Global theme deployed successfully.");
-            },
-
-            // --- Dashboard & Tickets ---
-            getTickets: function() { return JSON.parse(localStorage.getItem('wt_tickets')) || []; },
-            
-            renderDashboard: function() {
-                const t = this.getTickets();
-                document.getElementById('dash-tot').innerText = t.length;
-                document.getElementById('dash-opn').innerText = t.filter(x => x.status === 'Open').length;
-                document.getElementById('dash-prg').innerText = t.filter(x => x.status === 'In Progress').length;
-                document.getElementById('dash-cls').innerText = t.filter(x => x.status === 'Closed').length;
-
-                const tbody = document.getElementById('dash-recent-table');
-                tbody.innerHTML = '';
-                t.slice(-5).reverse().forEach(tk => {
-                    tbody.innerHTML += `<tr class="row-clickable" onclick="app.viewTicket('${tk.id}')">
-                        <td style="color:var(--primary); font-weight:500;">${tk.id}</td><td>${tk.title}</td>
-                        <td><span class="badge ${this.getBadgeClass(tk.status)}">${tk.status}</span></td>
-                        <td style="color:var(--text-muted); font-size:12px;">${new Date(tk.date).toLocaleDateString()}</td></tr>`;
-                });
-            },
-
-            renderTickets: function() {
-                const search = document.getElementById('tk-search').value.toLowerCase();
-                const filter = document.getElementById('tk-filter').value;
-                let tks = this.getTickets().filter(t => {
-                    return (t.title.toLowerCase().includes(search) || t.id.toLowerCase().includes(search)) && 
-                           (filter === 'All' || t.status === filter);
-                });
-
-                const tbody = document.getElementById('tk-table-body');
-                tbody.innerHTML = '';
-                tks.reverse().forEach(tk => {
-                    tbody.innerHTML += `<tr class="row-clickable" onclick="app.viewTicket('${tk.id}')">
-                        <td style="color:var(--primary); font-weight:500;">${tk.id}</td><td>${tk.title}</td>
-                        <td><span class="badge ${this.getBadgeClass(tk.priority)}">${tk.priority}</span></td>
-                        <td>${tk.category}</td>
-                        <td><span class="badge ${this.getBadgeClass(tk.status)}">${tk.status}</span></td>
-                        <td style="font-size:12px;">${tk.author.split('@')[0]}</td>
-                        <td><button class="btn btn-outline" style="padding:4px 8px; font-size:11px;">View</button></td>
-                    </tr>`;
-                });
-            },
-
-            getBadgeClass: function(val) {
-                if(val === 'High' || val === 'Open') return 'badge-danger';
-                if(val === 'Medium' || val === 'In Progress') return 'badge-warning';
-                if(val === 'Low' || val === 'Closed') return 'badge-success';
-                return 'badge-primary';
-            },
-
-            createTicket: function() {
-                const title = document.getElementById('nt-title').value;
-                const desc = document.getElementById('nt-desc').value;
-                if(!title || !desc) return this.showToast("Please provide subject and details.", "error");
-
-                const tickets = this.getTickets();
-                const id = 'WT-' + (1000 + tickets.length + 1);
-                
-                tickets.push({
-                    id, title, desc, category: document.getElementById('nt-category').value, 
-                    priority: document.getElementById('nt-priority').value, status: 'Open', 
-                    author: this.currentUser.email, date: new Date().toISOString()
-                });
-
-                localStorage.setItem('wt_tickets', JSON.stringify(tickets));
-                this.closeModal('modal-create-ticket');
-                document.getElementById('nt-title').value = ''; document.getElementById('nt-desc').value = '';
-                
-                this.renderTickets(); this.renderDashboard();
-                this.showToast(`Ticket ${id} successfully created.`);
-                
-                // Alert Master Admin
-                if(this.currentUser.email !== 'armtechbridge@gmail.com') {
-                    this.internalMailSend('armtechbridge@gmail.com', 'system@worldtech.com', `New Support Ticket: ${id}`, `User ${this.currentUser.email} submitted a new request.\n\nSubject: ${title}`);
-                }
-            },
-
-            viewTicket: function(id) {
-                const tk = this.getTickets().find(t => t.id === id);
-                if(!tk) return;
-                this.currentTicketId = id;
-
-                document.getElementById('vt-title').innerText = tk.title; 
-                document.getElementById('vt-id').innerText = tk.id;
-                document.getElementById('vt-author').innerText = tk.author; 
-                document.getElementById('vt-date').innerText = new Date(tk.date).toLocaleString();
-                document.getElementById('vt-desc').innerText = tk.desc;
-                document.getElementById('vt-category').innerText = tk.category;
-                
-                document.getElementById('vt-status').innerText = tk.status; document.getElementById('vt-status').className = `badge ${this.getBadgeClass(tk.status)}`;
-                document.getElementById('vt-priority').innerText = tk.priority; document.getElementById('vt-priority').className = `badge ${this.getBadgeClass(tk.priority)}`;
-
-                // Admin Ticket Controls
-                if(this.currentUser.email === 'armtechbridge@gmail.com' || this.currentUser.role === 'admin') {
-                    document.getElementById('vt-admin-controls').style.display = 'block';
-                    document.getElementById('vt-edit-status').value = tk.status; 
-                    document.getElementById('vt-edit-priority').value = tk.priority;
-                } else {
-                    document.getElementById('vt-admin-controls').style.display = 'none';
-                }
-
-                this.openModal('modal-view-ticket');
-            },
-
-            updateTicket: function(field, val) {
-                let tickets = this.getTickets();
-                let idx = tickets.findIndex(t => t.id === this.currentTicketId);
-                if(idx > -1) {
-                    tickets[idx][field] = val;
-                    localStorage.setItem('wt_tickets', JSON.stringify(tickets));
-                    this.viewTicket(this.currentTicketId); this.renderTickets(); this.renderDashboard();
-                }
-            },
-
-            deleteTicket: function() {
-                if(confirm("Confirm deletion of this record?")) {
-                    let tickets = this.getTickets().filter(t => t.id !== this.currentTicketId);
-                    localStorage.setItem('wt_tickets', JSON.stringify(tickets));
-                    this.closeModal('modal-view-ticket'); this.renderTickets(); this.renderDashboard();
-                    this.showToast("Ticket deleted.");
-                }
-            },
-
-            exportCSV: function() {
-                let csv = "data:text/csv;charset=utf-8,ID,Subject,Priority,Category,Status,Author,Date\n";
-                this.getTickets().forEach(t => csv += `${t.id},"${t.title}",${t.priority},${t.category},${t.status},${t.author},${t.date}\n`);
-                const link = document.createElement("a"); link.setAttribute("href", encodeURI(csv)); link.setAttribute("download", "WorldTech_Tickets.csv");
-                document.body.appendChild(link); link.click(); document.body.removeChild(link);
-            },
-
-            // --- Voice API ---
-            startVoice: function(targetId) {
-                const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-                if(!SR) return this.showToast("Voice transcription not supported by this browser.", "error");
-                
-                const btn = document.getElementById('btn-voice'); 
-                btn.style.color = 'var(--danger)';
-
-                const rec = new SR();
-                rec.onresult = (e) => { 
-                    const input = document.getElementById(targetId); 
-                    input.value = input.value ? input.value + " " + e.results[0][0].transcript : e.results[0][0].transcript; 
-                };
-                rec.onend = () => { btn.style.color = 'var(--text-muted)'; };
-                rec.start();
-            },
-
-            // --- Internal Mail System ---
-            getMails: function() { return JSON.parse(localStorage.getItem('wt_mails')) || []; },
-            saveMails: function(m) { localStorage.setItem('wt_mails', JSON.stringify(m)); },
-
-            internalMailSend: function(to, from, subject, body) {
-                const mails = this.getMails();
-                const date = new Date().toISOString();
-                const id = 'M' + Date.now();
-                
-                mails.push({ id, to, from, subject, body, date, folder: 'inbox', read: false }); 
-                if(from !== 'system@worldtech.com') {
-                    mails.push({ id: id+'_s', to, from, subject, body, date, folder: 'sent', owner: from }); 
-                }
-                
-                this.saveMails(mails);
-                
-                // Notification
-                if(this.currentUser && this.currentUser.email === to) {
-                    this.showToast(`New Mail: ${subject}`, 'info');
-                    document.getElementById('inbox-badge').style.display = 'inline-block';
-                    document.getElementById('bell-dot').style.display = 'block';
-                    if(this.currentView === 'mailbox') this.renderMailbox();
-                }
-            },
-
-            checkUnreadMails: function() {
-                const mails = this.getMails();
-                const unread = mails.filter(m => m.to === this.currentUser.email && m.folder === 'inbox' && !m.read).length;
-                if(unread > 0) {
-                    document.getElementById('inbox-badge').style.display = 'inline-block';
-                    document.getElementById('bell-dot').style.display = 'block';
-                }
-            },
-
-            switchMailFolder: function(folder) {
-                this.currentMailFolder = folder;
-                document.getElementById('tab-inbox').classList.remove('active');
-                document.getElementById('tab-sent').classList.remove('active');
-                document.getElementById(`tab-${folder}`).classList.add('active');
-                document.getElementById('mail-read-view').style.display = 'none';
-                this.renderMailbox();
-            },
-
-            renderMailbox: function() {
-                const mails = this.getMails();
-                const c = document.getElementById('mail-list-view');
-                c.innerHTML = '';
-                
-                let filtered = mails.filter(m => {
-                    if(this.currentMailFolder === 'inbox') return m.to === this.currentUser.email && m.folder === 'inbox';
-                    if(this.currentMailFolder === 'sent') return m.owner === this.currentUser.email && m.folder === 'sent';
-                });
-
-                filtered.reverse().forEach(m => {
-                    const unread = (m.folder === 'inbox' && !m.read) ? 'unread' : '';
-                    const icon = m.from === 'system@worldtech.com' ? '<i class="fa-solid fa-robot" style="color:var(--warning)"></i>' : '<i class="fa-solid fa-user-circle"></i>';
-                    c.innerHTML += `
-                        <div class="mail-row ${unread}" onclick="app.readMail('${m.id}')">
-                            <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 6px;">${icon} ${this.currentMailFolder === 'sent' ? 'To: '+m.to : 'From: '+m.from}</div>
-                            <div style="font-weight: 500; font-size: 14px; margin-bottom: 4px;">${m.subject}</div>
-                            <div style="font-size: 11px; color: var(--text-muted);">${new Date(m.date).toLocaleDateString()}</div>
-                        </div>
-                    `;
-                });
-            },
-
-            readMail: function(id) {
-                let mails = this.getMails();
-                let idx = mails.findIndex(m => m.id === id);
-                if(idx > -1) {
-                    const m = mails[idx];
-                    document.getElementById('read-subj').innerText = m.subject;
-                    document.getElementById('read-from').innerText = m.from;
-                    document.getElementById('read-date').innerText = new Date(m.date).toLocaleString();
-                    document.getElementById('read-body').innerHTML = m.body;
-                    document.getElementById('mail-read-view').style.display = 'block';
-
-                    if(!m.read && m.folder === 'inbox') {
-                        mails[idx].read = true;
-                        this.saveMails(mails);
-                        this.renderMailbox();
-                        
-                        if(mails.filter(x => x.to === this.currentUser.email && x.folder === 'inbox' && !x.read).length === 0) {
-                            document.getElementById('inbox-badge').style.display = 'none';
-                            document.getElementById('bell-dot').style.display = 'none';
-                        }
-                    }
-                }
-            },
-
-            sendMail: function() {
-                const to = document.getElementById('mail-to').value.trim();
-                const sub = document.getElementById('mail-subject').value.trim();
-                const body = document.getElementById('mail-body').value.trim();
-                if(!to || !sub) return this.showToast("Address and Subject required.", "error");
-                
-                this.closeModal('modal-compose-mail');
-                setTimeout(() => {
-                    this.internalMailSend(to, this.currentUser.email, sub, body);
-                    this.showToast("Mail Dispatched.");
-                    if(this.currentView === 'mailbox') this.renderMailbox();
-                    
-                    document.getElementById('mail-to').value = ''; document.getElementById('mail-subject').value = ''; document.getElementById('mail-body').value = '';
-                }, 800);
-            },
-
-            // --- Groq AI (Llama3) ---
-            callAI: async function(prompt, sysMsg) {
-                if (GROQ_API_KEY === "YOUR_GROQ_API_KEY_HERE") return "ERROR: Groq API Key missing in system config.";
-                try {
-                    const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-                        method: "POST", headers: { "Authorization": `Bearer ${GROQ_API_KEY}`, "Content-Type": "application/json" },
-                        body: JSON.stringify({ model: "llama3-8b-8192", messages: [{ role: "system", content: sysMsg }, { role: "user", content: prompt }], temperature: 0.5 })
-                    });
-                    if(!res.ok) throw new Error("API Failure");
-                    const data = await res.json(); return data.choices[0].message.content;
-                } catch (e) { return "ERROR: Failed to connect to AI Gateway."; }
-            },
-
-            aiSuggestPriority: async function() {
-                const t = document.getElementById('nt-title').value; const d = document.getElementById('nt-desc').value;
-                if(!t) return this.showToast("Subject required for analysis.", "error");
-                
-                document.getElementById('ai-prio-loader').style.display = 'inline-block';
-                const res = await this.callAI(`Ticket: ${t}. Details: ${d}. Suggest Priority (Low, Medium, High) with 1 brief sentence logic.`, "You are an ITSM triage AI. Respond format exactly: 'Priority: [Level] - [Reason]'");
-                document.getElementById('ai-prio-loader').style.display = 'none';
-                
-                if(res.includes('ERROR')) return alert(res);
-                
-                alert("AI Triage Suggestion:\n" + res);
-                if(res.toLowerCase().includes('high')) document.getElementById('nt-priority').value = 'High';
-                else if(res.toLowerCase().includes('medium')) document.getElementById('nt-priority').value = 'Medium';
-                else document.getElementById('nt-priority').value = 'Low';
-            },
-
-            aiGenerateFix: async function() {
-                const desc = document.getElementById('vt-desc').innerText;
-                document.getElementById('ai-fix-loader').style.display = 'block'; document.getElementById('ai-fix-result').style.display = 'none';
-
-                let res = await this.callAI(`Generate step-by-step fix for: ${desc}`, "You are an expert IT Support Engineer AI. Provide clear, numbered steps. Use HTML <br> for line breaks.");
-                document.getElementById('ai-fix-loader').style.display = 'none'; document.getElementById('ai-fix-result').style.display = 'block';
-                
-                res = res.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-                document.getElementById('ai-fix-result').innerHTML = `<h4 style="color:var(--primary); margin-bottom:12px;"><i class="fa-solid fa-wand-magic-sparkles"></i> Suggested Resolution</h4>${res}`;
-            },
-
-            sendChatMessage: async function() {
-                const input = document.getElementById('ai-chat-input'); const msg = input.value.trim();
-                if(!msg) return;
-
-                const hist = document.getElementById('ai-chat-history');
-                hist.innerHTML += `<div class="msg-bubble msg-user">${msg}</div>`;
-                input.value = ''; hist.scrollTop = hist.scrollHeight;
-
-                document.getElementById('ai-chat-loader').style.display = 'block';
-                let res = await this.callAI(msg, "You are an enterprise helpdesk chatbot. Give simple, numbered troubleshooting steps.");
-                
-                document.getElementById('ai-chat-loader').style.display = 'none';
-                hist.innerHTML += `<div class="msg-bubble msg-ai">${res.replace(/\n/g, '<br>')}</div>`;
-                hist.scrollTop = hist.scrollHeight;
-            },
-
-            // --- Calendar ---
-            initCalendar: function() {
-                if (this.calendarInstance) {
-                    setTimeout(() => this.calendarInstance.render(), 100);
-                    return;
-                }
-                const calEl = document.getElementById('calendar-wrapper');
-                const events = JSON.parse(localStorage.getItem('wt_events')) || [];
-
-                this.calendarInstance = new FullCalendar.Calendar(calEl, {
-                    initialView: 'dayGridMonth', height: 'calc(100vh - 200px)',
-                    headerToolbar: { left: 'prev,next', center: 'title', right: 'dayGridMonth,timeGridWeek' },
-                    events: events, editable: true, selectable: true,
-                    select: function(info) {
-                        const title = prompt('Enter Calendar Event:');
-                        if (title) {
-                            const evt = { id: Date.now().toString(), title, start: info.startStr, end: info.endStr, allDay: info.allDay };
-                            app.calendarInstance.addEvent(evt);
-                            const current = JSON.parse(localStorage.getItem('wt_events')) || [];
-                            current.push(evt); localStorage.setItem('wt_events', JSON.stringify(current));
-                        }
-                        app.calendarInstance.unselect();
-                    },
-                    eventClick: function(info) {
-                        if(confirm(`Delete event '${info.event.title}'?`)) {
-                            info.event.remove();
-                            let current = JSON.parse(localStorage.getItem('wt_events')) || [];
-                            current = current.filter(e => e.id !== info.event.id);
-                            localStorage.setItem('wt_events', JSON.stringify(current));
-                        }
-                    }
-                });
-                setTimeout(() => this.calendarInstance.render(), 100);
-            },
-
-            // --- Profile & Notes ---
-            saveNotes: function() { localStorage.setItem(`wt_notes_${this.currentUser.email}`, document.getElementById('personal-notes').value); },
-
-            renderProfile: function() {
-                document.getElementById('prof-email').value = this.currentUser.email;
-                document.getElementById('prof-name').value = this.currentUser.fullname || '';
-                document.getElementById('prof-mobile').value = this.currentUser.mobile || '';
-            },
-
-            saveProfile: function() {
-                let users = JSON.parse(localStorage.getItem('wt_users'));
-                let idx = users.findIndex(u => u.email === this.currentUser.email);
-                if(idx > -1) {
-                    users[idx].fullname = document.getElementById('prof-name').value;
-                    users[idx].mobile = document.getElementById('prof-mobile').value;
-                    localStorage.setItem('wt_users', JSON.stringify(users));
-                    this.currentUser = users[idx]; 
-                    this.showToast("Profile Updated.");
-                }
-            },
-
-            // --- Admin Users ---
-            renderAdminUsers: function() {
-                const users = JSON.parse(localStorage.getItem('wt_users'));
-                const tbody = document.getElementById('admin-user-table');
-                tbody.innerHTML = '';
-                users.forEach(u => {
-                    const action = u.email === 'armtechbridge@gmail.com' ? 
-                        `<span style="color:var(--text-muted); font-size:12px;">Immutable</span>` : 
-                        `<button class="btn btn-danger" style="padding:4px 8px; font-size:12px;" onclick="app.adminDeleteUser('${u.email}')">Remove</button>`;
-                    
-                    tbody.innerHTML += `<tr>
-                        <td style="font-weight:500;">${u.email}</td><td>${u.fullname || '-'}</td>
-                        <td><span class="badge ${u.role==='admin'?'badge-warning':'badge-primary'}">${u.role.toUpperCase()}</span></td>
-                        <td>${action}</td>
-                    </tr>`;
-                });
-            },
-
-            adminCreateUser: function() {
-                const email = document.getElementById('nu-email').value.trim().toLowerCase();
-                if(!email) return this.showToast("Email required.", "error");
-                
-                let users = JSON.parse(localStorage.getItem('wt_users'));
-                if(users.find(u => u.email === email)) return this.showToast("User exists.", "error");
-
-                users.push({ 
-                    email, 
-                    fullname: document.getElementById('nu-name').value, 
-                    mobile: document.getElementById('nu-mobile').value, 
-                    role: document.getElementById('nu-role').value 
-                });
-                
-                localStorage.setItem('wt_users', JSON.stringify(users));
-                this.closeModal('modal-add-user'); 
-                this.renderAdminUsers(); 
-                this.showToast("User provisioned successfully.");
-                ['nu-email','nu-name','nu-mobile'].forEach(id => document.getElementById(id).value = '');
-            },
-
-            adminDeleteUser: function(email) {
-                if(confirm(`Remove user ${email} from the system?`)) {
-                    let users = JSON.parse(localStorage.getItem('wt_users')).filter(u => u.email !== email);
-                    localStorage.setItem('wt_users', JSON.stringify(users)); 
-                    this.renderAdminUsers();
-                }
-            }
-        };
-
-        // Live Clock (12h AM/PM)
-        setInterval(() => { 
-            document.getElementById('live-clock').innerText = new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', second: '2-digit', hour12: true }); 
-        }, 1000);
-
-        // Boot
-        window.onload = function() { 
-            app.initData(); 
-            app.checkAuth(); 
-        };
-    </script>
+<div id="loginPage" class="login">
+
+<div class="login-box">
+<h3>WorldTech ServiceDesk</h3>
+
+<input id="emailInput" placeholder="Enter Master Email">
+
+<button onclick="sendOTP()">Send OTP</button>
+
+<div id="otpArea" style="display:none">
+<input id="otpInput" placeholder="Enter OTP">
+<button onclick="verifyOTP()">Login</button>
+</div>
+
+</div>
+
+</div>
+
+<div id="app" style="display:none">
+
+<header>
+<div class="logo">WorldTech ServiceDesk</div>
+<div>
+<span id="clock"></span>
+<i class="fa fa-bell"></i>
+</div>
+</header>
+
+<div class="container">
+
+<div class="sidebar">
+<a onclick="showPage('dashboard')">Dashboard</a>
+<a onclick="showPage('tickets')">Tickets</a>
+<a onclick="showPage('create')">Create Ticket</a>
+<a onclick="showPage('mail')">Inbox</a>
+<a onclick="showPage('ai')">AI Support</a>
+<a onclick="showPage('calendar')">Calendar</a>
+<a onclick="showPage('notes')">Notes</a>
+<a onclick="exportCSV()">Export CSV</a>
+</div>
+
+<div class="main">
+
+<div id="dashboardPage">
+
+<div class="stats">
+<div class="stat"><h2 id="totalCount">0</h2>Total</div>
+<div class="stat"><h2 id="openCount">0</h2>Open</div>
+<div class="stat"><h2 id="progressCount">0</h2>Progress</div>
+<div class="stat"><h2 id="closedCount">0</h2>Closed</div>
+</div>
+
+</div>
+
+<div id="ticketsPage" style="display:none">
+
+<div class="card">
+<input id="searchTicket" placeholder="Search ticket" onkeyup="renderTickets()">
+
+<table class="table">
+<thead>
+<tr>
+<th>Title</th>
+<th>Priority</th>
+<th>Status</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody id="ticketTable"></tbody>
+</table>
+
+</div>
+
+</div>
+
+<div id="createPage" style="display:none">
+
+<div class="card">
+
+<input id="title" placeholder="Title">
+
+<textarea id="desc" placeholder="Description"></textarea>
+
+<button onclick="voiceInput()"><i class="fa fa-microphone"></i></button>
+
+<select id="priority">
+<option>Low</option>
+<option>Medium</option>
+<option>High</option>
+</select>
+
+<select id="category">
+<option>Network</option>
+<option>Software</option>
+<option>Hardware</option>
+</select>
+
+<button onclick="aiSuggest()">AI Suggest Priority</button>
+
+<button onclick="createTicket()">Create Ticket</button>
+
+</div>
+
+</div>
+
+<div id="mailPage" style="display:none">
+
+<div class="card">
+<h3>Inbox</h3>
+<div id="mailList"></div>
+</div>
+
+</div>
+
+<div id="aiPage" style="display:none">
+
+<div class="card">
+
+<div class="chatbox" id="chat"></div>
+
+<input id="aiInput" placeholder="Ask IT issue">
+
+<button onclick="askAI()">Send</button>
+
+</div>
+
+</div>
+
+<div id="calendarPage" style="display:none">
+<div id="calendar"></div>
+</div>
+
+<div id="notesPage" style="display:none">
+
+<div class="card">
+
+<textarea id="noteText"></textarea>
+
+<button onclick="saveNote()">Save Note</button>
+
+<div id="noteList"></div>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+/* MASTER ADMIN EMAIL */
+const masterEmail="armtechbridge@gmail.com";
+
+/* GROQ API PLACEHOLDER */
+const GROQ_API_KEY="PASTE_GROQ_API_KEY_HERE";
+
+/* OTP LOGIN */
+
+let generatedOTP="";
+
+function sendOTP(){
+
+const email=document.getElementById("emailInput").value;
+
+if(email!==masterEmail){alert("Invalid email");return}
+
+generatedOTP=Math.floor(100000+Math.random()*900000).toString();
+
+let mails=JSON.parse(localStorage.getItem("mails")||"[]");
+
+mails.unshift({subject:"OTP Login",body:"Your OTP is "+generatedOTP});
+
+localStorage.setItem("mails",JSON.stringify(mails));
+
+alert("OTP sent to Inbox & SMS");
+
+document.getElementById("otpArea").style.display="block";
+
+}
+
+function verifyOTP(){
+
+if(document.getElementById("otpInput").value===generatedOTP){
+
+document.getElementById("loginPage").style.display="none";
+
+document.getElementById("app").style.display="block";
+
+init();
+
+}else alert("Wrong OTP")
+
+}
+
+/* INIT */
+
+function init(){
+
+renderTickets();
+
+renderMail();
+
+loadNotes();
+
+initCalendar();
+
+updateStats();
+
+}
+
+/* CLOCK */
+
+setInterval(()=>{
+
+let d=new Date();
+
+let h=d.getHours();
+
+let m=d.getMinutes();
+
+let ampm=h>=12?"PM":"AM";
+
+h=h%12||12;
+
+document.getElementById("clock").innerText=
+h+":"+m.toString().padStart(2,"0")+" "+ampm;
+
+},1000)
+
+/* PAGE NAV */
+
+function showPage(p){
+
+["dashboard","tickets","create","mail","ai","calendar","notes"].forEach(x=>{
+document.getElementById(x+"Page").style.display="none";
+});
+
+document.getElementById(p+"Page").style.display="block";
+
+}
+
+/* TICKETS */
+
+function createTicket(){
+
+let tickets=JSON.parse(localStorage.getItem("tickets")||"[]");
+
+tickets.push({
+title:title.value,
+desc:desc.value,
+priority:priority.value,
+status:"Open"
+});
+
+localStorage.setItem("tickets",JSON.stringify(tickets));
+
+renderTickets();
+updateStats();
+
+alert("Ticket created");
+
+}
+
+function renderTickets(){
+
+let tickets=JSON.parse(localStorage.getItem("tickets")||"[]");
+
+let html="";
+
+tickets.forEach((t,i)=>{
+
+html+=`
+<tr>
+<td>${t.title}</td>
+<td>${t.priority}</td>
+<td>${t.status}</td>
+<td>
+<button onclick="closeTicket(${i})">Close</button>
+<button onclick="deleteTicket(${i})">Delete</button>
+</td>
+</tr>`
+
+})
+
+ticketTable.innerHTML=html;
+
+}
+
+function closeTicket(i){
+
+let t=JSON.parse(localStorage.getItem("tickets"));
+
+t[i].status="Closed";
+
+localStorage.setItem("tickets",JSON.stringify(t));
+
+renderTickets();
+updateStats();
+
+}
+
+function deleteTicket(i){
+
+if(confirm("Delete ticket?")){
+
+let t=JSON.parse(localStorage.getItem("tickets"));
+
+t.splice(i,1);
+
+localStorage.setItem("tickets",JSON.stringify(t));
+
+renderTickets();
+updateStats();
+
+}
+
+}
+
+/* STATS */
+
+function updateStats(){
+
+let t=JSON.parse(localStorage.getItem("tickets")||"[]");
+
+totalCount.innerText=t.length;
+openCount.innerText=t.filter(x=>x.status=="Open").length;
+closedCount.innerText=t.filter(x=>x.status=="Closed").length;
+progressCount.innerText=t.filter(x=>x.status=="In Progress").length;
+
+}
+
+/* MAIL */
+
+function renderMail(){
+
+let mails=JSON.parse(localStorage.getItem("mails")||"[]");
+
+mailList.innerHTML=mails.map(m=>`
+<div class="mail">
+<b>${m.subject}</b><br>${m.body}
+</div>
+`).join("");
+
+}
+
+/* AI */
+
+async function askAI(){
+
+let q=aiInput.value;
+
+chat.innerHTML+=`<div>You: ${q}</div>`;
+
+let res=await fetch("https://api.groq.com/openai/v1/chat/completions",{
+method:"POST",
+headers:{
+"Content-Type":"application/json",
+"Authorization":"Bearer "+GROQ_API_KEY
+},
+body:JSON.stringify({
+model:"llama3-8b-8192",
+messages:[{role:"user",content:q}]
+})
+});
+
+let data=await res.json();
+
+let ans=data.choices[0].message.content;
+
+chat.innerHTML+=`<div>AI: ${ans}</div>`;
+
+}
+
+/* AI PRIORITY */
+
+function aiSuggest(){
+
+alert("AI Suggestion feature will use Groq to analyze description.");
+
+}
+
+/* VOICE */
+
+function voiceInput(){
+
+let r=new webkitSpeechRecognition();
+
+r.onresult=e=>{
+desc.value+=e.results[0][0].transcript;
+};
+
+r.start();
+
+}
+
+/* CALENDAR */
+
+function initCalendar(){
+
+let calendarEl=document.getElementById('calendar');
+
+let calendar=new FullCalendar.Calendar(calendarEl,{
+initialView:'dayGridMonth',
+editable:true,
+events:JSON.parse(localStorage.getItem("events")||"[]"),
+dateClick:function(info){
+
+let title=prompt("Event title");
+
+if(title){
+
+calendar.addEvent({title:title,start:info.dateStr});
+
+let e=calendar.getEvents().map(ev=>({title:ev.title,start:ev.start}));
+
+localStorage.setItem("events",JSON.stringify(e));
+
+}
+
+}
+});
+
+calendar.render();
+
+}
+
+/* NOTES */
+
+function saveNote(){
+
+let notes=JSON.parse(localStorage.getItem("notes")||"[]");
+
+notes.push(noteText.value);
+
+localStorage.setItem("notes",JSON.stringify(notes));
+
+loadNotes();
+
+}
+
+function loadNotes(){
+
+let notes=JSON.parse(localStorage.getItem("notes")||"[]");
+
+noteList.innerHTML=notes.map(n=>`<div class="note">${n}</div>`).join("");
+
+}
+
+/* CSV EXPORT */
+
+function exportCSV(){
+
+let t=JSON.parse(localStorage.getItem("tickets")||"[]");
+
+let csv="Title,Priority,Status\n";
+
+t.forEach(x=>csv+=`${x.title},${x.priority},${x.status}\n`);
+
+let blob=new Blob([csv]);
+
+let a=document.createElement("a");
+
+a.href=URL.createObjectURL(blob);
+
+a.download="tickets.csv";
+
+a.click();
+
+}
+
+</script>
+
 </body>
 </html>
