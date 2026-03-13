@@ -3,580 +3,1181 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WorldTech AI ServiceDesk v3.0</title>
+    <title>WorldTech ServiceDesk | Premium ITSM</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
 
     <style>
-        /* === THEME ARCHITECTURE === */
+        /* === THEME VARIABLES === */
         :root {
-            /* Default: Cyber Blue */
-            --bg-base: #030407;
-            --glass-bg: rgba(10, 12, 20, 0.65);
-            --glass-border: rgba(0, 243, 255, 0.25);
-            --neon-primary: #00f3ff;
-            --neon-secondary: #bc13fe;
-            --neon-alert: #ff2a2a;
-            --neon-success: #00ff66;
-            --text-main: #e0e6ed;
-            --text-muted: #6b7a90;
+            --bg-base: #05050a;
+            --glass-bg: rgba(15, 15, 25, 0.6);
+            --glass-border: rgba(0, 234, 255, 0.15);
+            --neon-cyan: #00eaff;
+            --neon-indigo: #6366f1;
+            --neon-alert: #ff3366;
+            --neon-success: #00ff88;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
             --font-display: 'Orbitron', sans-serif;
-            --font-body: 'Rajdhani', sans-serif;
-            --sidebar-width: 260px;
+            --font-body: 'Inter', sans-serif;
+            --sidebar-width: 250px;
+            --shadow-cyan: 0 0 15px rgba(0, 234, 255, 0.3);
+            --shadow-indigo: 0 0 20px rgba(99, 102, 241, 0.4);
         }
 
-        /* Theme: Matrix Green */
-        body[data-theme="matrix"] {
-            --bg-base: #010a01;
-            --glass-bg: rgba(5, 20, 5, 0.65);
-            --glass-border: rgba(0, 255, 65, 0.25);
-            --neon-primary: #00ff41;
-            --neon-secondary: #008f11;
-            --text-main: #e0ffe0;
+        body.light-mode {
+            --bg-base: #f1f5f9;
+            --glass-bg: rgba(255, 255, 255, 0.7);
+            --glass-border: rgba(99, 102, 241, 0.2);
+            --neon-cyan: #0ea5e9;
+            --neon-indigo: #4f46e5;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
         }
 
-        /* Theme: Crimson Alert */
-        body[data-theme="crimson"] {
-            --bg-base: #0a0101;
-            --glass-bg: rgba(20, 5, 5, 0.65);
-            --glass-border: rgba(255, 42, 42, 0.25);
-            --neon-primary: #ff2a2a;
-            --neon-secondary: #ff7300;
-            --text-main: #ffe0e0;
-        }
-
-        /* Theme: Clean Light */
-        body[data-theme="light"] {
-            --bg-base: #f0f2f5;
-            --glass-bg: rgba(255, 255, 255, 0.85);
-            --glass-border: rgba(0, 85, 255, 0.2);
-            --neon-primary: #0055ff;
-            --neon-secondary: #6a0dad;
-            --text-main: #111827;
-            --text-muted: #4b5563;
-        }
-
-        /* === GLOBAL RESET & ANIMATIONS === */
+        /* === GLOBAL RESET & BACKGROUND === */
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: var(--font-body); background: var(--bg-base); color: var(--text-main); overflow-x: hidden; transition: background 0.4s ease; }
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: var(--bg-base); }
-        ::-webkit-scrollbar-thumb { background: var(--neon-primary); border-radius: 4px; }
-
-        .cyber-grid { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-image: linear-gradient(rgba(var(--neon-primary), 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(var(--neon-primary), 0.03) 1px, transparent 1px); background-size: 40px 40px; z-index: -2; animation: gridMove 25s linear infinite; }
-        .glow-sphere { position: fixed; border-radius: 50%; filter: blur(120px); z-index: -1; opacity: 0.2; animation: pulseGlow 8s infinite alternate; }
-        .sphere-1 { top: -10%; left: -10%; width: 50vw; height: 50vw; background: var(--neon-primary); }
-        .sphere-2 { bottom: -10%; right: -10%; width: 40vw; height: 40vw; background: var(--neon-secondary); }
-
-        @keyframes gridMove { 0% { transform: translateY(0); } 100% { transform: translateY(40px); } }
-        @keyframes pulseGlow { 0% { opacity: 0.1; transform: scale(0.9); } 100% { opacity: 0.25; transform: scale(1.1); } }
-
-        /* === COMPONENTS === */
-        .glass-panel { background: var(--glass-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid var(--glass-border); border-radius: 12px; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4); transition: border 0.3s, box-shadow 0.3s; }
-        h1, h2, h3 { font-family: var(--font-display); font-weight: 700; letter-spacing: 2px; text-transform: uppercase; }
+        body { font-family: var(--font-body); background: var(--bg-base); color: var(--text-main); overflow: hidden; transition: background 0.4s; }
         
-        button, .btn { font-family: var(--font-display); background: rgba(0, 0, 0, 0.2); color: var(--neon-primary); border: 1px solid var(--neon-primary); padding: 10px 20px; border-radius: 6px; cursor: pointer; transition: all 0.3s; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1px; }
-        button:hover, .btn:hover { background: var(--neon-primary); color: var(--bg-base); box-shadow: 0 0 20px var(--neon-primary); }
-        button.action-btn { background: var(--neon-primary); color: var(--bg-base); box-shadow: 0 0 10px rgba(0,0,0,0.5); font-weight: bold;}
-        
-        input, select, textarea { width: 100%; padding: 12px; margin-bottom: 15px; background: rgba(0,0,0,0.4); border: 1px solid var(--glass-border); color: var(--text-main); border-radius: 6px; font-family: var(--font-body); font-size: 1.1rem; outline: none; transition: all 0.3s; }
-        body[data-theme="light"] input, body[data-theme="light"] select { background: rgba(255,255,255,0.6); }
-        input:focus, select:focus, textarea:focus { border-color: var(--neon-primary); box-shadow: inset 0 0 8px rgba(0,0,0,0.5), 0 0 8px var(--neon-primary); }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--neon-indigo); border-radius: 3px; }
 
-        /* === TOAST NOTIFICATIONS === */
-        #toast-container { position: fixed; bottom: 30px; right: 30px; display: flex; flex-direction: column; gap: 10px; z-index: 9999; }
-        .toast { background: rgba(10, 12, 20, 0.95); border-left: 4px solid var(--neon-primary); color: #fff; padding: 15px 20px; border-radius: 4px; font-family: var(--font-display); font-size: 0.9rem; box-shadow: 0 5px 15px rgba(0,0,0,0.8); animation: slideInRight 0.3s ease forwards; }
-        @keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-        @keyframes fadeOut { to { opacity: 0; transform: translateY(-10px); } }
+        /* Animated Particle/Gradient Background */
+        .cyber-bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -2; background: radial-gradient(circle at 15% 50%, rgba(99, 102, 241, 0.08), transparent 25%), radial-gradient(circle at 85% 30%, rgba(0, 234, 255, 0.08), transparent 25%); animation: bgShift 20s infinite alternate linear; }
+        .cyber-grid { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; background-image: linear-gradient(rgba(0, 234, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 234, 255, 0.03) 1px, transparent 1px); background-size: 50px 50px; opacity: 0.5; animation: gridDrift 30s linear infinite; }
+        @keyframes bgShift { 0% { transform: scale(1); } 100% { transform: scale(1.1); } }
+        @keyframes gridDrift { 0% { background-position: 0 0; } 100% { background-position: 50px 50px; } }
+
+        /* === GLASSMORPHISM UI === */
+        .glass { background: var(--glass-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid var(--glass-border); border-radius: 12px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3); }
+        .glass-panel { padding: 24px; transition: border 0.3s, transform 0.2s; }
+        .glass-panel:hover { border-color: rgba(0, 234, 255, 0.4); }
+
+        h1, h2, h3 { font-family: var(--font-display); font-weight: 700; letter-spacing: 1px; }
+        h1 { font-size: 2rem; background: -webkit-linear-gradient(45deg, var(--neon-cyan), var(--neon-indigo)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+        /* Inputs & Buttons */
+        input, select, textarea { width: 100%; padding: 12px 16px; margin-bottom: 16px; background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); color: var(--text-main); border-radius: 8px; font-family: var(--font-body); font-size: 1rem; outline: none; transition: all 0.3s; }
+        body.light-mode input, body.light-mode select, body.light-mode textarea { background: rgba(255,255,255,0.5); }
+        input:focus, select:focus, textarea:focus { border-color: var(--neon-cyan); box-shadow: inset 0 0 8px rgba(0,234,255,0.1), 0 0 8px rgba(0,234,255,0.2); }
+
+        button, .btn { font-family: var(--font-display); background: rgba(99, 102, 241, 0.1); color: var(--neon-cyan); border: 1px solid var(--neon-indigo); padding: 10px 20px; border-radius: 8px; cursor: pointer; transition: all 0.3s; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+        button:hover, .btn:hover { background: var(--neon-indigo); color: #fff; box-shadow: var(--shadow-indigo); border-color: var(--neon-indigo); }
+        button.action-btn { background: linear-gradient(45deg, var(--neon-indigo), var(--neon-cyan)); color: #fff; border: none; box-shadow: var(--shadow-cyan); }
+        button.action-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(0, 234, 255, 0.4); }
+        button.danger-btn { border-color: var(--neon-alert); color: var(--neon-alert); background: rgba(255, 51, 102, 0.1); }
+        button.danger-btn:hover { background: var(--neon-alert); color: #fff; box-shadow: 0 0 15px rgba(255, 51, 102, 0.4); }
 
         /* === LOGIN SCREEN === */
-        #login-screen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center; z-index: 1000; }
-        .login-box { padding: 50px; width: 420px; text-align: center; border-top: 4px solid var(--neon-primary); }
-        .login-box h1 { margin-bottom: 25px; text-shadow: 0 0 15px var(--neon-primary); color: var(--neon-primary); font-size: 2.5rem;}
-        
+        #login-screen { position: fixed; inset: 0; display: flex; justify-content: center; align-items: center; z-index: 1000; background: var(--bg-base); }
+        .login-box { width: 100%; max-width: 400px; padding: 40px; text-align: center; }
         #mfa-section { display: none; }
-        .mfa-inputs { display: flex; gap: 10px; justify-content: center; margin-bottom: 20px; }
-        .mfa-box { width: 45px; height: 50px; text-align: center; font-size: 1.5rem; font-family: var(--font-display); border-radius: 8px; }
+        .otp-grid { display: flex; gap: 10px; justify-content: center; margin: 20px 0; }
+        .otp-input { width: 45px; height: 55px; text-align: center; font-size: 1.5rem; font-family: var(--font-display); border-radius: 8px; padding: 0; }
 
-        /* === MAIN APP LAYOUT === */
-        #app-container { display: none; display: flex; height: 100vh; }
+        /* Simulated SMS Toast */
+        #sms-toast { position: fixed; top: 20px; right: 20px; background: rgba(15, 23, 42, 0.95); border-left: 4px solid var(--neon-success); padding: 20px; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 2000; display: none; transform: translateX(120%); animation: slideIn 0.5s forwards; backdrop-filter: blur(10px); }
+        @keyframes slideIn { to { transform: translateX(0); } }
 
-        .sidebar { width: var(--sidebar-width); height: 100vh; padding: 25px 0; display: flex; flex-direction: column; border-right: 1px solid var(--glass-border); background: linear-gradient(180deg, var(--glass-bg), rgba(0,0,0,0.9)); }
-        .brand { text-align: center; font-family: var(--font-display); font-size: 1.8rem; color: var(--neon-primary); text-shadow: 0 0 10px var(--neon-primary); margin-bottom: 30px; letter-spacing: 3px; }
-        .nav-links { list-style: none; flex-grow: 1; overflow-y: auto;}
-        .nav-links li { padding: 18px 30px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 15px; font-size: 1.15rem; border-left: 3px solid transparent; opacity: 0.7;}
-        .nav-links li:hover, .nav-links li.active { opacity: 1; background: linear-gradient(90deg, rgba(255,255,255, 0.05), transparent); border-left: 3px solid var(--neon-primary); color: var(--neon-primary); text-shadow: 0 0 8px var(--neon-primary); }
+        /* === MAIN LAYOUT === */
+        #app-container { display: none; height: 100vh; display: flex; }
         
-        .main-content { flex-grow: 1; display: flex; flex-direction: column; overflow: hidden; }
-        .header { height: 80px; padding: 0 40px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--glass-border); }
-        .header-widgets { display: flex; align-items: center; gap: 30px; }
+        /* Sidebar */
+        .sidebar { width: var(--sidebar-width); height: 100%; display: flex; flex-direction: column; border-right: 1px solid var(--glass-border); border-radius: 0; background: linear-gradient(180deg, var(--glass-bg), rgba(0,0,0,0.4)); padding: 20px 0;}
+        .brand { text-align: center; margin-bottom: 30px; padding: 0 20px; }
+        .nav-list { list-style: none; flex-grow: 1; overflow-y: auto; }
+        .nav-list li { padding: 15px 25px; cursor: pointer; display: flex; align-items: center; gap: 15px; color: var(--text-muted); transition: 0.3s; border-left: 3px solid transparent; font-weight: 600; }
+        .nav-list li:hover, .nav-list li.active { color: var(--neon-cyan); background: linear-gradient(90deg, rgba(0, 234, 255, 0.1), transparent); border-left-color: var(--neon-cyan); text-shadow: 0 0 10px rgba(0,234,255,0.5); }
         
-        .user-profile { display: flex; align-items: center; gap: 15px; cursor: pointer; padding: 5px 15px; border-radius: 30px; border: 1px solid transparent; transition: 0.3s;}
-        .avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--neon-secondary), var(--neon-primary)); display: flex; justify-content: center; align-items: center; font-weight: bold; font-family: var(--font-display); color: #fff; box-shadow: 0 0 10px var(--neon-secondary);}
-
-        .section { display: none; padding: 40px; height: calc(100vh - 80px); overflow-y: auto; scroll-behavior: smooth; }
-        .section.active { display: block; animation: fadeIn 0.4s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* Tables & Badges */
-        .data-table { width: 100%; border-collapse: separate; border-spacing: 0; margin-top: 15px; }
-        .data-table th, .data-table td { padding: 15px 20px; text-align: left; border-bottom: 1px solid var(--glass-border); }
-        .data-table th { font-family: var(--font-display); color: var(--neon-primary); text-transform: uppercase; font-size: 0.9rem; background: rgba(0,0,0,0.3);}
-        .data-table tr:hover { background: rgba(255,255,255, 0.05); }
+        /* Main Content */
+        .main-wrapper { flex-grow: 1; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
         
-        .badge { padding: 6px 10px; border-radius: 6px; font-size: 0.85rem; font-weight: bold; text-transform: uppercase; font-family: var(--font-display); }
-        .badge-high { background: rgba(255, 42, 42, 0.1); color: var(--neon-alert); border: 1px solid var(--neon-alert); }
-        .badge-med { background: rgba(188, 19, 254, 0.1); color: var(--neon-secondary); border: 1px solid var(--neon-secondary); }
-        .badge-low { background: rgba(0, 255, 102, 0.1); color: var(--neon-success); border: 1px solid var(--neon-success); }
-        .badge-admin { background: rgba(0, 243, 255, 0.1); color: var(--neon-primary); border: 1px solid var(--neon-primary); }
+        /* Header */
+        .topbar { height: 70px; display: flex; justify-content: space-between; align-items: center; padding: 0 30px; border-bottom: 1px solid var(--glass-border); border-radius: 0; }
+        .topbar-right { display: flex; align-items: center; gap: 20px; }
+        .clock { font-family: var(--font-display); color: var(--neon-indigo); font-size: 1.1rem; letter-spacing: 1px; }
+        .icon-btn { cursor: pointer; font-size: 1.2rem; color: var(--text-muted); transition: 0.3s; position: relative; }
+        .icon-btn:hover { color: var(--neon-cyan); transform: scale(1.1); }
+        .badge-dot { position: absolute; top: -5px; right: -5px; width: 10px; height: 10px; background: var(--neon-alert); border-radius: 50%; box-shadow: 0 0 8px var(--neon-alert); }
+
+        /* Content Area */
+        .content-area { flex-grow: 1; padding: 30px; overflow-y: auto; position: relative; }
+        .view-section { display: none; animation: fadeUp 0.4s ease forwards; }
+        .view-section.active { display: block; }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Dashboard Stats */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .stat-card { text-align: center; border-top: 3px solid; }
+        .stat-card h2 { font-size: 2.5rem; margin: 10px 0; }
+        .sc-total { border-color: var(--neon-cyan); color: var(--neon-cyan); }
+        .sc-open { border-color: var(--neon-alert); color: var(--neon-alert); }
+        .sc-prog { border-color: var(--neon-indigo); color: var(--neon-indigo); }
+        .sc-closed { border-color: var(--neon-success); color: var(--neon-success); }
+
+        /* Tables */
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 15px; text-align: left; border-bottom: 1px solid var(--glass-border); }
+        th { font-family: var(--font-display); color: var(--text-muted); text-transform: uppercase; font-size: 0.85rem; }
+        tr:hover { background: rgba(255,255,255,0.03); }
+        .status-badge { padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; }
+        .bg-open { background: rgba(255, 51, 102, 0.2); color: var(--neon-alert); }
+        .bg-prog { background: rgba(99, 102, 241, 0.2); color: var(--neon-indigo); }
+        .bg-closed { background: rgba(0, 255, 136, 0.2); color: var(--neon-success); }
+
+        /* Mail System */
+        .mail-layout { display: flex; gap: 20px; height: calc(100vh - 160px); }
+        .mail-sidebar { width: 200px; display: flex; flex-direction: column; gap: 10px; }
+        .mail-sidebar button { width: 100%; justify-content: flex-start; }
+        .mail-list { flex: 1; overflow-y: auto; border-right: 1px solid var(--glass-border); padding-right: 20px; }
+        .mail-item { padding: 15px; border-bottom: 1px solid var(--glass-border); cursor: pointer; transition: 0.2s; border-left: 3px solid transparent; }
+        .mail-item:hover { background: rgba(255,255,255,0.05); }
+        .mail-item.unread { border-left-color: var(--neon-cyan); background: rgba(0, 234, 255, 0.05); }
+        .mail-view { flex: 1.5; padding-left: 20px; overflow-y: auto; }
+
+        /* AI Chat */
+        .chat-box { display: flex; flex-direction: column; height: 500px; }
+        .chat-history { flex-grow: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 15px; border-bottom: 1px solid var(--glass-border); }
+        .msg { max-width: 80%; padding: 12px 16px; border-radius: 12px; line-height: 1.5; }
+        .msg.bot { background: rgba(99, 102, 241, 0.15); border: 1px solid var(--neon-indigo); align-self: flex-start; border-bottom-left-radius: 2px; }
+        .msg.user { background: rgba(0, 234, 255, 0.15); border: 1px solid var(--neon-cyan); align-self: flex-end; border-bottom-right-radius: 2px; }
+        .chat-input { display: flex; gap: 10px; padding: 15px 0 0 0; }
+        .loader { display: none; color: var(--neon-cyan); font-family: var(--font-display); font-size: 0.9rem; animation: pulse 1s infinite; }
+        @keyframes pulse { 50% { opacity: 0.5; } }
 
         /* Modals */
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); z-index: 2000; justify-content: center; align-items: center; }
-        .modal-content { width: 650px; padding: 40px; position: relative; border-top: 5px solid var(--neon-primary);}
-        .close-modal { position: absolute; top: 20px; right: 25px; font-size: 1.8rem; cursor: pointer; color: var(--text-muted); }
+        .modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); display: none; justify-content: center; align-items: center; z-index: 3000; }
+        .modal-content { width: 100%; max-width: 600px; max-height: 90vh; overflow-y: auto; position: relative; }
+        .close-modal { position: absolute; top: 20px; right: 20px; font-size: 1.5rem; cursor: pointer; color: var(--text-muted); }
         .close-modal:hover { color: var(--neon-alert); }
 
+        /* Toasts */
+        #notification-hub { position: fixed; bottom: 20px; right: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 4000; }
+        .app-toast { background: var(--glass-bg); backdrop-filter: blur(10px); border: 1px solid var(--glass-border); padding: 15px 20px; border-radius: 8px; font-size: 0.9rem; animation: slideIn 0.3s forwards; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+
+        @media (max-width: 768px) {
+            .sidebar { position: absolute; z-index: 1000; transform: translateX(-100%); transition: 0.3s; }
+            .sidebar.open { transform: translateX(0); }
+            .mail-layout { flex-direction: column; }
+            .mail-sidebar { width: 100%; flex-direction: row; overflow-x: auto; }
+        }
     </style>
 </head>
 <body>
 
+    <div class="cyber-bg"></div>
     <div class="cyber-grid"></div>
-    <div class="glow-sphere sphere-1"></div>
-    <div class="glow-sphere sphere-2"></div>
-    <div id="toast-container"></div>
+
+    <div id="sms-toast">
+        <h3 style="color: var(--neon-success); margin-bottom: 5px; font-family: var(--font-body); font-size: 1rem;"><i class="fa-solid fa-comment-sms"></i> New Message Received</h3>
+        <p style="font-size: 0.9rem; color: #cbd5e1;">Target: <strong id="sms-target-number"></strong></p>
+        <p style="margin-top: 10px; font-family: var(--font-display); font-size: 1.2rem;">WorldTech OTP: <span id="sms-otp-code" style="color: var(--neon-cyan); letter-spacing: 2px;"></span></p>
+    </div>
+
+    <div id="notification-hub"></div>
 
     <div id="login-screen">
-        <div class="glass-panel login-box">
+        <div class="glass glass-panel login-box">
             <h1>WORLDTECH</h1>
-            <p style="margin-bottom: 30px; color: var(--text-muted); font-family: var(--font-display);">SECURE GATEWAY v3.0</p>
+            <p style="color: var(--text-muted); margin: 10px 0 30px 0; font-size: 0.9rem;">Secure ITSM Gateway</p>
             
-            <div id="login-step-1">
-                <input type="text" id="login-user" placeholder="Operative ID (Username)" autocomplete="off">
-                <input type="password" id="login-pass" placeholder="Passcode">
-                <button class="action-btn" style="width: 100%; padding: 15px; margin-top: 10px;" onclick="app.verifyCredentials()">Authenticate</button>
+            <div id="login-step-email">
+                <input type="email" id="login-email" placeholder="Enter Registered Email Address" autocomplete="off">
+                <button class="action-btn" style="width: 100%; padding: 12px;" onclick="app.requestOTP()">Initiate Uplink <i class="fa-solid fa-arrow-right"></i></button>
+                <p id="login-error" style="color: var(--neon-alert); font-size: 0.85rem; margin-top: 15px; display: none;"></p>
             </div>
 
             <div id="mfa-section">
-                <p style="color: var(--neon-primary); margin-bottom: 10px; font-size: 0.9rem;">SMS PROTOCOL ACTIVATED</p>
-                <p id="mfa-target-text" style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 20px;">Dispatching code to comms...</p>
-                <div class="mfa-inputs">
-                    <input type="text" class="mfa-box" maxlength="1" onkeyup="app.mfaFocus(this, 1)">
-                    <input type="text" class="mfa-box" maxlength="1" onkeyup="app.mfaFocus(this, 2)">
-                    <input type="text" class="mfa-box" maxlength="1" onkeyup="app.mfaFocus(this, 3)">
-                    <input type="text" class="mfa-box" maxlength="1" onkeyup="app.mfaFocus(this, 4)">
-                    <input type="text" class="mfa-box" maxlength="1" onkeyup="app.mfaFocus(this, 5)">
-                    <input type="text" class="mfa-box" maxlength="1" onkeyup="app.mfaFocus(this, 6)">
+                <p style="color: var(--neon-cyan); font-size: 0.9rem; margin-bottom: 10px;"><i class="fa-solid fa-shield-halved"></i> 2FA Enforced</p>
+                <p style="font-size: 0.85rem; color: var(--text-muted);">Enter the 6-digit authorization code dispatched to your registered comms.</p>
+                
+                <div class="otp-grid">
+                    <input type="text" class="otp-input" maxlength="1" onkeyup="app.handleOTPInput(this, 1)">
+                    <input type="text" class="otp-input" maxlength="1" onkeyup="app.handleOTPInput(this, 2)">
+                    <input type="text" class="otp-input" maxlength="1" onkeyup="app.handleOTPInput(this, 3)">
+                    <input type="text" class="otp-input" maxlength="1" onkeyup="app.handleOTPInput(this, 4)">
+                    <input type="text" class="otp-input" maxlength="1" onkeyup="app.handleOTPInput(this, 5)">
+                    <input type="text" class="otp-input" maxlength="1" onkeyup="app.handleOTPInput(this, 6)">
                 </div>
-                <button class="action-btn" style="width: 100%; padding: 15px;" onclick="app.verifyMFA()">Verify Uplink</button>
-                <button style="width: 100%; margin-top: 10px; border: none; background: transparent;" onclick="app.cancelMFA()">Abort</button>
+                
+                <button class="action-btn" style="width: 100%;" onclick="app.verifyOTP()">Verify Identity</button>
+                <button style="width: 100%; margin-top: 10px; background: transparent; border: none; color: var(--text-muted);" onclick="app.resetLogin()">Cancel</button>
             </div>
-
-            <div id="login-error" style="color: var(--neon-alert); margin-top: 20px; display: none; font-family: var(--font-display);">Access Denied.</div>
         </div>
     </div>
 
-    <div id="app-container">
-        <nav class="sidebar glass-panel" style="border-radius: 0; border-top: none; border-bottom: none;">
-            <div class="brand"><i class="fa-solid fa-network-wired"></i> W-TECH</div>
-            <ul class="nav-links">
-                <li class="active" onclick="app.navigate('dashboard')"><i class="fa-solid fa-chart-line"></i> Main Matrix</li>
-                <li onclick="app.navigate('tickets')"><i class="fa-solid fa-ticket"></i> Comm Links</li>
-                
-                <li id="nav-admin" style="display: none; border-left-color: var(--neon-alert);" onclick="app.navigate('admin-panel')">
-                    <i class="fa-solid fa-users-gear" style="color: var(--neon-alert);"></i> User Management
-                </li>
-
-                <li onclick="app.navigate('profile')"><i class="fa-solid fa-user-astronaut"></i> Operative Profile</li>
-            </ul>
-
-            <div style="padding: 20px;">
-                <label style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Matrix Theme</label>
-                <select id="theme-selector" onchange="app.changeTheme()" style="padding: 8px; font-size: 0.9rem; margin-bottom: 20px;">
-                    <option value="default">Cyber Blue</option>
-                    <option value="matrix">Matrix Green</option>
-                    <option value="crimson">Crimson Alert</option>
-                    <option value="light">Clean Light</option>
-                </select>
-                <button onclick="app.logout()" style="width: 100%; color: var(--neon-alert); border-color: rgba(255, 42, 42, 0.3);"><i class="fa-solid fa-power-off"></i> Disconnect</button>
+    <div id="app-container" style="display: none;">
+        
+        <nav class="sidebar glass">
+            <div class="brand">
+                <h1>W-TECH</h1>
+                <span style="font-size: 0.7rem; color: var(--neon-cyan); text-transform: uppercase; letter-spacing: 2px;">ServiceDesk AI</span>
             </div>
+            <ul class="nav-list">
+                <li class="active" onclick="app.navigate('dashboard')"><i class="fa-solid fa-chart-pie"></i> Matrix Hub</li>
+                <li onclick="app.navigate('tickets')"><i class="fa-solid fa-ticket"></i> Active Tickets</li>
+                <li onclick="app.navigate('mailbox')"><i class="fa-solid fa-envelope"></i> Comms (Mail)</li>
+                <li onclick="app.navigate('ai-nexus')"><i class="fa-solid fa-brain"></i> AI Nexus</li>
+                <li onclick="app.navigate('calendar')"><i class="fa-solid fa-calendar-days"></i> Chronos</li>
+                <li onclick="app.navigate('notes')"><i class="fa-solid fa-terminal"></i> Data Logs</li>
+                <li onclick="app.navigate('profile')"><i class="fa-solid fa-user-shield"></i> Profile</li>
+                <li id="nav-admin" style="display: none; border-left-color: var(--neon-alert);" onclick="app.navigate('admin')"><i class="fa-solid fa-users-gear" style="color: var(--neon-alert);"></i> User Admin</li>
+            </ul>
         </nav>
 
-        <main class="main-content">
-            <header class="header glass-panel" style="border-radius: 0; border-left: none; border-right: none;">
-                <h2 id="view-title-display" style="color: var(--neon-primary);">MAIN MATRIX</h2>
-                <div class="user-profile" onclick="app.navigate('profile')">
-                    <div class="avatar" id="header-avatar">O</div>
-                    <span id="header-username" style="font-family: var(--font-display); letter-spacing: 1px;">OPERATIVE</span>
+        <div class="main-wrapper">
+            <header class="topbar glass">
+                <h2 id="view-title" style="color: var(--neon-cyan);">MATRIX HUB</h2>
+                <div class="topbar-right">
+                    <div class="clock" id="live-clock">00:00:00</div>
+                    <i class="fa-solid fa-moon icon-btn" onclick="app.toggleTheme()" title="Toggle Theme"></i>
+                    <div class="icon-btn" onclick="app.navigate('mailbox')" title="Notifications">
+                        <i class="fa-regular fa-bell"></i>
+                        <div class="badge-dot" id="notif-badge"></div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px; margin-left: 15px; padding-left: 15px; border-left: 1px solid var(--glass-border);">
+                        <div style="text-align: right;">
+                            <div id="header-name" style="font-size: 0.9rem; font-weight: 600;">Operative</div>
+                            <div id="header-role" style="font-size: 0.7rem; color: var(--neon-indigo); text-transform: uppercase;">Role</div>
+                        </div>
+                        <i class="fa-solid fa-right-from-bracket icon-btn" style="color: var(--neon-alert);" onclick="app.logout()" title="Disconnect"></i>
+                    </div>
                 </div>
             </header>
 
-            <section id="dashboard" class="section active">
-                <div class="glass-panel" style="padding: 30px;">
-                    <h3><i class="fa-solid fa-satellite-dish"></i> Matrix Status: Nominal</h3>
-                    <p style="color: var(--text-muted); margin-top: 10px;">Welcome to the centralized operative hub. Navigate via the sidebar comms.</p>
-                </div>
-            </section>
+            <main class="content-area">
+                
+                <section id="view-dashboard" class="view-section active">
+                    <div class="stats-grid">
+                        <div class="glass glass-panel stat-card sc-total">
+                            <p>Total Tickets</p>
+                            <h2 id="dash-total">0</h2>
+                        </div>
+                        <div class="glass glass-panel stat-card sc-open">
+                            <p>Pending / Open</p>
+                            <h2 id="dash-open">0</h2>
+                        </div>
+                        <div class="glass glass-panel stat-card sc-prog">
+                            <p>In Progress</p>
+                            <h2 id="dash-prog">0</h2>
+                        </div>
+                        <div class="glass glass-panel stat-card sc-closed">
+                            <p>Resolved</p>
+                            <h2 id="dash-closed">0</h2>
+                        </div>
+                    </div>
+                    <div class="glass glass-panel">
+                        <h3><i class="fa-solid fa-bolt"></i> Recent Activity Log</h3>
+                        <table>
+                            <thead><tr><th>ID</th><th>Subject</th><th>Status</th><th>Date</th></tr></thead>
+                            <tbody id="dash-recent-table"></tbody>
+                        </table>
+                    </div>
+                </section>
 
-            <section id="tickets" class="section">
-                <h2>Comm Links (Tickets)</h2>
-                <p style="color: var(--text-muted);">Ticket system offline in this minimal preview to focus on User Mgmt.</p>
-            </section>
+                <section id="view-tickets" class="view-section">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 20px; gap: 15px; flex-wrap: wrap;">
+                        <div style="display: flex; gap: 10px; flex-grow: 1; max-width: 600px;">
+                            <input type="text" id="search-ticket" placeholder="Search parameters..." style="margin: 0;" onkeyup="app.renderTickets()">
+                            <select id="filter-ticket" style="margin: 0; width: 200px;" onchange="app.renderTickets()">
+                                <option value="All">All Statuses</option>
+                                <option value="Open">Open</option>
+                                <option value="In Progress">In Progress</option>
+                                <option value="Closed">Closed</option>
+                            </select>
+                        </div>
+                        <div style="display: flex; gap: 10px;">
+                            <button onclick="app.exportCSV()"><i class="fa-solid fa-download"></i> Export CSV</button>
+                            <button class="action-btn" onclick="app.openModal('modal-create-ticket')"><i class="fa-solid fa-plus"></i> New Link</button>
+                        </div>
+                    </div>
+                    <div class="glass glass-panel" style="padding: 0; overflow-x: auto;">
+                        <table style="margin-top: 0;">
+                            <thead><tr><th>ID</th><th>Subject</th><th>Priority</th><th>Category</th><th>Status</th><th>Author</th><th>Actions</th></tr></thead>
+                            <tbody id="ticket-table-body"></tbody>
+                        </table>
+                    </div>
+                </section>
 
-            <section id="profile" class="section">
-                <div class="glass-panel" style="padding: 40px; max-width: 600px; margin: 0 auto;">
-                    <h2 style="margin-bottom: 20px;">Operative Designation</h2>
-                    <label>Full Name</label>
-                    <input type="text" id="profile-fullname">
-                    <label>Sector / Department</label>
-                    <input type="text" id="profile-dept">
-                    <label>Contact Email</label>
-                    <input type="email" id="profile-email">
-                    <label>Mobile Comms (SMS MFA Target)</label>
-                    <input type="text" id="profile-mobile" placeholder="+1 (555) 000-0000">
-                    <button class="action-btn" onclick="app.saveProfile()" style="margin-top: 15px; width: 100%;">Commit Updates</button>
-                </div>
-            </section>
+                <section id="view-mailbox" class="view-section">
+                    <div class="glass glass-panel mail-layout">
+                        <div class="mail-sidebar">
+                            <button class="action-btn" onclick="app.openModal('modal-compose-mail')"><i class="fa-solid fa-pen-nib"></i> Compose</button>
+                            <button onclick="app.switchMailFolder('inbox')" id="btn-folder-inbox" style="border-color: var(--neon-cyan); color: var(--neon-cyan);"><i class="fa-solid fa-inbox"></i> Inbox</button>
+                            <button onclick="app.switchMailFolder('sent')" id="btn-folder-sent"><i class="fa-regular fa-paper-plane"></i> Sent</button>
+                            <button onclick="app.switchMailFolder('system')" id="btn-folder-system"><i class="fa-solid fa-server"></i> System Alerts</button>
+                        </div>
+                        <div class="mail-list" id="mail-list-container">
+                            </div>
+                        <div class="mail-view glass glass-panel" id="mail-read-view" style="display: none; background: rgba(0,0,0,0.2);">
+                            <h2 id="read-mail-subject" style="margin-bottom: 10px;">Subject</h2>
+                            <div style="display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 20px; border-bottom: 1px solid var(--glass-border); padding-bottom: 10px;">
+                                <span>From: <strong id="read-mail-from" style="color: var(--neon-cyan);"></strong></span>
+                                <span id="read-mail-date">Date</span>
+                            </div>
+                            <div id="read-mail-body" style="white-space: pre-wrap; line-height: 1.6;"></div>
+                        </div>
+                    </div>
+                </section>
 
-            <section id="admin-panel" class="section">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
-                    <h2 style="color: var(--neon-alert);"><i class="fa-solid fa-shield-halved"></i> Global Roster Admin</h2>
-                    <button class="action-btn" onclick="app.openModal('add-user-modal')"><i class="fa-solid fa-user-plus"></i> Register Operative</button>
-                </div>
+                <section id="view-ai-nexus" class="view-section">
+                    <div style="display: flex; gap: 20px; height: calc(100vh - 150px);">
+                        <div class="glass glass-panel" style="flex: 1; display: flex; flex-direction: column;">
+                            <h3 style="margin-bottom: 15px;"><i class="fa-solid fa-book-atlas"></i> Knowledge Base</h3>
+                            <input type="text" placeholder="Search archives...">
+                            <ul style="list-style: none; display: flex; flex-direction: column; gap: 10px; margin-top: 10px; overflow-y: auto;">
+                                <li class="glass glass-panel" style="padding: 12px; cursor: pointer;"><i class="fa-brands fa-windows"></i> Bypassing Bootloop Error 0x0...</li>
+                                <li class="glass glass-panel" style="padding: 12px; cursor: pointer;"><i class="fa-solid fa-network-wired"></i> Subspace VPN Reconfiguration</li>
+                                <li class="glass glass-panel" style="padding: 12px; cursor: pointer;"><i class="fa-solid fa-print"></i> Printer Spooler Reset Protocol</li>
+                            </ul>
+                        </div>
+                        <div class="glass glass-panel" style="flex: 2; display: flex; flex-direction: column;">
+                            <h3 style="margin-bottom: 10px; color: var(--neon-indigo);"><i class="fa-solid fa-microchip"></i> Nexus AI Assistant</h3>
+                            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">Powered by Llama3 Groq Architecture.</p>
+                            
+                            <div class="chat-box glass" style="background: rgba(0,0,0,0.2);">
+                                <div class="chat-history" id="ai-chat-history">
+                                    <div class="msg bot">Greetings. Describe your technical anomaly for step-by-step resolution.</div>
+                                </div>
+                                <div id="ai-chat-loader" class="loader" style="padding: 10px 20px;">Synthesizing response...</div>
+                                <div class="chat-input" style="padding: 10px;">
+                                    <input type="text" id="ai-chat-input" placeholder="E.g., How do I flush my DNS cache?" style="margin: 0; border: none; background: transparent; border-top: 1px solid var(--glass-border); border-radius: 0;" onkeypress="if(event.key==='Enter') app.sendChatMessage()">
+                                    <button class="action-btn" onclick="app.sendChatMessage()" style="border-radius: 4px;"><i class="fa-solid fa-paper-plane"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
 
-                <div class="glass-panel" style="padding: 20px;">
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Operative ID</th>
-                                <th>Full Name</th>
-                                <th>Role</th>
-                                <th>Mobile / Email</th>
-                                <th>Security</th>
-                            </tr>
-                        </thead>
-                        <tbody id="admin-users-table">
-                            </tbody>
-                    </table>
-                </div>
-            </section>
-        </main>
+                <section id="view-calendar" class="view-section">
+                    <div class="glass glass-panel" style="padding: 30px;">
+                        <div id="calendar-container"></div>
+                    </div>
+                </section>
+
+                <section id="view-notes" class="view-section">
+                    <div class="glass glass-panel" style="height: calc(100vh - 150px); display: flex; flex-direction: column;">
+                        <h3 style="margin-bottom: 20px;"><i class="fa-solid fa-terminal"></i> Secure Data Logs</h3>
+                        <textarea id="personal-notes" placeholder="Enter private operational notes (Saved locally)..." style="flex-grow: 1; resize: none; font-family: monospace;" onkeyup="app.saveNotes()"></textarea>
+                    </div>
+                </section>
+
+                <section id="view-profile" class="view-section">
+                    <div class="glass glass-panel" style="max-width: 600px; margin: 0 auto; padding: 40px;">
+                        <h2 style="margin-bottom: 30px; text-align: center;">Operative Configuration</h2>
+                        <label>Registered Email (ID)</label>
+                        <input type="email" id="prof-email" disabled style="opacity: 0.6; cursor: not-allowed;">
+                        <label>Full Designation</label>
+                        <input type="text" id="prof-name">
+                        <label>Assigned Sector</label>
+                        <input type="text" id="prof-dept">
+                        <label>Mobile Comms (MFA Target)</label>
+                        <input type="text" id="prof-mobile" placeholder="+1 555-0000">
+                        <button class="action-btn" style="width: 100%; margin-top: 20px;" onclick="app.saveProfile()"><i class="fa-solid fa-floppy-disk"></i> Commit Changes</button>
+                    </div>
+                </section>
+
+                <section id="view-admin" class="view-section">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+                        <h2 style="color: var(--neon-alert);">Global Roster Admin</h2>
+                        <button class="action-btn" onclick="app.openModal('modal-add-user')"><i class="fa-solid fa-user-plus"></i> Register Operative</button>
+                    </div>
+                    <div class="glass glass-panel" style="padding: 0;">
+                        <table style="margin: 0;">
+                            <thead><tr><th>Email (ID)</th><th>Name</th><th>Role</th><th>Mobile</th><th>Actions</th></tr></thead>
+                            <tbody id="admin-user-table"></tbody>
+                        </table>
+                    </div>
+                </section>
+
+            </main>
+        </div>
     </div>
 
-    <div id="add-user-modal" class="modal-overlay">
-        <div class="glass-panel modal-content" style="border-top-color: var(--neon-alert);">
-            <i class="fa-solid fa-xmark close-modal" onclick="app.closeModal('add-user-modal')"></i>
-            <h2 style="color: var(--neon-alert); margin-bottom: 20px;">Initialize New Operative</h2>
+    <div class="modal-bg" id="modal-create-ticket">
+        <div class="glass glass-panel modal-content">
+            <i class="fa-solid fa-xmark close-modal" onclick="app.closeModal('modal-create-ticket')"></i>
+            <h2 style="margin-bottom: 20px;">Initialize Comm Link</h2>
             
+            <label>Subject</label>
+            <input type="text" id="nt-title" placeholder="Brief issue summary">
+            
+            <label>Detailed Diagnostics</label>
+            <div style="position: relative;">
+                <textarea id="nt-desc" rows="4" placeholder="Provide full log outputs or descriptions..."></textarea>
+                <i class="fa-solid fa-microphone icon-btn" id="btn-voice" style="position: absolute; bottom: 30px; right: 15px; color: var(--neon-cyan);" onclick="app.startVoiceDictation('nt-desc')" title="Voice Dictation"></i>
+            </div>
+
             <div style="display: flex; gap: 15px;">
                 <div style="flex: 1;">
-                    <label>Operative ID (Username)</label>
-                    <input type="text" id="new-user-id" placeholder="e.g. user2">
+                    <label>Category</label>
+                    <select id="nt-category">
+                        <option>Hardware</option><option>Software</option><option>Network</option><option>Access/Auth</option>
+                    </select>
                 </div>
                 <div style="flex: 1;">
-                    <label>Clearance Level</label>
-                    <select id="new-user-role">
-                        <option value="user">Standard Operative</option>
-                        <option value="admin">System Admin</option>
+                    <label>Priority</label>
+                    <select id="nt-priority">
+                        <option>Low</option><option>Medium</option><option>High</option>
                     </select>
                 </div>
             </div>
 
-            <label>Initial Passcode</label>
-            <input type="text" id="new-user-pass" placeholder="Assign secure password">
-
-            <label>Full Name</label>
-            <input type="text" id="new-user-name" placeholder="John Doe">
-
-            <div style="display: flex; gap: 15px;">
-                <div style="flex: 1;">
-                    <label>Email Link</label>
-                    <input type="email" id="new-user-email" placeholder="email@wtech.com">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
+                <div>
+                    <button onclick="app.aiSuggestPriority()"><i class="fa-solid fa-wand-magic-sparkles"></i> AI Triage</button>
+                    <span id="ai-prio-loader" class="loader" style="margin-left: 10px;">Analyzing...</span>
                 </div>
-                <div style="flex: 1;">
-                    <label>Mobile Number (For SMS)</label>
-                    <input type="text" id="new-user-mobile" placeholder="+1 555-0199">
+                <div>
+                    <button onclick="app.closeModal('modal-create-ticket')">Abort</button>
+                    <button class="action-btn" onclick="app.createTicket()">Transmit</button>
                 </div>
             </div>
-
-            <button class="action-btn" onclick="app.adminCreateUser()" style="width: 100%; margin-top: 15px;">Register into Matrix</button>
         </div>
     </div>
 
-    <div id="change-pass-modal" class="modal-overlay">
-        <div class="glass-panel modal-content" style="width: 400px; border-top-color: var(--neon-alert);">
-            <i class="fa-solid fa-xmark close-modal" onclick="app.closeModal('change-pass-modal')"></i>
-            <h3 style="margin-bottom: 15px;">Override Passcode</h3>
-            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 15px;">Target: <strong id="override-target-id" style="color: var(--neon-primary);"></strong></p>
+    <div class="modal-bg" id="modal-view-ticket">
+        <div class="glass glass-panel modal-content" style="max-width: 700px;">
+            <i class="fa-solid fa-xmark close-modal" onclick="app.closeModal('modal-view-ticket')"></i>
+            <h2 id="vt-title" style="margin-bottom: 10px;">Ticket Title</h2>
+            <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 20px; display: flex; gap: 15px;">
+                <span>ID: <strong id="vt-id" style="color:#fff;"></strong></span>
+                <span>Author: <strong id="vt-author" style="color:#fff;"></strong></span>
+                <span>Date: <strong id="vt-date" style="color:#fff;"></strong></span>
+            </div>
             
-            <input type="text" id="override-new-pass" placeholder="Enter new passcode">
-            <button class="action-btn" onclick="app.adminForcePasswordChange()" style="width: 100%;">Execute Override</button>
+            <div class="glass" style="padding: 15px; background: rgba(0,0,0,0.3); margin-bottom: 20px;">
+                <p id="vt-desc" style="white-space: pre-wrap;"></p>
+            </div>
+
+            <div style="display: flex; gap: 20px; margin-bottom: 20px;">
+                <div>Status: <span id="vt-status" class="status-badge"></span></div>
+                <div>Priority: <span id="vt-priority" class="status-badge"></span></div>
+            </div>
+
+            <div id="vt-admin-controls" style="display: none; padding: 15px; border: 1px dashed var(--neon-alert); border-radius: 8px; margin-bottom: 20px; background: rgba(255, 51, 102, 0.05);">
+                <h4 style="color: var(--neon-alert); margin-bottom: 10px;">Master Override</h4>
+                <div style="display: flex; gap: 10px;">
+                    <select id="vt-edit-status" onchange="app.updateTicket('status', this.value)">
+                        <option value="Open">Status: Open</option><option value="In Progress">Status: In Progress</option><option value="Closed">Status: Closed</option>
+                    </select>
+                    <select id="vt-edit-priority" onchange="app.updateTicket('priority', this.value)">
+                        <option value="Low">Priority: Low</option><option value="Medium">Priority: Medium</option><option value="High">Priority: High</option>
+                    </select>
+                    <button class="danger-btn" onclick="app.deleteTicket()"><i class="fa-solid fa-trash"></i> Purge</button>
+                </div>
+            </div>
+
+            <button class="action-btn" onclick="app.aiGenerateFix()" style="margin-bottom: 15px; width: 100%;"><i class="fa-solid fa-microchip"></i> Generate AI Resolution Protocol</button>
+            <div id="ai-fix-loader" class="loader">Synthesizing...</div>
+            <div id="ai-fix-result" class="glass" style="display: none; padding: 15px; background: rgba(99, 102, 241, 0.1); border-color: var(--neon-indigo); font-size: 0.9rem; line-height: 1.5; margin-bottom: 20px;"></div>
+
+            <h4>Audit Log</h4>
+            <ul id="vt-history" style="list-style: none; font-size: 0.8rem; color: var(--text-muted); margin-top: 10px; max-height: 100px; overflow-y: auto;"></ul>
+        </div>
+    </div>
+
+    <div class="modal-bg" id="modal-compose-mail">
+        <div class="glass glass-panel modal-content">
+            <i class="fa-solid fa-xmark close-modal" onclick="app.closeModal('modal-compose-mail')"></i>
+            <h2 style="margin-bottom: 20px;"><i class="fa-regular fa-envelope"></i> Secure Transmission</h2>
+            <input type="email" id="mail-to" placeholder="To: (Email Address)">
+            <input type="text" id="mail-subject" placeholder="Subject Line">
+            <textarea id="mail-body" rows="6" placeholder="Message content..."></textarea>
+            <div style="text-align: right;">
+                <button class="action-btn" onclick="app.sendMail()"><i class="fa-solid fa-paper-plane"></i> Dispatch</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-bg" id="modal-add-user">
+        <div class="glass glass-panel modal-content" style="border-top-color: var(--neon-alert);">
+            <i class="fa-solid fa-xmark close-modal" onclick="app.closeModal('modal-add-user')"></i>
+            <h2 style="color: var(--neon-alert); margin-bottom: 20px;">Register New Operative</h2>
+            <input type="email" id="nu-email" placeholder="Email Address (Login ID)">
+            <input type="text" id="nu-name" placeholder="Full Name">
+            <input type="text" id="nu-dept" placeholder="Department">
+            <input type="text" id="nu-mobile" placeholder="Mobile Number (For MFA)">
+            <select id="nu-role">
+                <option value="user">Standard Operative</option>
+                <option value="admin">Master Admin</option>
+            </select>
+            <button class="action-btn" style="width: 100%; margin-top: 10px;" onclick="app.adminCreateUser()">Register into Matrix</button>
         </div>
     </div>
 
 
     <script>
+        // ==========================================
+        // CONFIGURATION: GROQ API KEY
+        // Replace this with your actual Llama3 API Key
+        // ==========================================
+        const GROQ_API_KEY = "YOUR_GROQ_API_KEY_HERE"; 
+        
+        // --- Core Application Logic ---
         const app = {
             currentUser: null,
-            tempLoginUser: null,
-            tempMfaCode: null,
-            overrideTargetUsername: null,
+            tempLoginEmail: null,
+            tempOTP: null,
+            currentView: 'dashboard',
+            currentTicketId: null,
+            currentMailFolder: 'inbox',
+            calendarInstance: null,
 
-            // --- UI/UX Helpers ---
-            showToast: function(msg, type = 'info') {
-                const container = document.getElementById('toast-container');
+            // --- UI Helper: Toasts ---
+            showToast: function(msg, icon = 'fa-info-circle', color = 'var(--neon-cyan)') {
+                const hub = document.getElementById('notification-hub');
                 const toast = document.createElement('div');
-                toast.className = 'toast';
+                toast.className = 'app-toast';
+                toast.style.borderLeftColor = color;
+                toast.innerHTML = `<i class="fa-solid ${icon}" style="color:${color}; margin-right:8px;"></i> ${msg}`;
+                hub.appendChild(toast);
                 
-                let icon = '<i class="fa-solid fa-info-circle"></i>';
-                if(type === 'success') { icon = '<i class="fa-solid fa-check" style="color: var(--neon-success)"></i>'; toast.style.borderLeftColor = 'var(--neon-success)'; }
-                if(type === 'error') { icon = '<i class="fa-solid fa-triangle-exclamation" style="color: var(--neon-alert)"></i>'; toast.style.borderLeftColor = 'var(--neon-alert)'; }
+                // Badge alert
+                document.getElementById('notif-badge').style.display = 'block';
 
-                toast.innerHTML = `${icon} &nbsp; ${msg}`;
-                container.appendChild(toast);
-                setTimeout(() => { toast.style.animation = 'fadeOut 0.3s forwards'; setTimeout(() => toast.remove(), 300); }, 4500);
+                setTimeout(() => { toast.style.animation = 'fadeUp 0.3s reverse forwards'; setTimeout(() => toast.remove(), 300); }, 4000);
             },
 
-            // --- Database Init ---
+            // --- Database Initialization ---
             initData: function() {
+                // Initialize Users (Hardcoding Master Admin context)
                 if (!localStorage.getItem('wt_users')) {
                     localStorage.setItem('wt_users', JSON.stringify([
-                        { username: 'admin', password: 'password123', role: 'admin', fullname: 'System Admin', dept: 'Core', email: 'admin@wt.com', mobile: '+1 555-000-1111' }, 
-                        { username: 'user1', password: 'password123', role: 'user', fullname: 'John Operative', dept: 'Sector 7', email: 'user1@wt.com', mobile: '555-000-2222' }
+                        { email: 'armtechbridge@gmail.com', role: 'admin', fullname: 'Alagu Ragul M', dept: 'Central Command', mobile: '+91 7845714920' }
+                    ]));
+                }
+                // Initialize Tickets
+                if (!localStorage.getItem('wt_tickets')) {
+                    localStorage.setItem('wt_tickets', JSON.stringify([
+                        { id: 'WT-1001', title: 'Mainframe cooling failure', desc: 'Temperatures critical in Sector 7.', priority: 'High', category: 'Hardware', status: 'Open', author: 'armtechbridge@gmail.com', date: new Date().toISOString(), history: ['Ticket generated.'] }
+                    ]));
+                }
+                // Initialize Mails
+                if (!localStorage.getItem('wt_mails')) {
+                    localStorage.setItem('wt_mails', JSON.stringify([
+                        { id: 'M1', to: 'armtechbridge@gmail.com', from: 'SYSTEM', subject: 'Welcome to WorldTech', body: 'The matrix is online and awaiting your command, Operative.', date: new Date().toISOString(), folder: 'inbox', read: false }
                     ]));
                 }
             },
 
-            // --- Theme System ---
-            changeTheme: function() {
-                const theme = document.getElementById('theme-selector').value;
-                document.body.setAttribute('data-theme', theme);
-                localStorage.setItem('wt_saved_theme', theme);
-            },
-            
-            loadTheme: function() {
-                const saved = localStorage.getItem('wt_saved_theme') || 'default';
-                document.body.setAttribute('data-theme', saved);
-                const selector = document.getElementById('theme-selector');
-                if(selector) selector.value = saved;
-            },
+            // --- Authentication (No Password, OTP Only) ---
+            requestOTP: function() {
+                const email = document.getElementById('login-email').value.trim().toLowerCase();
+                if(!email) { this.loginError("Email designation required."); return; }
 
-            // --- Authentication & SMS MFA ---
-            verifyCredentials: function() {
-                const u = document.getElementById('login-user').value.trim().toLowerCase();
-                const p = document.getElementById('login-pass').value;
                 const users = JSON.parse(localStorage.getItem('wt_users'));
-                
-                const user = users.find(x => x.username.toLowerCase() === u && x.password === p);
+                const user = users.find(u => u.email === email);
+
                 if (user) {
+                    this.tempLoginEmail = email;
                     document.getElementById('login-error').style.display = 'none';
-                    this.triggerSMS(user);
+                    document.getElementById('login-step-email').style.display = 'none';
+                    document.getElementById('mfa-section').style.display = 'block';
+                    document.querySelector('.otp-input').focus();
+
+                    // Generate Random 6 digit OTP
+                    this.tempOTP = Math.floor(100000 + Math.random() * 900000).toString();
+
+                    // Simulate sending SMS/Mail
+                    this.simulateOTPDispatch(user.mobile, email, this.tempOTP);
                 } else {
-                    document.getElementById('login-error').style.display = 'block';
-                    document.getElementById('login-error').innerText = "Access Denied. Invalid parameters.";
+                    this.loginError("Unrecognized credentials. Access denied.");
                 }
             },
 
-            triggerSMS: function(user) {
-                this.tempLoginUser = user;
-                this.tempMfaCode = Math.floor(100000 + Math.random() * 900000).toString();
+            simulateOTPDispatch: function(mobile, email, otp) {
+                // If it's the master admin, route to mobile. If no mobile, route to simulated email.
+                let target = mobile || email;
                 
-                document.getElementById('login-step-1').style.display = 'none';
-                document.getElementById('mfa-section').style.display = 'block';
-                document.querySelector('.mfa-box').focus();
-
-                let phoneMask = "Unregistered Device";
-                if(user.mobile && user.mobile.length > 4) {
-                    phoneMask = "****" + user.mobile.slice(-4);
-                }
-
-                document.getElementById('mfa-target-text').innerText = `Dispatching secure SMS to comms ending in ${phoneMask}`;
-
-                // SIMULATED SMS DISPATCH
-                this.showToast("Initiating cellular handshake...", "info");
-                
+                // Show physical toast on screen simulating SMS reception
                 setTimeout(() => {
-                    this.showToast(`[SMS RECEIVED] WORLDTECH AUTH CODE: ${this.tempMfaCode}`, "success");
+                    document.getElementById('sms-target-number').innerText = target;
+                    document.getElementById('sms-otp-code').innerText = otp;
+                    document.getElementById('sms-toast').style.display = 'block';
+                    
+                    // Hide toast after 10s
+                    setTimeout(() => { document.getElementById('sms-toast').style.display = 'none'; }, 10000);
                 }, 1500);
+
+                // Send via internal mail system just in case
+                this.internalMailSend(email, 'SYSTEM', 'Your Matrix Authorization Code', `Your requested OTP is: ${otp}. Do not share this protocol.`);
             },
 
-            mfaFocus: function(element, index) {
-                if (element.value.length === 1 && index < 6) document.querySelectorAll('.mfa-box')[index].focus();
+            loginError: function(msg) {
+                const el = document.getElementById('login-error');
+                el.innerText = msg; el.style.display = 'block';
             },
 
-            verifyMFA: function() {
+            handleOTPInput: function(el, index) {
+                if(el.value.length === 1 && index < 6) document.querySelectorAll('.otp-input')[index].focus();
+            },
+
+            verifyOTP: function() {
                 let code = "";
-                document.querySelectorAll('.mfa-box').forEach(i => code += i.value);
-                if (code === this.tempMfaCode) this.completeLogin(this.tempLoginUser);
-                else {
-                    document.getElementById('login-error').innerText = "Invalid SMS Code.";
-                    document.getElementById('login-error').style.display = 'block';
-                    document.querySelectorAll('.mfa-box').forEach(i => i.value = '');
-                    document.querySelectorAll('.mfa-box')[0].focus();
+                document.querySelectorAll('.otp-input').forEach(i => code += i.value);
+                
+                if (code === this.tempOTP) {
+                    const users = JSON.parse(localStorage.getItem('wt_users'));
+                    this.currentUser = users.find(u => u.email === this.tempLoginEmail);
+                    localStorage.setItem('wt_currentUser', JSON.stringify({ email: this.currentUser.email }));
+                    
+                    document.getElementById('login-screen').style.display = 'none';
+                    document.getElementById('app-container').style.display = 'flex';
+                    document.getElementById('sms-toast').style.display = 'none'; // hide sms
+                    
+                    this.loadApp();
+                } else {
+                    alert("Invalid Authorization Code.");
+                    this.resetOTPFields();
                 }
             },
 
-            cancelMFA: function() {
-                this.tempLoginUser = null; this.tempMfaCode = null;
-                document.getElementById('login-step-1').style.display = 'block';
+            resetOTPFields: function() { document.querySelectorAll('.otp-input').forEach(i => i.value = ''); document.querySelector('.otp-input').focus(); },
+            
+            resetLogin: function() {
+                this.tempLoginEmail = null; this.tempOTP = null;
+                document.getElementById('login-step-email').style.display = 'block';
                 document.getElementById('mfa-section').style.display = 'none';
-                document.getElementById('login-error').style.display = 'none';
-                document.querySelectorAll('.mfa-box').forEach(i => i.value = '');
-            },
-
-            completeLogin: function(user) {
-                this.currentUser = user;
-                localStorage.setItem('wt_currentUser', JSON.stringify({username: user.username}));
-                document.getElementById('login-screen').style.display = 'none';
-                document.getElementById('app-container').style.display = 'flex';
-                
-                // Admin specific UI
-                document.getElementById('nav-admin').style.display = user.role === 'admin' ? 'flex' : 'none';
-
-                this.syncProfileUI();
-                this.loadTheme();
-                this.showToast("Authentication sequence accepted.", "success");
-                this.navigate('dashboard');
-                
-                document.getElementById('login-pass').value = '';
-                this.cancelMFA();
+                this.resetOTPFields();
             },
 
             logout: function() {
                 this.currentUser = null; localStorage.removeItem('wt_currentUser');
                 document.getElementById('login-screen').style.display = 'flex';
                 document.getElementById('app-container').style.display = 'none';
-                document.getElementById('login-user').value = '';
-                this.showToast("Connection severed.", "info");
+                document.getElementById('login-email').value = '';
+                this.resetLogin();
             },
 
-            // --- Navigation ---
-            navigate: function(id) {
-                document.querySelectorAll('.nav-links li').forEach(li => li.classList.remove('active'));
-                const activeLi = Array.from(document.querySelectorAll('.nav-links li')).find(li => li.getAttribute('onclick').includes(id));
+            checkAuth: function() {
+                const saved = localStorage.getItem('wt_currentUser');
+                if (saved) {
+                    const parsed = JSON.parse(saved);
+                    const users = JSON.parse(localStorage.getItem('wt_users'));
+                    this.currentUser = users.find(u => u.email === parsed.email);
+                    if(this.currentUser) {
+                        document.getElementById('login-screen').style.display = 'none';
+                        document.getElementById('app-container').style.display = 'flex';
+                        this.loadApp();
+                    }
+                }
+            },
+
+            // --- App Bootstrap ---
+            loadApp: function() {
+                // UI configuration based on user role
+                document.getElementById('header-name').innerText = this.currentUser.fullname || 'Operative';
+                document.getElementById('header-role').innerText = this.currentUser.role === 'admin' ? 'Master Admin' : 'User';
+                
+                if(this.currentUser.email === 'armtechbridge@gmail.com' || this.currentUser.role === 'admin') {
+                    document.getElementById('nav-admin').style.display = 'flex';
+                } else {
+                    document.getElementById('nav-admin').style.display = 'none';
+                }
+
+                // Load preferences
+                if(localStorage.getItem('wt_theme') === 'light') document.body.classList.add('light-mode');
+                document.getElementById('personal-notes').value = localStorage.getItem(`wt_notes_${this.currentUser.email}`) || '';
+
+                this.navigate('dashboard');
+                this.showToast("Secure uplink established.", 'fa-satellite-dish', 'var(--neon-success)');
+            },
+
+            // --- Navigation & Theming ---
+            navigate: function(viewId) {
+                document.querySelectorAll('.nav-list li').forEach(li => li.classList.remove('active'));
+                const activeLi = Array.from(document.querySelectorAll('.nav-list li')).find(li => li.getAttribute('onclick').includes(viewId));
                 if(activeLi) {
                     activeLi.classList.add('active');
-                    document.getElementById('view-title-display').innerText = activeLi.innerText.toUpperCase();
+                    document.getElementById('view-title').innerText = activeLi.innerText.toUpperCase();
                 }
-                document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
-                document.getElementById(id).classList.add('active');
                 
-                if(id === 'admin-panel' && this.currentUser.role === 'admin') this.renderAdminUsers();
+                document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
+                document.getElementById('view-' + viewId).classList.add('active');
+                this.currentView = viewId;
+
+                if(viewId === 'dashboard') this.renderDashboard();
+                if(viewId === 'tickets') this.renderTickets();
+                if(viewId === 'mailbox') this.renderMailbox();
+                if(viewId === 'calendar') this.initCalendar();
+                if(viewId === 'profile') this.renderProfile();
+                if(viewId === 'admin' && this.currentUser.role === 'admin') this.renderAdmin();
+            },
+
+            toggleTheme: function() {
+                document.body.classList.toggle('light-mode');
+                localStorage.setItem('wt_theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
             },
 
             openModal: function(id) { document.getElementById(id).style.display = 'flex'; },
-            closeModal: function(id) { document.getElementById(id).style.display = 'none'; },
-
-            // --- Profile ---
-            syncProfileUI: function() {
-                const user = JSON.parse(localStorage.getItem('wt_users')).find(x => x.username === this.currentUser.username);
-                document.getElementById('header-username').innerText = user.username.toUpperCase();
-                document.getElementById('header-avatar').innerText = (user.fullname || user.username).charAt(0).toUpperCase();
-                
-                document.getElementById('profile-fullname').value = user.fullname || '';
-                document.getElementById('profile-dept').value = user.dept || '';
-                document.getElementById('profile-email').value = user.email || '';
-                document.getElementById('profile-mobile').value = user.mobile || '';
+            closeModal: function(id) { 
+                document.getElementById(id).style.display = 'none'; 
+                if(id === 'modal-view-ticket') document.getElementById('ai-fix-result').style.display = 'none';
             },
 
-            saveProfile: function() {
-                let users = JSON.parse(localStorage.getItem('wt_users'));
-                let idx = users.findIndex(u => u.username === this.currentUser.username);
+            // --- Dashboard & Tickets ---
+            getTickets: function() { return JSON.parse(localStorage.getItem('wt_tickets')) || []; },
+            saveTickets: function(t) { localStorage.setItem('wt_tickets', JSON.stringify(t)); },
+
+            renderDashboard: function() {
+                const t = this.getTickets();
+                document.getElementById('dash-total').innerText = t.length;
+                document.getElementById('dash-open').innerText = t.filter(x => x.status === 'Open').length;
+                document.getElementById('dash-prog').innerText = t.filter(x => x.status === 'In Progress').length;
+                document.getElementById('dash-closed').innerText = t.filter(x => x.status === 'Closed').length;
+
+                const tbody = document.getElementById('dash-recent-table');
+                tbody.innerHTML = '';
+                t.slice(-5).reverse().forEach(tk => {
+                    tbody.innerHTML += `<tr style="cursor:pointer" onclick="app.viewTicket('${tk.id}')">
+                        <td style="color:var(--neon-cyan)">${tk.id}</td><td>${tk.title}</td>
+                        <td><span class="status-badge ${this.getBgClass(tk.status)}">${tk.status}</span></td>
+                        <td>${new Date(tk.date).toLocaleDateString()}</td>
+                    </tr>`;
+                });
+            },
+
+            renderTickets: function() {
+                const search = document.getElementById('search-ticket').value.toLowerCase();
+                const filter = document.getElementById('filter-ticket').value;
+                let tickets = this.getTickets().filter(t => {
+                    const mS = t.title.toLowerCase().includes(search) || t.id.toLowerCase().includes(search);
+                    const mF = filter === 'All' || t.status === filter;
+                    return mS && mF;
+                });
+
+                const tbody = document.getElementById('ticket-table-body');
+                tbody.innerHTML = '';
+                tickets.reverse().forEach(tk => {
+                    tbody.innerHTML += `<tr>
+                        <td style="color:var(--neon-cyan); font-weight:bold;">${tk.id}</td>
+                        <td>${tk.title}</td>
+                        <td><span class="status-badge ${this.getBgClass(tk.priority)}">${tk.priority}</span></td>
+                        <td>${tk.category}</td>
+                        <td><span class="status-badge ${this.getBgClass(tk.status)}">${tk.status}</span></td>
+                        <td style="font-size:0.8rem">${tk.author}</td>
+                        <td><button onclick="app.viewTicket('${tk.id}')">Inspect</button></td>
+                    </tr>`;
+                });
+            },
+
+            getBgClass: function(val) {
+                if(val === 'High' || val === 'Open') return 'bg-open';
+                if(val === 'Medium' || val === 'In Progress') return 'bg-prog';
+                return 'bg-closed';
+            },
+
+            createTicket: function() {
+                const title = document.getElementById('nt-title').value;
+                const desc = document.getElementById('nt-desc').value;
+                if(!title || !desc) return this.showToast("Subject and Diagnostics are mandatory.", 'fa-triangle-exclamation', 'var(--neon-alert)');
+
+                const tickets = this.getTickets();
+                const newId = 'WT-' + (1000 + tickets.length + 1);
+                
+                tickets.push({
+                    id: newId, title, desc, 
+                    category: document.getElementById('nt-category').value, 
+                    priority: document.getElementById('nt-priority').value,
+                    status: 'Open', author: this.currentUser.email, date: new Date().toISOString(),
+                    history: [`Initiated by ${this.currentUser.email}`]
+                });
+
+                this.saveTickets(tickets);
+                this.closeModal('modal-create-ticket');
+                
+                // Clear fields
+                document.getElementById('nt-title').value = ''; document.getElementById('nt-desc').value = '';
+                
+                this.renderTickets();
+                this.renderDashboard();
+                this.showToast(`Comm Link ${newId} established.`, 'fa-check', 'var(--neon-success)');
+                
+                // Send notification to admin
+                this.internalMailSend('armtechbridge@gmail.com', 'SYSTEM', `New Ticket: ${newId}`, `Ticket ${newId} created by ${this.currentUser.email}.`);
+            },
+
+            viewTicket: function(id) {
+                const tk = this.getTickets().find(t => t.id === id);
+                if(!tk) return;
+
+                this.currentTicketId = id;
+                document.getElementById('vt-title').innerText = tk.title;
+                document.getElementById('vt-id').innerText = tk.id;
+                document.getElementById('vt-author').innerText = tk.author;
+                document.getElementById('vt-date').innerText = new Date(tk.date).toLocaleString();
+                document.getElementById('vt-desc').innerText = tk.desc;
+                document.getElementById('vt-status').innerText = tk.status;
+                document.getElementById('vt-status').className = `status-badge ${this.getBgClass(tk.status)}`;
+                document.getElementById('vt-priority').innerText = tk.priority;
+                document.getElementById('vt-priority').className = `status-badge ${this.getBgClass(tk.priority)}`;
+
+                const hist = document.getElementById('vt-history');
+                hist.innerHTML = '';
+                tk.history.forEach(h => hist.innerHTML += `<li>> ${h}</li>`);
+
+                if(this.currentUser.role === 'admin') {
+                    document.getElementById('vt-admin-controls').style.display = 'block';
+                    document.getElementById('vt-edit-status').value = tk.status;
+                    document.getElementById('vt-edit-priority').value = tk.priority;
+                } else {
+                    document.getElementById('vt-admin-controls').style.display = 'none';
+                }
+
+                this.openModal('modal-view-ticket');
+            },
+
+            updateTicket: function(field, val) {
+                if(this.currentUser.role !== 'admin') return;
+                const tickets = this.getTickets();
+                const idx = tickets.findIndex(t => t.id === this.currentTicketId);
                 if(idx > -1) {
-                    users[idx].fullname = document.getElementById('profile-fullname').value;
-                    users[idx].dept = document.getElementById('profile-dept').value;
-                    users[idx].email = document.getElementById('profile-email').value;
-                    users[idx].mobile = document.getElementById('profile-mobile').value;
-                    localStorage.setItem('wt_users', JSON.stringify(users));
-                    this.syncProfileUI();
-                    this.showToast("Matrix designation updated.", "success");
+                    tickets[idx][field] = val;
+                    tickets[idx].history.push(`Master altered ${field} to ${val}`);
+                    this.saveTickets(tickets);
+                    this.viewTicket(this.currentTicketId); // refresh
+                    this.renderTickets();
+                    this.renderDashboard();
+                    this.showToast(`Ticket configuration updated.`);
                 }
             },
 
-            // ==========================================
-            // ADMIN CAPABILITIES (USER MANAGEMENT)
-            // ==========================================
+            deleteTicket: function() {
+                if(confirm("CRITICAL WARNING: Purge this record from the matrix?")) {
+                    let tickets = this.getTickets().filter(t => t.id !== this.currentTicketId);
+                    this.saveTickets(tickets);
+                    this.closeModal('modal-view-ticket');
+                    this.renderTickets();
+                    this.renderDashboard();
+                    this.showToast("Record purged.", 'fa-trash', 'var(--neon-alert)');
+                }
+            },
 
-            renderAdminUsers: function() {
-                if(this.currentUser.role !== 'admin') return;
+            exportCSV: function() {
+                const tickets = this.getTickets();
+                let csv = "data:text/csv;charset=utf-8,ID,Subject,Priority,Category,Status,Author,Date\n";
+                tickets.forEach(t => csv += `${t.id},"${t.title}",${t.priority},${t.category},${t.status},${t.author},${t.date}\n`);
+                const link = document.createElement("a");
+                link.setAttribute("href", encodeURI(csv));
+                link.setAttribute("download", "wt_tickets.csv");
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            },
+
+            // --- Voice Input ---
+            startVoiceDictation: function(targetId) {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                if(!SpeechRecognition) return this.showToast("Voice API not supported by this terminal.", 'fa-triangle-exclamation', 'var(--neon-alert)');
                 
-                const users = JSON.parse(localStorage.getItem('wt_users'));
-                const tbody = document.getElementById('admin-users-table');
-                tbody.innerHTML = '';
+                const btn = document.getElementById('btn-voice');
+                btn.style.color = 'var(--neon-alert)';
+                btn.classList.add('fa-beat-fade');
 
-                users.forEach(u => {
-                    const roleBadge = u.role === 'admin' ? '<span class="badge badge-admin">Admin</span>' : '<span class="badge badge-low">User</span>';
-                    const contact = `${u.mobile || 'No Mobile'}<br><span style="font-size:0.8rem; color:var(--text-muted);">${u.email || 'No Email'}</span>`;
-                    
-                    tbody.innerHTML += `
-                        <tr>
-                            <td style="font-weight: bold; color: var(--neon-primary);">${u.username}</td>
-                            <td>${u.fullname || '---'}</td>
-                            <td>${roleBadge}</td>
-                            <td>${contact}</td>
-                            <td>
-                                <button onclick="app.prepPasswordOverride('${u.username}')" style="font-size:0.75rem; padding: 6px 12px;"><i class="fa-solid fa-key"></i> Pass Override</button>
-                            </td>
-                        </tr>
+                const rec = new SpeechRecognition();
+                rec.onresult = (e) => {
+                    const text = e.results[0][0].transcript;
+                    const input = document.getElementById(targetId);
+                    input.value = input.value ? input.value + " " + text : text;
+                };
+                rec.onend = () => { btn.style.color = 'var(--neon-cyan)'; btn.classList.remove('fa-beat-fade'); };
+                rec.start();
+            },
+
+            // --- Mail System ---
+            getMails: function() { return JSON.parse(localStorage.getItem('wt_mails')) || []; },
+            saveMails: function(m) { localStorage.setItem('wt_mails', JSON.stringify(m)); },
+
+            internalMailSend: function(to, from, subject, body) {
+                const mails = this.getMails();
+                const id = 'M' + Date.now();
+                const date = new Date().toISOString();
+                
+                // Add to recipient inbox
+                mails.push({ id, to, from, subject, body, date, folder: 'inbox', read: false });
+                
+                // Add to sender sent (if real user)
+                if(from !== 'SYSTEM') {
+                    mails.push({ id: id+'_sent', to, from, subject, body, date, folder: 'sent', read: true, owner: from });
+                }
+                this.saveMails(mails);
+                
+                // Alert if recipient is logged in (simulating live)
+                if(this.currentUser && this.currentUser.email === to) {
+                    this.showToast(`New Mail: ${subject}`, 'fa-envelope');
+                    if(this.currentView === 'mailbox') this.renderMailbox();
+                }
+            },
+
+            switchMailFolder: function(folder) {
+                this.currentMailFolder = folder;
+                ['inbox', 'sent', 'system'].forEach(f => {
+                    document.getElementById(`btn-folder-${f}`).style.borderColor = 'var(--neon-indigo)';
+                    document.getElementById(`btn-folder-${f}`).style.color = 'var(--neon-cyan)';
+                });
+                document.getElementById(`btn-folder-${folder}`).style.borderColor = 'var(--neon-cyan)';
+                document.getElementById(`btn-folder-${folder}`).style.color = '#fff';
+                
+                document.getElementById('mail-read-view').style.display = 'none';
+                this.renderMailbox();
+            },
+
+            renderMailbox: function() {
+                const mails = this.getMails();
+                const container = document.getElementById('mail-list-container');
+                container.innerHTML = '';
+                
+                let filtered = mails.filter(m => {
+                    if(this.currentMailFolder === 'inbox') return m.to === this.currentUser.email && m.folder === 'inbox' && m.from !== 'SYSTEM';
+                    if(this.currentMailFolder === 'system') return m.to === this.currentUser.email && m.folder === 'inbox' && m.from === 'SYSTEM';
+                    if(this.currentMailFolder === 'sent') return m.owner === this.currentUser.email && m.folder === 'sent';
+                });
+
+                filtered.reverse().forEach(m => {
+                    const unreadClass = m.read ? '' : 'unread';
+                    const icon = m.from === 'SYSTEM' ? '<i class="fa-solid fa-server" style="color:var(--neon-alert)"></i>' : '<i class="fa-solid fa-user"></i>';
+                    container.innerHTML += `
+                        <div class="mail-item ${unreadClass}" onclick="app.readMail('${m.id}')">
+                            <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 5px;">${icon} ${this.currentMailFolder === 'sent' ? 'To: '+m.to : 'From: '+m.from}</div>
+                            <div style="font-weight: 600;">${m.subject}</div>
+                            <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 5px;">${new Date(m.date).toLocaleDateString()}</div>
+                        </div>
                     `;
                 });
             },
 
-            adminCreateUser: function() {
-                const username = document.getElementById('new-user-id').value.trim().toLowerCase();
-                const password = document.getElementById('new-user-pass').value;
-                const role = document.getElementById('new-user-role').value;
-                const fullname = document.getElementById('new-user-name').value;
-                const email = document.getElementById('new-user-email').value;
-                const mobile = document.getElementById('new-user-mobile').value;
-
-                if(!username || !password) return this.showToast("Operative ID and Passcode are strictly required.", "error");
-
-                let users = JSON.parse(localStorage.getItem('wt_users'));
-                if(users.find(u => u.username === username)) return this.showToast("Operative ID already exists in the Matrix.", "error");
-
-                users.push({ username, password, role, fullname, email, mobile, dept: '' });
-                localStorage.setItem('wt_users', JSON.stringify(users));
-                
-                this.closeModal('add-user-modal');
-                this.renderAdminUsers();
-                this.showToast(`Operative ${username} injected into the Matrix.`, "success");
-
-                // Clear fields
-                document.getElementById('new-user-id').value = ''; document.getElementById('new-user-pass').value = '';
-                document.getElementById('new-user-name').value = ''; document.getElementById('new-user-email').value = '';
-                document.getElementById('new-user-mobile').value = '';
-            },
-
-            prepPasswordOverride: function(username) {
-                this.overrideTargetUsername = username;
-                document.getElementById('override-target-id').innerText = username.toUpperCase();
-                document.getElementById('override-new-pass').value = '';
-                this.openModal('change-pass-modal');
-            },
-
-            adminForcePasswordChange: function() {
-                const newPass = document.getElementById('override-new-pass').value;
-                if(!newPass || newPass.length < 3) return this.showToast("Passcode must be at least 3 characters.", "error");
-
-                let users = JSON.parse(localStorage.getItem('wt_users'));
-                let idx = users.findIndex(u => u.username === this.overrideTargetUsername);
-                
+            readMail: function(id) {
+                let mails = this.getMails();
+                const idx = mails.findIndex(m => m.id === id);
                 if(idx > -1) {
-                    users[idx].password = newPass;
+                    const m = mails[idx];
+                    document.getElementById('read-mail-subject').innerText = m.subject;
+                    document.getElementById('read-mail-from').innerText = m.from;
+                    document.getElementById('read-mail-date').innerText = new Date(m.date).toLocaleString();
+                    document.getElementById('read-mail-body').innerText = m.body;
+                    document.getElementById('mail-read-view').style.display = 'block';
+
+                    if(!m.read) {
+                        mails[idx].read = true;
+                        this.saveMails(mails);
+                        this.renderMailbox(); // refresh unread style
+                        document.getElementById('notif-badge').style.display = 'none'; // clear badge assumed
+                    }
+                }
+            },
+
+            sendMail: function() {
+                const to = document.getElementById('mail-to').value.trim();
+                const sub = document.getElementById('mail-subject').value.trim();
+                const body = document.getElementById('mail-body').value.trim();
+                
+                if(!to || !sub) return this.showToast("Destination and Subject required.");
+                
+                this.closeModal('modal-compose-mail');
+                this.showToast("Establishing transmission link...", "fa-spinner fa-spin");
+                
+                // Simulate delay
+                setTimeout(() => {
+                    this.internalMailSend(to, this.currentUser.email, sub, body);
+                    this.showToast("Transmission delivered.", "fa-paper-plane", "var(--neon-success)");
+                    if(this.currentView === 'mailbox') this.renderMailbox();
+                    
+                    document.getElementById('mail-to').value = '';
+                    document.getElementById('mail-subject').value = '';
+                    document.getElementById('mail-body').value = '';
+                }, 1500);
+            },
+
+            // --- Groq AI Integration ---
+            callAI: async function(prompt, sysMsg) {
+                if (GROQ_API_KEY === "YOUR_GROQ_API_KEY_HERE") {
+                    return "ERROR: Neural net inactive. Insert Groq API Key into source architecture to initialize Llama3.";
+                }
+                try {
+                    const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+                        method: "POST", headers: { "Authorization": `Bearer ${GROQ_API_KEY}`, "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            model: "llama3-8b-8192", messages: [{ role: "system", content: sysMsg }, { role: "user", content: prompt }], temperature: 0.4, max_tokens: 800
+                        })
+                    });
+                    if(!res.ok) throw new Error("API Connection Failed");
+                    const data = await res.json();
+                    return data.choices[0].message.content;
+                } catch (e) {
+                    return "ERROR: Subspace connection to AI Nexus failed.";
+                }
+            },
+
+            aiSuggestPriority: async function() {
+                const title = document.getElementById('nt-title').value; const desc = document.getElementById('nt-desc').value;
+                if(!title) return this.showToast("Subject required for AI analysis.");
+                document.getElementById('ai-prio-loader').style.display = 'inline-block';
+                
+                const prompt = `Issue: ${title}. Desc: ${desc}. Suggest priority (Low, Medium, High) and 1 short sentence why.`;
+                const res = await this.callAI(prompt, "You are an IT triage AI. Reply format exactly: 'Priority: [Level] - [Reason]'");
+                
+                document.getElementById('ai-prio-loader').style.display = 'none';
+                if(res.includes('ERROR')) return alert(res);
+                
+                alert("AI Triage Analysis:\n" + res);
+                if(res.toLowerCase().includes('high')) document.getElementById('nt-priority').value = 'High';
+                else if(res.toLowerCase().includes('medium')) document.getElementById('nt-priority').value = 'Medium';
+                else document.getElementById('nt-priority').value = 'Low';
+            },
+
+            aiGenerateFix: async function() {
+                const desc = document.getElementById('vt-desc').innerText;
+                document.getElementById('ai-fix-loader').style.display = 'block';
+                document.getElementById('ai-fix-result').style.display = 'none';
+
+                let res = await this.callAI(`Provide a step-by-step fix for this IT issue: ${desc}`, "You are an elite Level 3 IT AI. Provide clear, numbered, technical steps.");
+                
+                document.getElementById('ai-fix-loader').style.display = 'none';
+                document.getElementById('ai-fix-result').style.display = 'block';
+                
+                // Simple formatting
+                res = res.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong style="color:var(--neon-cyan)">$1</strong>');
+                document.getElementById('ai-fix-result').innerHTML = `<h4 style="color:var(--neon-indigo); margin-bottom:10px;"><i class="fa-solid fa-bolt"></i> Synthesized Protocol</h4>${res}`;
+            },
+
+            sendChatMessage: async function() {
+                const input = document.getElementById('ai-chat-input');
+                const msg = input.value.trim();
+                if(!msg) return;
+
+                const history = document.getElementById('ai-chat-history');
+                history.innerHTML += `<div class="msg user">${msg}</div>`;
+                input.value = ''; history.scrollTop = history.scrollHeight;
+
+                document.getElementById('ai-chat-loader').style.display = 'block';
+
+                let res = await this.callAI(msg, "You are a helpdesk self-service bot. Provide a numbered, step-by-step fix they can do themselves. Keep it friendly but technical.");
+                
+                document.getElementById('ai-chat-loader').style.display = 'none';
+                res = res.replace(/\n/g, '<br>');
+                history.innerHTML += `<div class="msg bot">${res}</div>`;
+                history.scrollTop = history.scrollHeight;
+            },
+
+            // --- Calendar ---
+            initCalendar: function() {
+                if (this.calendarInstance) return;
+                const calEl = document.getElementById('calendar-container');
+                const events = JSON.parse(localStorage.getItem('wt_events')) || [];
+
+                this.calendarInstance = new FullCalendar.Calendar(calEl, {
+                    initialView: 'dayGridMonth', height: 600,
+                    headerToolbar: { left: 'prev,next today', center: 'title', right: 'dayGridMonth,timeGridWeek' },
+                    events: events, editable: true, selectable: true,
+                    select: function(info) {
+                        const title = prompt('Enter Chronos Event Designation:');
+                        if (title) {
+                            const evt = { id: Date.now().toString(), title, start: info.startStr, end: info.endStr, allDay: info.allDay };
+                            app.calendarInstance.addEvent(evt);
+                            const current = JSON.parse(localStorage.getItem('wt_events')) || [];
+                            current.push(evt); localStorage.setItem('wt_events', JSON.stringify(current));
+                        }
+                        app.calendarInstance.unselect();
+                    },
+                    eventClick: function(info) {
+                        if(confirm(`Purge event '${info.event.title}'?`)) {
+                            info.event.remove();
+                            let current = JSON.parse(localStorage.getItem('wt_events')) || [];
+                            current = current.filter(e => e.id !== info.event.id);
+                            localStorage.setItem('wt_events', JSON.stringify(current));
+                        }
+                    }
+                });
+                this.calendarInstance.render();
+            },
+
+            // --- Profile & Admin ---
+            saveNotes: function() { localStorage.setItem(`wt_notes_${this.currentUser.email}`, document.getElementById('personal-notes').value); },
+
+            renderProfile: function() {
+                document.getElementById('prof-email').value = this.currentUser.email;
+                document.getElementById('prof-name').value = this.currentUser.fullname || '';
+                document.getElementById('prof-dept').value = this.currentUser.dept || '';
+                document.getElementById('prof-mobile').value = this.currentUser.mobile || '';
+            },
+
+            saveProfile: function() {
+                let users = JSON.parse(localStorage.getItem('wt_users'));
+                let idx = users.findIndex(u => u.email === this.currentUser.email);
+                if(idx > -1) {
+                    users[idx].fullname = document.getElementById('prof-name').value;
+                    users[idx].dept = document.getElementById('prof-dept').value;
+                    users[idx].mobile = document.getElementById('prof-mobile').value;
                     localStorage.setItem('wt_users', JSON.stringify(users));
-                    this.closeModal('change-pass-modal');
-                    this.showToast(`Passcode override successful for ${this.overrideTargetUsername}.`, "success");
+                    this.currentUser = users[idx];
+                    document.getElementById('header-name').innerText = this.currentUser.fullname;
+                    this.showToast("Configuration committed to local matrix.", 'fa-check');
+                }
+            },
+
+            renderAdmin: function() {
+                const users = JSON.parse(localStorage.getItem('wt_users'));
+                const tbody = document.getElementById('admin-user-table');
+                tbody.innerHTML = '';
+                users.forEach(u => {
+                    const badge = u.role === 'admin' ? '<span class="status-badge bg-open">Admin</span>' : '<span class="status-badge bg-closed">User</span>';
+                    tbody.innerHTML += `<tr>
+                        <td style="color:var(--neon-cyan)">${u.email}</td><td>${u.fullname || '--'}</td>
+                        <td>${badge}</td><td>${u.mobile || '--'}</td>
+                        <td><button class="danger-btn" style="padding:4px 8px; font-size:0.7rem;" onclick="app.adminRemoveUser('${u.email}')"><i class="fa-solid fa-ban"></i> Terminate</button></td>
+                    </tr>`;
+                });
+            },
+
+            adminCreateUser: function() {
+                const email = document.getElementById('nu-email').value.trim().toLowerCase();
+                const name = document.getElementById('nu-name').value.trim();
+                if(!email) return this.showToast("Email ID required.", 'fa-triangle-exclamation', 'var(--neon-alert)');
+
+                let users = JSON.parse(localStorage.getItem('wt_users'));
+                if(users.find(u => u.email === email)) return this.showToast("Operative ID already exists.", 'fa-triangle-exclamation', 'var(--neon-alert)');
+
+                users.push({
+                    email: email, fullname: name, dept: document.getElementById('nu-dept').value,
+                    mobile: document.getElementById('nu-mobile').value, role: document.getElementById('nu-role').value
+                });
+                
+                localStorage.setItem('wt_users', JSON.stringify(users));
+                this.closeModal('modal-add-user');
+                this.renderAdmin();
+                this.showToast(`Operative ${email} injected.`, 'fa-user-plus', 'var(--neon-success)');
+                
+                // Clear fields
+                ['nu-email','nu-name','nu-dept','nu-mobile'].forEach(id => document.getElementById(id).value = '');
+            },
+
+            adminRemoveUser: function(email) {
+                if(email === 'armtechbridge@gmail.com') return this.showToast("Cannot terminate Master Admin.", 'fa-ban', 'var(--neon-alert)');
+                if(confirm(`CRITICAL: Purge Operative ${email}?`)) {
+                    let users = JSON.parse(localStorage.getItem('wt_users')).filter(u => u.email !== email);
+                    localStorage.setItem('wt_users', JSON.stringify(users));
+                    this.renderAdmin();
+                    this.showToast("Operative terminated.", 'fa-trash', 'var(--neon-alert)');
                 }
             }
         };
 
+        // --- Clock Interval ---
+        setInterval(() => {
+            const now = new Date();
+            document.getElementById('live-clock').innerText = now.toLocaleTimeString('en-US', { hour12: false });
+        }, 1000);
+
+        // --- Boot Sequence ---
         window.onload = function() {
             app.initData();
-            app.loadTheme();
+            app.checkAuth();
         };
-
     </script>
 </body>
 </html>
