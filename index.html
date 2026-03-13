@@ -3,20 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WorldTech ServiceDesk | AI-Powered ITSM</title>
+    <title>Armora ServiceDesk | AI-Powered ITSM</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
 
     <style>
-        /* === THEME & VARIABLES === */
+        /* === DYNAMIC THEME ENGINE (CSS VARIABLES) === */
         :root {
-            --bg-dark: #07080f;
+            /* These are defaults. They get overwritten by JS based on Admin Theme Settings */
+            --bg-base: #07080f;
             --glass-bg: rgba(18, 20, 35, 0.65);
             --glass-border: rgba(0, 234, 255, 0.2);
-            --neon-cyan: #00eaff;
-            --neon-indigo: #6366f1;
+            --neon-primary: #00eaff;
+            --neon-secondary: #6366f1;
             --neon-alert: #ff2a5f;
             --neon-success: #00ff88;
             --text-main: #f8fafc;
@@ -26,90 +27,87 @@
             --sidebar-width: 260px;
         }
 
-        body.light-mode {
-            --bg-dark: #f0f4f8;
-            --glass-bg: rgba(255, 255, 255, 0.8);
-            --glass-border: rgba(99, 102, 241, 0.3);
-            --neon-cyan: #0088ff;
-            --neon-indigo: #4f46e5;
-            --text-main: #0f172a;
-            --text-muted: #475569;
-        }
-
         /* === RESET & BACKGROUND === */
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: var(--font-body); background: var(--bg-dark); color: var(--text-main); overflow: hidden; transition: background 0.4s; }
+        body { font-family: var(--font-body); background: var(--bg-base); color: var(--text-main); overflow: hidden; transition: background 0.4s, color 0.4s; }
         
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: var(--neon-indigo); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb { background: var(--neon-secondary); border-radius: 3px; }
 
-        .cyber-grid { position: fixed; inset: 0; z-index: -2; background-image: linear-gradient(rgba(0, 234, 255, 0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 234, 255, 0.04) 1px, transparent 1px); background-size: 40px 40px; animation: gridPan 30s linear infinite; }
-        .glow-orb { position: fixed; border-radius: 50%; filter: blur(120px); z-index: -1; opacity: 0.15; animation: pulseOrb 8s alternate infinite; }
-        .orb-1 { top: -10%; left: -10%; width: 50vw; height: 50vw; background: var(--neon-cyan); }
-        .orb-2 { bottom: -10%; right: -10%; width: 40vw; height: 40vw; background: var(--neon-indigo); }
+        /* Animated Background Effects */
+        .cyber-grid { position: fixed; inset: 0; z-index: -2; background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px); background-size: 40px 40px; animation: gridPan 30s linear infinite; }
+        .glow-orb { position: fixed; border-radius: 50%; filter: blur(120px); z-index: -1; opacity: 0.15; animation: pulseOrb 8s alternate infinite; transition: background 0.5s; }
+        .orb-1 { top: -10%; left: -10%; width: 50vw; height: 50vw; background: var(--neon-primary); }
+        .orb-2 { bottom: -10%; right: -10%; width: 40vw; height: 40vw; background: var(--neon-secondary); }
 
         @keyframes gridPan { 0% { background-position: 0 0; } 100% { background-position: 40px 40px; } }
         @keyframes pulseOrb { 0% { transform: scale(1); opacity: 0.1; } 100% { transform: scale(1.2); opacity: 0.25; } }
 
         /* === GLASSMORPHISM === */
-        .glass { background: var(--glass-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid var(--glass-border); border-radius: 12px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+        .glass { background: var(--glass-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid var(--glass-border); border-radius: 12px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); transition: background 0.3s, border-color 0.3s; }
         .glass-panel { padding: 25px; transition: 0.3s; }
-        .glass-panel:hover { border-color: rgba(0, 234, 255, 0.4); }
+        .glass-panel:hover { border-color: rgba(255,255,255,0.2); }
 
         h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; letter-spacing: 1px; }
 
         /* Inputs & Buttons */
         input, select, textarea { width: 100%; padding: 12px 16px; margin-bottom: 15px; background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); color: var(--text-main); border-radius: 8px; font-family: var(--font-body); font-size: 1rem; outline: none; transition: 0.3s; }
-        body.light-mode input, body.light-mode select, body.light-mode textarea { background: rgba(255,255,255,0.6); }
-        input:focus, select:focus, textarea:focus { border-color: var(--neon-cyan); box-shadow: 0 0 10px rgba(0,234,255,0.2) inset; }
+        input:focus, select:focus, textarea:focus { border-color: var(--neon-primary); box-shadow: 0 0 10px rgba(0,0,0,0.5) inset; }
 
-        button, .btn { font-family: var(--font-display); background: rgba(99, 102, 241, 0.1); color: var(--neon-cyan); border: 1px solid var(--neon-indigo); padding: 10px 20px; border-radius: 8px; cursor: pointer; transition: 0.3s; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1px; }
-        button:hover { background: var(--neon-indigo); color: #fff; box-shadow: 0 0 15px rgba(99, 102, 241, 0.5); border-color: var(--neon-indigo); }
-        button.action-btn { background: linear-gradient(45deg, var(--neon-indigo), var(--neon-cyan)); color: #fff; border: none; font-weight: bold; }
-        button.action-btn:hover { box-shadow: 0 0 20px rgba(0, 234, 255, 0.5); transform: translateY(-2px); }
+        button, .btn { font-family: var(--font-display); background: rgba(0,0,0,0.2); color: var(--neon-primary); border: 1px solid var(--neon-secondary); padding: 10px 20px; border-radius: 8px; cursor: pointer; transition: 0.3s; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1px; }
+        button:hover { background: var(--neon-secondary); color: #fff; box-shadow: 0 0 15px rgba(0,0,0,0.5); border-color: var(--neon-secondary); }
+        button.action-btn { background: linear-gradient(45deg, var(--neon-secondary), var(--neon-primary)); color: #fff; border: none; font-weight: bold; }
+        button.action-btn:hover { box-shadow: 0 5px 20px rgba(0,0,0,0.5); transform: translateY(-2px); filter: brightness(1.2); }
 
         /* === LOGIN & SIMULATORS === */
-        #login-screen { position: fixed; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 1000; background: var(--bg-dark); }
-        .login-box { width: 400px; padding: 40px; text-align: center; border-top: 4px solid var(--neon-cyan); position: relative; z-index: 10; }
+        #login-screen { position: fixed; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 1000; background: var(--bg-base); }
+        .login-box { width: 420px; padding: 50px 40px; text-align: center; border-top: 4px solid var(--neon-primary); position: relative; z-index: 10; }
         .sim-btn-container { display: none; gap: 15px; margin-top: 25px; z-index: 10; }
         
         /* Simulated External Devices */
-        .device-simulator { position: fixed; bottom: -100%; transition: 0.5s cubic-bezier(0.16, 1, 0.3, 1); z-index: 2000; box-shadow: 0 -10px 40px rgba(0,0,0,0.8); }
+        .device-simulator { position: fixed; bottom: -100%; transition: 0.5s cubic-bezier(0.16, 1, 0.3, 1); z-index: 2000; box-shadow: 0 -10px 50px rgba(0,0,0,0.9); }
         .device-simulator.active { bottom: 0; }
         
-        #sim-phone { right: 5%; width: 320px; height: 600px; background: #111; border: 4px solid #333; border-bottom: 0; border-radius: 30px 30px 0 0; display: flex; flex-direction: column; }
-        .phone-header { padding: 15px; text-align: center; border-bottom: 1px solid #333; font-size: 0.9rem; font-weight: bold; color: #fff; background: #000; border-radius: 25px 25px 0 0;}
-        .sms-bubble { background: #262626; color: #fff; padding: 15px; border-radius: 15px; margin: 20px; font-size: 0.95rem; border-left: 4px solid var(--neon-success); }
+        /* Phone UI */
+        #sim-phone { right: 5%; width: 340px; height: 650px; background: #0f0f13; border: 8px solid #222; border-bottom: 0; border-radius: 40px 40px 0 0; display: flex; flex-direction: column; overflow: hidden; }
+        .phone-notch { position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 120px; height: 25px; background: #222; border-radius: 0 0 15px 15px; z-index: 10; }
+        .phone-header { padding: 35px 20px 15px; text-align: center; border-bottom: 1px solid #333; font-size: 0.9rem; font-weight: bold; color: #fff; background: #1a1a1a; display: flex; justify-content: space-between; align-items: center;}
+        .sms-bubble { background: #2a2a35; color: #fff; padding: 18px; border-radius: 18px 18px 18px 4px; margin: 20px; font-size: 0.95rem; border-left: 4px solid var(--neon-success); box-shadow: 0 4px 10px rgba(0,0,0,0.3); animation: popIn 0.3s; }
         
-        #sim-webmail { left: 5%; width: 600px; height: 500px; background: #f0f2f5; border: 1px solid #ccc; border-bottom: 0; border-radius: 10px 10px 0 0; color: #333; display: flex; flex-direction: column; }
-        .browser-header { background: #e0e0e0; padding: 10px; border-radius: 10px 10px 0 0; display: flex; gap: 5px; align-items: center; }
-        .browser-dot { width: 12px; height: 12px; border-radius: 50%; background: #ff5f56; }
-        .browser-dot:nth-child(2) { background: #ffbd2e; }
-        .browser-dot:nth-child(3) { background: #27c93f; }
-        .webmail-body { padding: 20px; flex-grow: 1; overflow-y: auto; background: #fff; }
+        /* Webmail UI */
+        #sim-webmail { left: 5%; width: 650px; height: 550px; background: #f0f2f5; border: 1px solid #ccc; border-bottom: 0; border-radius: 12px 12px 0 0; color: #333; display: flex; flex-direction: column; box-shadow: 0 -10px 40px rgba(0,0,0,0.5); }
+        .browser-header { background: #d1d5db; padding: 12px; border-radius: 12px 12px 0 0; display: flex; gap: 8px; align-items: center; }
+        .browser-dot { width: 14px; height: 14px; border-radius: 50%; background: #ef4444; }
+        .browser-dot:nth-child(2) { background: #f59e0b; }
+        .browser-dot:nth-child(3) { background: #10b981; }
+        .webmail-body { padding: 0; flex-grow: 1; overflow-y: auto; background: #fff; display: flex; flex-direction: column;}
+        .webmail-toolbar { background: #f8fafc; padding: 15px 20px; border-bottom: 1px solid #e2e8f0; font-weight: bold; color: #475569; display: flex; justify-content: space-between;}
         
-        .sim-close { position: absolute; top: 10px; right: 15px; cursor: pointer; color: #888; font-size: 1.2rem; }
-        .sim-close:hover { color: red; }
+        .sim-close { cursor: pointer; color: #888; font-size: 1.2rem; transition: 0.2s; }
+        .sim-close:hover { color: #ef4444; transform: scale(1.1); }
+        @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
         /* === APP LAYOUT === */
         #app-container { display: none; height: 100vh; flex-direction: row; }
         
         /* Sidebar */
-        .sidebar { width: var(--sidebar-width); height: 100%; border-right: 1px solid var(--glass-border); border-radius: 0; display: flex; flex-direction: column; padding: 25px 0; background: linear-gradient(180deg, var(--glass-bg), rgba(0,0,0,0.8)); }
-        .brand { text-align: center; margin-bottom: 30px; font-size: 1.5rem; color: var(--neon-cyan); text-shadow: 0 0 10px rgba(0,234,255,0.5); letter-spacing: 2px; }
+        .sidebar { width: var(--sidebar-width); height: 100%; border-right: 1px solid var(--glass-border); border-radius: 0; display: flex; flex-direction: column; padding: 25px 0; background: linear-gradient(180deg, var(--glass-bg), rgba(0,0,0,0.8)); z-index: 100; }
+        .brand { text-align: center; margin-bottom: 30px; padding: 0 20px; }
+        .brand h2 { color: var(--neon-primary); text-shadow: 0 0 10px rgba(0,0,0,0.5); font-size: 1.6rem; letter-spacing: 2px;}
+        .brand span { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 3px; }
         .nav-list { list-style: none; flex-grow: 1; overflow-y: auto; }
         .nav-list li { padding: 16px 30px; cursor: pointer; display: flex; align-items: center; gap: 15px; color: var(--text-muted); font-weight: 500; transition: 0.3s; border-left: 3px solid transparent; }
-        .nav-list li:hover, .nav-list li.active { color: var(--neon-cyan); background: rgba(0, 234, 255, 0.05); border-left-color: var(--neon-cyan); }
+        .nav-list li:hover, .nav-list li.active { color: var(--neon-primary); background: rgba(255, 255, 255, 0.05); border-left-color: var(--neon-primary); }
         
         /* Main Area */
-        .main-content { flex-grow: 1; display: flex; flex-direction: column; overflow: hidden; }
-        .topbar { height: 75px; padding: 0 40px; border-bottom: 1px solid var(--glass-border); border-radius: 0; display: flex; justify-content: space-between; align-items: center; }
+        .main-content { flex-grow: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; }
+        .topbar { height: 75px; padding: 0 40px; border-bottom: 1px solid var(--glass-border); border-radius: 0; display: flex; justify-content: space-between; align-items: center; z-index: 90;}
         .topbar-right { display: flex; align-items: center; gap: 25px; }
-        .clock { font-family: var(--font-display); color: var(--neon-indigo); font-size: 1.2rem; letter-spacing: 2px; }
+        .clock { font-family: var(--font-display); color: var(--neon-secondary); font-size: 1.2rem; letter-spacing: 2px; text-shadow: 0 0 5px rgba(0,0,0,0.5); }
         
         .icon-btn { cursor: pointer; font-size: 1.3rem; color: var(--text-muted); transition: 0.3s; position: relative; }
-        .icon-btn:hover { color: var(--neon-cyan); }
+        .icon-btn:hover { color: var(--neon-primary); }
         .badge-dot { position: absolute; top: -2px; right: -2px; width: 10px; height: 10px; background: var(--neon-alert); border-radius: 50%; display: none; box-shadow: 0 0 8px var(--neon-alert);}
 
         .content-area { flex-grow: 1; padding: 35px; overflow-y: auto; position: relative; }
@@ -119,51 +117,63 @@
 
         /* Dashboard & Tables */
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 25px; margin-bottom: 35px; }
-        .stat-card { text-align: center; border-top: 4px solid; }
+        .stat-card { text-align: center; border-top: 4px solid; position: relative; overflow: hidden; }
+        .stat-card::before { content: ''; position: absolute; top:0; left:0; width:100%; height:100%; background: linear-gradient(180deg, rgba(255,255,255,0.05), transparent); pointer-events: none;}
         .stat-card h2 { font-size: 3rem; margin: 10px 0; text-shadow: 0 0 15px currentColor;}
-        .sc-tot { border-color: var(--neon-cyan); color: var(--neon-cyan); }
+        .sc-tot { border-color: var(--neon-primary); color: var(--neon-primary); }
         .sc-opn { border-color: var(--neon-alert); color: var(--neon-alert); }
-        .sc-prg { border-color: var(--neon-indigo); color: var(--neon-indigo); }
+        .sc-prg { border-color: var(--neon-secondary); color: var(--neon-secondary); }
         .sc-cls { border-color: var(--neon-success); color: var(--neon-success); }
 
         table { width: 100%; border-collapse: collapse; }
         th, td { padding: 15px 20px; text-align: left; border-bottom: 1px solid var(--glass-border); }
         th { font-family: var(--font-display); color: var(--text-muted); text-transform: uppercase; font-size: 0.85rem; background: rgba(0,0,0,0.2); }
-        tr:hover { background: rgba(0, 234, 255, 0.05); }
-        .badge { padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; font-family: var(--font-display); }
-        .bg-red { background: rgba(255, 42, 95, 0.2); color: var(--neon-alert); }
-        .bg-ind { background: rgba(99, 102, 241, 0.2); color: var(--neon-indigo); }
-        .bg-grn { background: rgba(0, 255, 136, 0.2); color: var(--neon-success); }
+        tr:hover { background: rgba(255, 255, 255, 0.05); }
+        .badge { padding: 6px 12px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; font-family: var(--font-display); }
+        .bg-red { background: rgba(255, 42, 95, 0.2); color: var(--neon-alert); border: 1px solid var(--neon-alert); }
+        .bg-ind { background: rgba(99, 102, 241, 0.2); color: var(--neon-secondary); border: 1px solid var(--neon-secondary); }
+        .bg-grn { background: rgba(0, 255, 136, 0.2); color: var(--neon-success); border: 1px solid var(--neon-success); }
 
         /* Mail System */
         .mail-wrapper { display: flex; gap: 20px; height: calc(100vh - 160px); }
         .mail-folders { width: 220px; display: flex; flex-direction: column; gap: 10px; }
         .mail-folders button { text-align: left; justify-content: flex-start; }
         .mail-list { flex: 1; overflow-y: auto; border-right: 1px solid var(--glass-border); padding-right: 15px; }
-        .mail-item { padding: 15px; border-bottom: 1px solid var(--glass-border); cursor: pointer; transition: 0.2s; border-left: 3px solid transparent; }
+        .mail-item { padding: 15px; border-bottom: 1px solid var(--glass-border); cursor: pointer; transition: 0.2s; border-left: 3px solid transparent; background: rgba(0,0,0,0.2);}
         .mail-item:hover { background: rgba(255,255,255,0.05); }
-        .mail-item.unread { border-left-color: var(--neon-cyan); background: rgba(0, 234, 255, 0.08); }
+        .mail-item.unread { border-left-color: var(--neon-primary); background: rgba(255,255,255, 0.08); font-weight: bold;}
         .mail-content-pane { flex: 1.5; padding: 0 20px; overflow-y: auto; }
 
         /* AI Chat */
         .chat-container { display: flex; flex-direction: column; height: 500px; }
         .chat-history { flex-grow: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 15px; border-bottom: 1px solid var(--glass-border); }
         .msg { max-width: 80%; padding: 12px 18px; border-radius: 12px; line-height: 1.5; font-size: 0.95rem; }
-        .msg.bot { background: rgba(99, 102, 241, 0.15); border: 1px solid var(--neon-indigo); align-self: flex-start; border-bottom-left-radius: 2px; }
-        .msg.user { background: rgba(0, 234, 255, 0.15); border: 1px solid var(--neon-cyan); align-self: flex-end; border-bottom-right-radius: 2px; }
-        .loader { display: none; color: var(--neon-cyan); font-family: var(--font-display); font-size: 0.85rem; animation: pulse 1.5s infinite; }
+        .msg.bot { background: rgba(0,0,0, 0.3); border: 1px solid var(--neon-secondary); align-self: flex-start; border-bottom-left-radius: 2px; color: var(--text-main); }
+        .msg.user { background: rgba(255,255,255, 0.1); border: 1px solid var(--neon-primary); align-self: flex-end; border-bottom-right-radius: 2px; color: var(--neon-primary); }
+        .loader { display: none; color: var(--neon-primary); font-family: var(--font-display); font-size: 0.85rem; animation: pulse 1.5s infinite; }
         @keyframes pulse { 50% { opacity: 0.5; } }
 
         /* Modals & Toasts */
         .modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); display: none; justify-content: center; align-items: center; z-index: 3000; }
-        .modal-content { width: 100%; max-width: 650px; max-height: 90vh; overflow-y: auto; position: relative; border-top: 4px solid var(--neon-cyan); }
+        .modal-content { width: 100%; max-width: 650px; max-height: 90vh; overflow-y: auto; position: relative; border-top: 4px solid var(--neon-primary); }
         .close-modal { position: absolute; top: 20px; right: 25px; font-size: 1.5rem; cursor: pointer; color: var(--text-muted); }
         .close-modal:hover { color: var(--neon-alert); }
 
         #toast-container { position: fixed; bottom: 30px; right: 30px; display: flex; flex-direction: column; gap: 10px; z-index: 4000; }
-        .toast { background: var(--glass-bg); backdrop-filter: blur(10px); border-left: 4px solid var(--neon-cyan); padding: 15px 25px; border-radius: 8px; color: #fff; box-shadow: 0 5px 20px rgba(0,0,0,0.5); animation: slideIn 0.3s forwards; }
+        .toast { background: var(--glass-bg); backdrop-filter: blur(10px); border-left: 4px solid var(--neon-primary); padding: 15px 25px; border-radius: 8px; color: #fff; box-shadow: 0 5px 20px rgba(0,0,0,0.5); animation: slideIn 0.3s forwards; }
         @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
 
+        /* Theme Customizer Colors */
+        .color-swatch { width: 30px; height: 30px; border-radius: 50%; display: inline-block; cursor: pointer; border: 2px solid transparent; transition: 0.2s; margin-right: 10px;}
+        .color-swatch:hover { transform: scale(1.2); }
+        .color-swatch.active { border-color: #fff; box-shadow: 0 0 10px currentColor; }
+
+        @media (max-width: 768px) {
+            .sidebar { position: fixed; transform: translateX(-100%); transition: 0.3s; }
+            .sidebar.open { transform: translateX(0); }
+            .mail-wrapper { flex-direction: column; }
+            .mail-folders { width: 100%; flex-direction: row; overflow-x: auto; }
+        }
     </style>
 </head>
 <body>
@@ -174,53 +184,75 @@
     <div id="toast-container"></div>
 
     <div id="sim-phone" class="device-simulator">
+        <div class="phone-notch"></div>
         <div class="phone-header">
-            <i class="fa-solid fa-signal" style="float:left;"></i>
-            <span id="phone-number-display">+91 7845714920</span>
-            <i class="fa-solid fa-battery-three-quarters" style="float:right;"></i>
-            <i class="fa-solid fa-xmark sim-close" onclick="app.closeSimulator('sim-phone')"></i>
+            <span><i class="fa-solid fa-signal"></i> 5G</span>
+            <span id="phone-number-display" style="font-family: monospace;">+91 7845714920</span>
+            <span><i class="fa-solid fa-battery-three-quarters"></i></span>
         </div>
-        <div style="padding: 15px; font-size: 0.8rem; color: gray; text-align: center;">Messages</div>
-        <div class="sms-bubble" id="sms-content">No new messages.</div>
+        <div style="padding: 15px; font-size: 0.8rem; color: #666; text-align: center; background: #0f0f13;">Messages App</div>
+        <div style="flex-grow: 1; background: #0f0f13; overflow-y: auto;">
+            <div id="sms-placeholder" style="text-align: center; padding: 40px; color: #444;">No new messages.</div>
+            <div class="sms-bubble" id="sms-content" style="display: none;"></div>
+        </div>
+        <div style="background: #1a1a1a; padding: 20px; text-align: center;">
+            <div style="width: 40px; height: 5px; background: #333; margin: 0 auto; border-radius: 5px; cursor: pointer;" onclick="app.closeSimulator('sim-phone')"></div>
+        </div>
     </div>
 
     <div id="sim-webmail" class="device-simulator">
         <div class="browser-header">
-            <div class="browser-dot"></div><div class="browser-dot"></div><div class="browser-dot"></div>
-            <div style="flex-grow:1; text-align:center; font-size: 0.85rem; color: #666;">mail.google.com</div>
-            <i class="fa-solid fa-xmark sim-close" onclick="app.closeSimulator('sim-webmail')"></i>
+            <div class="browser-dot" onclick="app.closeSimulator('sim-webmail')" style="cursor: pointer;"></div>
+            <div class="browser-dot"></div><div class="browser-dot"></div>
+            <div style="flex-grow:1; text-align:center; font-size: 0.85rem; color: #555; background: #fff; border-radius: 4px; padding: 4px; margin: 0 20px;">
+                <i class="fa-solid fa-lock" style="color: green; font-size: 0.7rem; margin-right: 5px;"></i> mail.google.com
+            </div>
         </div>
-        <div class="webmail-body">
-            <h3 style="margin-bottom: 20px; border-bottom: 2px solid #eee; padding-bottom: 10px;">Inbox - <span id="webmail-email-display">armtechbridge@gmail.com</span></h3>
-            <div id="webmail-content" style="padding: 15px; background: #f9f9f9; border-left: 4px solid #4285f4; border-radius: 4px;">
-                <strong style="display:block; margin-bottom: 5px;">system@worldtech.com</strong>
-                <p style="color: #444; font-size: 0.95rem;">Awaiting incoming mail...</p>
+        <div class="webmail-toolbar">
+            <span><i class="fa-solid fa-bars" style="margin-right: 15px;"></i> Gmail</span>
+            <span id="webmail-email-display" style="font-size: 0.9rem;">armtechbridge@gmail.com</span>
+        </div>
+        <div class="webmail-body" style="background: #f1f5f9; padding: 20px;">
+            <div style="background: #fff; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); overflow: hidden;">
+                <div style="padding: 15px; border-bottom: 1px solid #e2e8f0; font-weight: bold; background: #f8fafc; color: #334155;">Primary Inbox</div>
+                <div id="webmail-placeholder" style="padding: 30px; text-align: center; color: #94a3b8;">Inbox is empty.</div>
+                
+                <div id="webmail-content" style="padding: 20px; border-left: 4px solid #3b82f6; display: none; background: #eff6ff;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                        <strong style="color: #1e293b;">armtechbridge@gmail.com</strong>
+                        <span style="color: #64748b; font-size: 0.8rem;">Just now</span>
+                    </div>
+                    <div style="font-weight: bold; color: #0f172a; margin-bottom: 10px;">WorldTech Security Code</div>
+                    <p id="webmail-body-text" style="color: #334155; font-size: 0.95rem; line-height: 1.5;"></p>
+                </div>
             </div>
         </div>
     </div>
 
     <div id="login-screen">
         <div class="glass glass-panel login-box">
-            <h1 style="color: var(--neon-cyan);">WORLDTECH</h1>
-            <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 30px;">SECURE MASTER GATEWAY</p>
+            <h1 style="color: var(--neon-primary); letter-spacing: 3px; margin-bottom: 5px;">ARMORA</h1>
+            <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 30px; text-transform: uppercase; letter-spacing: 1px;">Master Admin Gateway</p>
             
             <div id="login-step-1">
-                <input type="email" id="login-email" placeholder="Enter Master Email" autocomplete="off" value="armtechbridge@gmail.com">
-                <button class="action-btn" style="width: 100%; padding: 15px;" onclick="app.requestOTP()">Send OTP</button>
+                <input type="email" id="login-email" placeholder="Enter Master Email" autocomplete="off" style="text-align: center;">
+                <button class="action-btn" style="width: 100%; padding: 15px; font-size: 1rem;" onclick="app.requestOTP()">Send OTP</button>
                 <p id="login-error" style="color: var(--neon-alert); font-size: 0.85rem; margin-top: 15px; display: none;"></p>
             </div>
 
             <div id="login-step-2" style="display: none;">
-                <p style="color: var(--neon-success); font-size: 0.9rem; margin-bottom: 15px;"><i class="fa-solid fa-shield-check"></i> OTP dispatched securely.</p>
-                <input type="text" id="login-otp" placeholder="Enter 6-digit OTP" maxlength="6" style="text-align: center; font-family: var(--font-display); font-size: 1.5rem; letter-spacing: 5px;">
-                <button class="action-btn" style="width: 100%; padding: 15px;" onclick="app.verifyOTP()">Verify & Authenticate</button>
-                <button style="width: 100%; margin-top: 10px; background: transparent; border: none; color: var(--text-muted);" onclick="app.resetLogin()">Cancel</button>
+                <p style="color: var(--neon-success); font-size: 0.9rem; margin-bottom: 5px;"><i class="fa-solid fa-shield-check"></i> 2FA Protocol Active</p>
+                <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 20px;">Code dispatched to registered endpoints.</p>
+                
+                <input type="text" id="login-otp" placeholder="Enter 6-Digit Code" maxlength="6" style="text-align: center; font-family: var(--font-display); font-size: 1.5rem; letter-spacing: 8px;">
+                <button class="action-btn" style="width: 100%; padding: 15px;" onclick="app.verifyOTP()">Verify Access</button>
+                <button style="width: 100%; margin-top: 15px; background: transparent; border: none; color: var(--text-muted);" onclick="app.resetLogin()">Abort</button>
             </div>
         </div>
 
         <div class="sim-btn-container" id="sim-controls">
-            <button class="glass" style="background: rgba(0,0,0,0.8); border-color: #555;" onclick="app.openSimulator('sim-phone')"><i class="fa-solid fa-mobile-screen"></i> Check Mobile</button>
-            <button class="glass" style="background: rgba(0,0,0,0.8); border-color: #555;" onclick="app.openSimulator('sim-webmail')"><i class="fa-brands fa-google"></i> Check Gmail</button>
+            <button class="glass" style="background: rgba(0,0,0,0.8); border-color: #444;" onclick="app.openSimulator('sim-phone')"><i class="fa-solid fa-mobile-screen"></i> View Mobile</button>
+            <button class="glass" style="background: rgba(0,0,0,0.8); border-color: #444;" onclick="app.openSimulator('sim-webmail')"><i class="fa-brands fa-google"></i> View Inbox</button>
         </div>
     </div>
 
@@ -228,31 +260,42 @@
     <div id="app-container">
         
         <nav class="sidebar glass">
-            <div class="brand">WORLDTECH</div>
+            <div class="brand">
+                <h2>W-TECH</h2>
+                <span>ServiceDesk AI</span>
+            </div>
             <ul class="nav-list">
-                <li class="active" onclick="app.navigate('dashboard')"><i class="fa-solid fa-chart-line"></i> Dashboard</li>
+                <li class="active" onclick="app.navigate('dashboard')"><i class="fa-solid fa-chart-pie"></i> Matrix Hub</li>
                 <li onclick="app.navigate('tickets')"><i class="fa-solid fa-ticket"></i> Service Tickets</li>
-                <li onclick="app.navigate('mailbox')"><i class="fa-solid fa-envelope"></i> Mail Inbox <span id="nav-mail-badge" style="background: var(--neon-alert); color: #fff; font-size: 0.6rem; padding: 2px 6px; border-radius: 10px; margin-left: auto; display: none;">New</span></li>
-                <li onclick="app.navigate('ai-nexus')"><i class="fa-solid fa-brain"></i> AI Portal</li>
-                <li onclick="app.navigate('calendar')"><i class="fa-regular fa-calendar-days"></i> Calendar</li>
-                <li onclick="app.navigate('notes')"><i class="fa-solid fa-terminal"></i> Secure Notes</li>
-                <li onclick="app.navigate('profile')"><i class="fa-solid fa-user-astronaut"></i> Profile / Admin</li>
+                <li onclick="app.navigate('mailbox')"><i class="fa-solid fa-envelope"></i> Internal Mail <span id="nav-mail-badge" style="background: var(--neon-alert); color: #fff; font-size: 0.65rem; padding: 2px 6px; border-radius: 10px; margin-left: auto; display: none;">New</span></li>
+                <li onclick="app.navigate('ai-nexus')"><i class="fa-solid fa-microchip"></i> AI Nexus</li>
+                <li onclick="app.navigate('calendar')"><i class="fa-regular fa-calendar-days"></i> Chronos</li>
+                <li onclick="app.navigate('notes')"><i class="fa-solid fa-terminal"></i> Data Logs</li>
+                <li onclick="app.navigate('profile')"><i class="fa-solid fa-user-astronaut"></i> Profile</li>
+                
+                <div id="nav-admin-group" style="display: none; margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px;">
+                    <div style="padding: 0 30px; font-size: 0.7rem; color: var(--neon-alert); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px;">Master Control</div>
+                    <li onclick="app.navigate('admin-users')"><i class="fa-solid fa-users-gear"></i> Manage Roster</li>
+                    <li onclick="app.navigate('admin-theme')"><i class="fa-solid fa-palette"></i> Matrix Theme</li>
+                </div>
             </ul>
         </nav>
 
         <div class="main-content">
             <header class="topbar glass">
-                <h2 id="view-title" style="color: var(--neon-cyan);">DASHBOARD</h2>
+                <h2 id="view-title" style="color: var(--neon-primary);">MATRIX HUB</h2>
                 <div class="topbar-right">
-                    <div class="clock" id="live-clock">00:00:00</div>
-                    <i class="fa-solid fa-circle-half-stroke icon-btn" onclick="app.toggleTheme()" title="Toggle Theme"></i>
+                    <div class="clock" id="live-clock">00:00:00 AM</div>
                     <div class="icon-btn" onclick="app.navigate('mailbox')" title="Notifications">
                         <i class="fa-regular fa-bell"></i>
                         <div class="badge-dot" id="notif-bell-badge"></div>
                     </div>
                     <div style="border-left: 1px solid var(--glass-border); padding-left: 20px; display: flex; align-items: center; gap: 15px;">
-                        <span id="header-user-email" style="font-size: 0.85rem; font-weight: 600;">admin@worldtech.com</span>
-                        <i class="fa-solid fa-power-off icon-btn" style="color: var(--neon-alert);" onclick="app.logout()" title="Logout"></i>
+                        <div style="text-align: right;">
+                            <div id="header-user-email" style="font-size: 0.85rem; font-weight: 600;">admin@wt.com</div>
+                            <div id="header-user-role" style="font-size: 0.7rem; color: var(--neon-secondary); text-transform: uppercase;">Role</div>
+                        </div>
+                        <i class="fa-solid fa-power-off icon-btn" style="color: var(--neon-alert);" onclick="app.logout()" title="Sever Connection"></i>
                     </div>
                 </div>
             </header>
@@ -262,10 +305,10 @@
                 <section id="view-dashboard" class="view-section active">
                     <div class="stats-grid">
                         <div class="glass glass-panel stat-card sc-tot">
-                            <p>Total Anomalies</p><h2 id="dash-tot">0</h2>
+                            <p>Global Anomalies</p><h2 id="dash-tot">0</h2>
                         </div>
                         <div class="glass glass-panel stat-card sc-opn">
-                            <p>Pending Triage</p><h2 id="dash-opn">0</h2>
+                            <p>Pending Review</p><h2 id="dash-opn">0</h2>
                         </div>
                         <div class="glass glass-panel stat-card sc-prg">
                             <p>In Progress</p><h2 id="dash-prg">0</h2>
@@ -274,29 +317,29 @@
                             <p>Resolved</p><h2 id="dash-cls">0</h2>
                         </div>
                     </div>
-                    <div class="glass glass-panel">
-                        <h3 style="margin-bottom: 15px;"><i class="fa-solid fa-satellite-dish"></i> Matrix Activity Log</h3>
+                    <div class="glass glass-panel" style="padding: 0; overflow: hidden;">
+                        <h3 style="padding: 20px; border-bottom: 1px solid var(--glass-border); background: rgba(0,0,0,0.2);"><i class="fa-solid fa-satellite-dish"></i> Recent Transmission Log</h3>
                         <table>
-                            <thead><tr><th>ID</th><th>Subject</th><th>Status</th><th>Operative</th></tr></thead>
+                            <thead><tr><th>Comm ID</th><th>Subject</th><th>Status</th><th>Operative</th></tr></thead>
                             <tbody id="dash-recent-tickets"></tbody>
                         </table>
                     </div>
                 </section>
 
                 <section id="view-tickets" class="view-section">
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 25px;">
-                        <div style="display: flex; gap: 15px;">
-                            <input type="text" id="tk-search" placeholder="Search archives..." style="width: 300px; margin: 0;" onkeyup="app.renderTickets()">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 25px; align-items: center;">
+                        <div style="display: flex; gap: 15px; flex-grow: 1;">
+                            <input type="text" id="tk-search" placeholder="Query database..." style="max-width: 300px; margin: 0;" onkeyup="app.renderTickets()">
                             <select id="tk-filter" style="width: 200px; margin: 0;" onchange="app.renderTickets()">
-                                <option value="All">All Statuses</option><option value="Open">Open</option><option value="In Progress">In Progress</option><option value="Closed">Closed</option>
+                                <option value="All">All Statuses</option><option value="Open">Status: Open</option><option value="In Progress">Status: In Progress</option><option value="Closed">Status: Closed</option>
                             </select>
                         </div>
                         <div style="display: flex; gap: 15px;">
-                            <button onclick="app.exportCSV()"><i class="fa-solid fa-file-csv"></i> Export Data</button>
+                            <button onclick="app.exportCSV()"><i class="fa-solid fa-file-csv"></i> Extract Data</button>
                             <button class="action-btn" onclick="app.openModal('modal-create-ticket')"><i class="fa-solid fa-plus"></i> Initialize Link</button>
                         </div>
                     </div>
-                    <div class="glass glass-panel" style="padding: 0;">
+                    <div class="glass glass-panel" style="padding: 0; overflow-x: auto;">
                         <table style="margin: 0;">
                             <thead><tr><th>ID</th><th>Subject</th><th>Priority</th><th>Category</th><th>Status</th><th>Date</th><th>Action</th></tr></thead>
                             <tbody id="tk-table-body"></tbody>
@@ -305,91 +348,138 @@
                 </section>
 
                 <section id="view-mailbox" class="view-section">
-                    <div class="glass glass-panel mail-wrapper">
-                        <div class="mail-folders">
-                            <button class="action-btn" onclick="app.openModal('modal-compose-mail')"><i class="fa-solid fa-pen"></i> Compose</button>
-                            <button onclick="app.switchMailFolder('inbox')" id="folder-inbox" style="border-color: var(--neon-cyan); color: var(--neon-cyan);"><i class="fa-solid fa-inbox"></i> Inbox</button>
-                            <button onclick="app.switchMailFolder('sent')" id="folder-sent"><i class="fa-regular fa-paper-plane"></i> Sent</button>
+                    <div class="glass glass-panel mail-wrapper" style="padding: 0; overflow: hidden;">
+                        <div class="mail-folders" style="padding: 20px; border-right: 1px solid var(--glass-border); background: rgba(0,0,0,0.2);">
+                            <button class="action-btn" onclick="app.openModal('modal-compose-mail')" style="margin-bottom: 15px;"><i class="fa-solid fa-pen"></i> Compose</button>
+                            <button onclick="app.switchMailFolder('inbox')" id="folder-inbox" style="border-color: var(--neon-primary); color: var(--neon-primary); background: rgba(255,255,255,0.05);"><i class="fa-solid fa-inbox"></i> Inbox</button>
+                            <button onclick="app.switchMailFolder('sent')" id="folder-sent" style="border-color: transparent;"><i class="fa-regular fa-paper-plane"></i> Sent</button>
                         </div>
                         <div class="mail-list" id="mail-list-container"></div>
-                        <div class="mail-content-pane glass" id="mail-read-pane" style="display: none; background: rgba(0,0,0,0.2); padding: 25px;">
-                            <h2 id="read-subject" style="margin-bottom: 10px;">Subject</h2>
-                            <div style="font-size: 0.85rem; color: var(--text-muted); border-bottom: 1px solid var(--glass-border); padding-bottom: 15px; margin-bottom: 20px; display: flex; justify-content: space-between;">
-                                <span>From: <strong id="read-from" style="color: var(--neon-cyan);"></strong></span>
+                        <div class="mail-content-pane" id="mail-read-pane" style="display: none; padding: 30px; background: rgba(0,0,0,0.4);">
+                            <h2 id="read-subject" style="margin-bottom: 15px; font-size: 1.8rem;">Subject</h2>
+                            <div style="font-size: 0.9rem; color: var(--text-muted); border-bottom: 1px solid var(--glass-border); padding-bottom: 20px; margin-bottom: 25px; display: flex; justify-content: space-between;">
+                                <span>From: <strong id="read-from" style="color: var(--neon-primary); letter-spacing: 1px;"></strong></span>
                                 <span id="read-date"></span>
                             </div>
-                            <div id="read-body" style="white-space: pre-wrap; line-height: 1.6;"></div>
+                            <div id="read-body" style="white-space: pre-wrap; line-height: 1.7; font-size: 1.05rem;"></div>
                         </div>
                     </div>
                 </section>
 
                 <section id="view-ai-nexus" class="view-section">
-                    <div style="display: flex; gap: 20px; height: calc(100vh - 160px);">
-                        <div class="glass glass-panel" style="flex: 1; overflow-y: auto;">
-                            <h3 style="margin-bottom: 20px;"><i class="fa-solid fa-database"></i> Knowledge Base</h3>
-                            <input type="text" placeholder="Search KB articles...">
-                            <ul style="list-style: none; margin-top: 15px; display: flex; flex-direction: column; gap: 10px;">
-                                <li class="glass glass-panel" style="padding: 12px; cursor: pointer;"><i class="fa-brands fa-windows"></i> Bypassing Kernel Panic 0x0...</li>
-                                <li class="glass glass-panel" style="padding: 12px; cursor: pointer;"><i class="fa-solid fa-network-wired"></i> VPN Subspace Routing</li>
-                                <li class="glass glass-panel" style="padding: 12px; cursor: pointer;"><i class="fa-solid fa-shield-halved"></i> Master Override Protocol</li>
-                            </ul>
+                    <div style="display: flex; gap: 25px; height: calc(100vh - 160px);">
+                        
+                        <div class="glass glass-panel" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column;">
+                            <h3 style="margin-bottom: 20px;"><i class="fa-solid fa-book-atlas"></i> Data Archives</h3>
+                            <input type="text" placeholder="Search knowledge base...">
+                            <div style="flex-grow: 1; overflow-y: auto; margin-top: 10px;">
+                                <ul style="list-style: none; display: flex; flex-direction: column; gap: 10px;">
+                                    <li class="glass glass-panel" style="padding: 15px; cursor: pointer;"><i class="fa-brands fa-windows" style="color: #00a4ef;"></i> OS Kernel Panic Diagnostics</li>
+                                    <li class="glass glass-panel" style="padding: 15px; cursor: pointer;"><i class="fa-solid fa-network-wired" style="color: var(--neon-secondary);"></i> VPN Subspace Routing Protocol</li>
+                                    <li class="glass glass-panel" style="padding: 15px; cursor: pointer;"><i class="fa-solid fa-server" style="color: var(--neon-success);"></i> Mainframe Reboot Sequence</li>
+                                </ul>
+                            </div>
                         </div>
-                        <div class="glass glass-panel" style="flex: 2; display: flex; flex-direction: column;">
-                            <h3 style="color: var(--neon-indigo); margin-bottom: 5px;"><i class="fa-solid fa-microchip"></i> Nexus AI Assistant</h3>
-                            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">Powered by Llama3-8b.</p>
-                            
-                            <div class="chat-container glass" style="background: rgba(0,0,0,0.3);">
+
+                        <div class="glass glass-panel" style="flex: 2; display: flex; flex-direction: column; padding: 0; overflow: hidden;">
+                            <div style="padding: 20px; border-bottom: 1px solid var(--glass-border); background: rgba(0,0,0,0.3);">
+                                <h3 style="color: var(--neon-secondary);"><i class="fa-solid fa-microchip"></i> Llama3 Diagnostic Oracle</h3>
+                                <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 5px;">Real-time generative troubleshooting.</p>
+                            </div>
+                            <div class="chat-container">
                                 <div class="chat-history" id="ai-chat-history">
-                                    <div class="msg bot">Greetings Operative. State the nature of your technical anomaly.</div>
+                                    <div class="msg bot">Greetings Operative. Input symptoms for instant resolution synthesis.</div>
                                 </div>
-                                <div id="ai-chat-loader" class="loader" style="padding: 10px 20px;">Processing data streams...</div>
-                                <div style="display: flex; border-top: 1px solid var(--glass-border); padding: 10px;">
-                                    <input type="text" id="ai-chat-input" placeholder="E.g. How do I reset the print spooler?" style="margin: 0; border: none; background: transparent; border-radius: 0;" onkeypress="if(event.key==='Enter') app.sendChatMessage()">
-                                    <button class="action-btn" onclick="app.sendChatMessage()" style="border-radius: 4px;"><i class="fa-solid fa-paper-plane"></i></button>
+                                <div id="ai-chat-loader" class="loader" style="padding: 10px 20px;">Analyzing matrix parameters...</div>
+                                <div style="display: flex; border-top: 1px solid var(--glass-border); padding: 15px; background: rgba(0,0,0,0.2);">
+                                    <input type="text" id="ai-chat-input" placeholder="E.g. How do I flush my DNS cache?" style="margin: 0; border: none; background: transparent; border-radius: 0;" onkeypress="if(event.key==='Enter') app.sendChatMessage()">
+                                    <button class="action-btn" onclick="app.sendChatMessage()" style="border-radius: 8px;"><i class="fa-solid fa-paper-plane"></i></button>
                                 </div>
                             </div>
                         </div>
+
                     </div>
                 </section>
 
                 <section id="view-calendar" class="view-section">
-                    <div class="glass glass-panel" style="padding: 30px;">
+                    <div class="glass glass-panel" style="padding: 30px; background: rgba(0,0,0,0.4);">
                         <div id="calendar-view"></div>
                     </div>
                 </section>
 
                 <section id="view-notes" class="view-section">
                     <div class="glass glass-panel" style="height: calc(100vh - 160px); display: flex; flex-direction: column;">
-                        <h3 style="margin-bottom: 15px;"><i class="fa-solid fa-pen-nib"></i> Personal Data Logs</h3>
-                        <textarea id="personal-notes" placeholder="Enter secure operational notes (Markdown supported)..." style="flex-grow: 1; resize: none; font-family: monospace;" onkeyup="app.saveNotes()"></textarea>
+                        <h3 style="margin-bottom: 15px;"><i class="fa-solid fa-user-secret"></i> Secure Local Storage Notes</h3>
+                        <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 20px;">Data is encrypted and saved locally to your operative profile.</p>
+                        <textarea id="personal-notes" placeholder="Commence typing... (Markdown supported)" style="flex-grow: 1; resize: none; font-family: monospace; font-size: 1.1rem; line-height: 1.6;" onkeyup="app.saveNotes()"></textarea>
                     </div>
                 </section>
 
                 <section id="view-profile" class="view-section">
-                    <div style="display: flex; gap: 20px; align-items: flex-start;">
-                        
-                        <div class="glass glass-panel" style="flex: 1;">
-                            <h2 style="margin-bottom: 20px;">Operative Profile</h2>
-                            <label>Registered Email</label>
-                            <input type="email" id="prof-email" disabled style="opacity: 0.5;">
-                            <label>Designation Name</label>
-                            <input type="text" id="prof-name">
-                            <label>Mobile Comms</label>
-                            <input type="text" id="prof-mobile">
-                            <button class="action-btn" style="width: 100%;" onclick="app.saveProfile()">Save Matrix Config</button>
-                        </div>
-
-                        <div class="glass glass-panel" id="admin-panel-section" style="flex: 2; display: none; border-top-color: var(--neon-alert);">
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                                <h2 style="color: var(--neon-alert);"><i class="fa-solid fa-users-gear"></i> Global Roster</h2>
-                                <button class="action-btn" onclick="app.openModal('modal-add-user')" style="background: var(--neon-alert); box-shadow: 0 0 10px rgba(255, 42, 95, 0.4);"><i class="fa-solid fa-user-plus"></i> Register Operative</button>
+                    <div class="glass glass-panel" style="max-width: 600px; margin: 0 auto; padding: 40px;">
+                        <div style="text-align: center; margin-bottom: 30px;">
+                            <div style="width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, var(--neon-secondary), var(--neon-primary)); margin: 0 auto 15px; display: flex; justify-content: center; align-items: center; font-size: 2rem; font-family: var(--font-display); font-weight: bold; color: #fff; box-shadow: 0 0 20px rgba(0,234,255,0.4);">
+                                <i class="fa-solid fa-user"></i>
                             </div>
-                            <table style="margin: 0;">
-                                <thead><tr><th>Email (ID)</th><th>Mobile</th><th>Role</th><th>Actions</th></tr></thead>
-                                <tbody id="admin-user-table"></tbody>
-                            </table>
+                            <h2>Operative Identity</h2>
+                        </div>
+                        <label>Registered Email (Immutable)</label>
+                        <input type="email" id="prof-email" disabled style="opacity: 0.5; cursor: not-allowed;">
+                        <label>Full Designation</label>
+                        <input type="text" id="prof-name">
+                        <label>Mobile Comms (MFA Endpoint)</label>
+                        <input type="text" id="prof-mobile">
+                        <button class="action-btn" style="width: 100%; margin-top: 15px; padding: 15px;" onclick="app.saveProfile()">Update Local Matrix</button>
+                    </div>
+                </section>
+
+                <section id="view-admin-users" class="view-section">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                        <h2 style="color: var(--neon-alert);"><i class="fa-solid fa-shield-halved"></i> Global Roster</h2>
+                        <button class="action-btn" onclick="app.openModal('modal-add-user')" style="background: var(--neon-alert); box-shadow: 0 0 15px rgba(255, 42, 95, 0.4);"><i class="fa-solid fa-user-plus"></i> Inject Operative</button>
+                    </div>
+                    <div class="glass glass-panel" style="padding: 0; overflow-x: auto;">
+                        <table style="margin: 0;">
+                            <thead><tr><th>Email (ID)</th><th>Name</th><th>Mobile</th><th>Clearance</th><th>Actions</th></tr></thead>
+                            <tbody id="admin-user-table"></tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <section id="view-admin-theme" class="view-section">
+                    <div class="glass glass-panel" style="max-width: 700px; margin: 0 auto; padding: 40px;">
+                        <h2 style="color: var(--neon-alert); margin-bottom: 10px;"><i class="fa-solid fa-palette"></i> Matrix Visual Override</h2>
+                        <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 30px;">Changes made here will instantly propagate to all operatives globally via local storage sync.</p>
+                        
+                        <div style="margin-bottom: 25px;">
+                            <label style="display: block; margin-bottom: 10px;">Primary Neon Emitter (Cyan Variant)</label>
+                            <div id="swatch-primary">
+                                <span class="color-swatch" style="background: #00eaff;" onclick="app.setThemeColor('primary', '#00eaff')"></span>
+                                <span class="color-swatch" style="background: #00ff88;" onclick="app.setThemeColor('primary', '#00ff88')"></span>
+                                <span class="color-swatch" style="background: #facc15;" onclick="app.setThemeColor('primary', '#facc15')"></span>
+                                <span class="color-swatch" style="background: #ff2a5f;" onclick="app.setThemeColor('primary', '#ff2a5f')"></span>
+                            </div>
                         </div>
 
+                        <div style="margin-bottom: 25px;">
+                            <label style="display: block; margin-bottom: 10px;">Secondary Neon Emitter (Indigo Variant)</label>
+                            <div id="swatch-secondary">
+                                <span class="color-swatch" style="background: #6366f1;" onclick="app.setThemeColor('secondary', '#6366f1')"></span>
+                                <span class="color-swatch" style="background: #a855f7;" onclick="app.setThemeColor('secondary', '#a855f7')"></span>
+                                <span class="color-swatch" style="background: #ec4899;" onclick="app.setThemeColor('secondary', '#ec4899')"></span>
+                                <span class="color-swatch" style="background: #3b82f6;" onclick="app.setThemeColor('secondary', '#3b82f6')"></span>
+                            </div>
+                        </div>
+
+                        <div style="margin-bottom: 25px;">
+                            <label>Glassmorphism Intensity (Opacity)</label>
+                            <input type="range" id="theme-glass" min="0.1" max="0.9" step="0.1" value="0.65" style="width: 100%; cursor: pointer;" onchange="app.setThemeGlass(this.value)">
+                        </div>
+
+                        <div style="margin-top: 40px; border-top: 1px solid var(--glass-border); padding-top: 25px; display: flex; justify-content: space-between;">
+                            <button onclick="app.resetThemeToDefault()">Restore Defaults</button>
+                            <button class="action-btn" onclick="app.saveThemeGlobally()" style="background: var(--neon-alert); box-shadow: 0 0 15px rgba(255, 42, 95, 0.4);">Deploy Global Update</button>
+                        </div>
                     </div>
                 </section>
 
@@ -401,93 +491,97 @@
     <div class="modal-bg" id="modal-create-ticket">
         <div class="glass glass-panel modal-content">
             <i class="fa-solid fa-xmark close-modal" onclick="app.closeModal('modal-create-ticket')"></i>
-            <h2 style="margin-bottom: 20px;">Establish Comm Link</h2>
+            <h2 style="margin-bottom: 25px;">Establish Comm Link</h2>
             
             <label>Subject</label>
             <input type="text" id="nt-title" placeholder="Brief diagnostic summary">
             
-            <label>Detailed Logs</label>
+            <label>Detailed Logs (Voice Supported)</label>
             <div style="position: relative;">
-                <textarea id="nt-desc" rows="4" placeholder="Provide system outputs..."></textarea>
-                <i class="fa-solid fa-microphone icon-btn" id="btn-voice" style="position: absolute; bottom: 30px; right: 15px; color: var(--neon-cyan);" onclick="app.startVoiceDictation('nt-desc')"></i>
+                <textarea id="nt-desc" rows="5" placeholder="Provide system outputs..."></textarea>
+                <i class="fa-solid fa-microphone icon-btn" id="btn-voice" style="position: absolute; bottom: 30px; right: 15px; color: var(--neon-primary);" onclick="app.startVoiceDictation('nt-desc')"></i>
             </div>
 
-            <div style="display: flex; gap: 15px;">
-                <div style="flex: 1;"><label>Category</label><select id="nt-category"><option>Hardware</option><option>Software</option><option>Network</option></select></div>
+            <div style="display: flex; gap: 20px;">
+                <div style="flex: 1;"><label>Category</label><select id="nt-category"><option>Hardware</option><option>Software</option><option>Network</option><option>Access</option></select></div>
                 <div style="flex: 1;"><label>Priority</label><select id="nt-priority"><option>Low</option><option>Medium</option><option>High</option></select></div>
             </div>
 
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 25px;">
                 <div>
                     <button onclick="app.aiSuggestPriority()"><i class="fa-solid fa-wand-magic-sparkles"></i> AI Triage</button>
                     <span id="ai-prio-loader" class="loader" style="margin-left: 10px;">Analyzing...</span>
                 </div>
-                <button class="action-btn" onclick="app.createTicket()">Transmit</button>
+                <button class="action-btn" onclick="app.createTicket()">Transmit Link</button>
             </div>
         </div>
     </div>
 
     <div class="modal-bg" id="modal-view-ticket">
-        <div class="glass glass-panel modal-content" style="max-width: 700px;">
+        <div class="glass glass-panel modal-content" style="max-width: 750px;">
             <i class="fa-solid fa-xmark close-modal" onclick="app.closeModal('modal-view-ticket')"></i>
-            <h2 id="vt-title" style="margin-bottom: 10px;">Ticket Title</h2>
-            <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 20px; display: flex; gap: 15px;">
+            <h2 id="vt-title" style="margin-bottom: 10px; font-size: 1.8rem; color: var(--neon-primary);">Ticket Title</h2>
+            <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 25px; display: flex; gap: 20px; border-bottom: 1px solid var(--glass-border); padding-bottom: 15px;">
                 <span>ID: <strong id="vt-id" style="color:#fff;"></strong></span>
                 <span>Author: <strong id="vt-author" style="color:#fff;"></strong></span>
+                <span>Date: <strong id="vt-date" style="color:#fff;"></strong></span>
             </div>
             
-            <div class="glass" style="padding: 15px; background: rgba(0,0,0,0.3); margin-bottom: 20px;"><p id="vt-desc" style="white-space: pre-wrap;"></p></div>
-
-            <div style="display: flex; gap: 20px; margin-bottom: 20px;">
-                <div>Status: <span id="vt-status" class="badge"></span></div>
-                <div>Priority: <span id="vt-priority" class="badge"></span></div>
+            <div class="glass" style="padding: 20px; background: rgba(0,0,0,0.4); margin-bottom: 25px; font-size: 1.05rem; line-height: 1.6;">
+                <p id="vt-desc" style="white-space: pre-wrap;"></p>
             </div>
 
-            <div id="vt-admin-controls" style="display: none; padding: 15px; border: 1px dashed var(--neon-alert); border-radius: 8px; margin-bottom: 20px; background: rgba(255, 42, 95, 0.05);">
-                <h4 style="color: var(--neon-alert); margin-bottom: 10px;">Master Override</h4>
-                <div style="display: flex; gap: 10px;">
-                    <select id="vt-edit-status" onchange="app.updateTicket('status', this.value)">
+            <div style="display: flex; gap: 25px; margin-bottom: 25px;">
+                <div>Status: <span id="vt-status" class="badge"></span></div>
+                <div>Priority: <span id="vt-priority" class="badge"></span></div>
+                <div>Category: <strong id="vt-category" style="color: var(--text-muted);"></strong></div>
+            </div>
+
+            <div id="vt-admin-controls" style="display: none; padding: 20px; border: 1px dashed var(--neon-alert); border-radius: 8px; margin-bottom: 25px; background: rgba(255, 42, 95, 0.05);">
+                <h4 style="color: var(--neon-alert); margin-bottom: 15px;"><i class="fa-solid fa-unlock-keyhole"></i> Master Override</h4>
+                <div style="display: flex; gap: 15px;">
+                    <select id="vt-edit-status" onchange="app.updateTicket('status', this.value)" style="margin: 0;">
                         <option value="Open">Status: Open</option><option value="In Progress">Status: In Progress</option><option value="Closed">Status: Closed</option>
                     </select>
-                    <select id="vt-edit-priority" onchange="app.updateTicket('priority', this.value)">
+                    <select id="vt-edit-priority" onchange="app.updateTicket('priority', this.value)" style="margin: 0;">
                         <option value="Low">Priority: Low</option><option value="Medium">Priority: Medium</option><option value="High">Priority: High</option>
                     </select>
-                    <button style="border-color: var(--neon-alert); color: var(--neon-alert);" onclick="app.deleteTicket()"><i class="fa-solid fa-trash"></i> Purge</button>
+                    <button style="border-color: var(--neon-alert); color: var(--neon-alert); flex-shrink: 0;" onclick="app.deleteTicket()"><i class="fa-solid fa-trash"></i> Purge</button>
                 </div>
             </div>
 
-            <button class="action-btn" onclick="app.aiGenerateFix()" style="width: 100%; margin-bottom: 15px;"><i class="fa-solid fa-microchip"></i> AI Synthesize Fix</button>
-            <div id="ai-fix-loader" class="loader">Processing neural pathways...</div>
-            <div id="ai-fix-result" class="glass" style="display: none; padding: 15px; background: rgba(99, 102, 241, 0.1); border-color: var(--neon-indigo); font-size: 0.9rem; line-height: 1.5;"></div>
+            <button class="action-btn" onclick="app.aiGenerateFix()" style="width: 100%; margin-bottom: 15px; padding: 15px;"><i class="fa-solid fa-microchip"></i> AI Synthesize Fix</button>
+            <div id="ai-fix-loader" class="loader" style="text-align: center;">Executing neural pathways...</div>
+            <div id="ai-fix-result" class="glass" style="display: none; padding: 20px; background: rgba(99, 102, 241, 0.1); border-color: var(--neon-secondary); font-size: 0.95rem; line-height: 1.6;"></div>
         </div>
     </div>
 
     <div class="modal-bg" id="modal-compose-mail">
         <div class="glass glass-panel modal-content">
             <i class="fa-solid fa-xmark close-modal" onclick="app.closeModal('modal-compose-mail')"></i>
-            <h2 style="margin-bottom: 20px;">Compose Secure Mail</h2>
+            <h2 style="margin-bottom: 25px;"><i class="fa-regular fa-envelope"></i> Secure Transmission</h2>
             <input type="email" id="mail-to" placeholder="To: (Operative Email)">
             <input type="text" id="mail-subject" placeholder="Subject">
             <textarea id="mail-body" rows="6" placeholder="Message payload..."></textarea>
-            <button class="action-btn" style="float: right;" onclick="app.sendMail()"><i class="fa-solid fa-paper-plane"></i> Dispatch</button>
+            <button class="action-btn" style="float: right; padding: 12px 25px;" onclick="app.sendMail()"><i class="fa-solid fa-paper-plane"></i> Dispatch Payload</button>
         </div>
     </div>
 
     <div class="modal-bg" id="modal-add-user">
         <div class="glass glass-panel modal-content" style="border-top-color: var(--neon-alert);">
             <i class="fa-solid fa-xmark close-modal" onclick="app.closeModal('modal-add-user')"></i>
-            <h2 style="color: var(--neon-alert); margin-bottom: 20px;">Register Operative</h2>
+            <h2 style="color: var(--neon-alert); margin-bottom: 25px;">Register Operative</h2>
             <input type="email" id="nu-email" placeholder="Email (Login ID)">
             <input type="text" id="nu-name" placeholder="Full Designation">
-            <input type="text" id="nu-mobile" placeholder="Mobile Number (+1...)">
-            <select id="nu-role"><option value="user">Standard User</option><option value="admin">Admin</option></select>
-            <button class="action-btn" style="width: 100%;" onclick="app.adminCreateUser()">Inject into Matrix</button>
+            <input type="text" id="nu-mobile" placeholder="Mobile Number (+91...)">
+            <select id="nu-role"><option value="user">Standard Operative</option><option value="admin">Master Admin</option></select>
+            <button class="action-btn" style="width: 100%; padding: 15px; background: var(--neon-alert); box-shadow: 0 0 15px rgba(255, 42, 95, 0.4);" onclick="app.adminCreateUser()">Inject into Matrix</button>
         </div>
     </div>
 
     <script>
         // ==========================================
-        // CONFIGURATION: GROQ API KEY
+        // CONFIGURATION: GROQ API KEY (Llama3)
         // ==========================================
         const GROQ_API_KEY = "YOUR_GROQ_API_KEY_HERE"; 
         
@@ -500,36 +594,42 @@
             currentTicketId: null,
             calendarInstance: null,
 
-            // --- Database Initialization ---
+            // --- Database & Initialization ---
             initData: function() {
-                // Enforce Master Admin per requirements
+                // Initialize default users (Master Admin is hardcoded)
                 if (!localStorage.getItem('wt_users')) {
                     localStorage.setItem('wt_users', JSON.stringify([
                         { email: 'armtechbridge@gmail.com', fullname: 'Alagu Ragul M', mobile: '+91 7845714920', role: 'admin' },
-                        { email: 'user@worldtech.com', fullname: 'Test User', mobile: '+1 555-0000', role: 'user' }
+                        { email: 'user@worldtech.com', fullname: 'Standard User', mobile: '+1 555-0000', role: 'user' }
                     ]));
                 }
                 if (!localStorage.getItem('wt_tickets')) {
-                    localStorage.setItem('wt_tickets', JSON.stringify([{ id: 'WT-1001', title: 'Mainframe cooling failure', desc: 'Temperatures critical.', priority: 'High', category: 'Hardware', status: 'Open', author: 'armtechbridge@gmail.com', date: new Date().toISOString() }]));
+                    localStorage.setItem('wt_tickets', JSON.stringify([{ id: 'WT-1001', title: 'Mainframe cooling failure', desc: 'Temperatures critical in Server Room B.', priority: 'High', category: 'Hardware', status: 'Open', author: 'armtechbridge@gmail.com', date: new Date().toISOString() }]));
                 }
                 if (!localStorage.getItem('wt_mails')) {
                     localStorage.setItem('wt_mails', JSON.stringify([]));
                 }
+
+                // Global Theme Init
+                this.applyGlobalTheme();
             },
 
             // --- UI: Toasts ---
-            showToast: function(msg, icon = 'fa-info-circle') {
+            showToast: function(msg, icon = 'fa-info-circle', color = 'var(--neon-primary)') {
                 const hub = document.getElementById('toast-container');
                 const toast = document.createElement('div');
                 toast.className = 'toast';
-                toast.innerHTML = `<i class="fa-solid ${icon}" style="margin-right:8px; color:var(--neon-cyan);"></i> ${msg}`;
+                toast.style.borderLeftColor = color;
+                toast.innerHTML = `<i class="fa-solid ${icon}" style="margin-right:10px; color:${color};"></i> ${msg}`;
                 hub.appendChild(toast);
                 setTimeout(() => { toast.style.animation = 'slideIn 0.3s reverse forwards'; setTimeout(() => toast.remove(), 300); }, 4000);
             },
 
-            // --- Authentication (Strictly MFA/OTP Flow) ---
+            // --- Authentication (Strict Simulated MFA) ---
             requestOTP: function() {
                 const email = document.getElementById('login-email').value.trim().toLowerCase();
+                if(!email) { this.showLoginError("Email parameter required."); return; }
+
                 const users = JSON.parse(localStorage.getItem('wt_users'));
                 const user = users.find(u => u.email === email);
 
@@ -537,36 +637,47 @@
                     this.tempLoginEmail = email;
                     document.getElementById('login-error').style.display = 'none';
                     
-                    // Generate OTP
+                    // Generate Random 6-Digit OTP
                     this.tempOTP = Math.floor(100000 + Math.random() * 900000).toString();
 
-                    // Dispatch to simulated devices (saved to local DB and UI)
+                    // Dispatch to simulators
                     this.dispatchSimulatedMFA(user.mobile, email, this.tempOTP);
 
-                    // Switch UI
+                    // Switch UI Context
                     document.getElementById('login-step-1').style.display = 'none';
                     document.getElementById('login-step-2').style.display = 'block';
-                    document.getElementById('sim-controls').style.display = 'flex'; // Show simulator buttons
+                    document.getElementById('sim-controls').style.display = 'flex'; // Reveal simulator buttons
                 } else {
-                    const err = document.getElementById('login-error');
-                    err.innerText = "Email not recognized in WorldTech Matrix.";
-                    err.style.display = 'block';
+                    this.showLoginError("Email not recognized in WorldTech Matrix.");
                 }
             },
 
-            dispatchSimulatedMFA: function(mobile, email, otp) {
-                // 1. Send to internal Mail DB (so it shows in app later, and in webmail simulator)
-                this.internalMailSend(email, 'system@worldtech.com', 'WorldTech Security Code', `Your requested OTP is: ${otp}\nDo not share this code.`);
+            showLoginError: function(msg) {
+                const err = document.getElementById('login-error');
+                err.innerText = msg; err.style.display = 'block';
+            },
 
-                // 2. Prep the visual simulators (accessed via buttons on login screen)
-                document.getElementById('phone-number-display').innerText = mobile || 'No Mobile Registered';
-                document.getElementById('sms-content').innerHTML = `<strong>WorldTech OTP:</strong> <span style="color:var(--neon-cyan); font-size:1.2rem; letter-spacing:2px;">${otp}</span>`;
+            dispatchSimulatedMFA: function(mobile, email, otp) {
+                // 1. Send OTP via internal application mail system (simulating email reception)
+                this.internalMailSend(email, 'system@worldtech.com', 'WorldTech Security Code', `Your requested authorization code is: ${otp}\n\nDo not share this code with anyone. Matrix personnel will never ask for your code.`);
+
+                // 2. Prep the Mobile Simulator Overlay
+                document.getElementById('phone-number-display').innerText = mobile || 'Unregistered Device';
                 
+                // Delay SMS appearance slightly for realism
+                document.getElementById('sms-placeholder').style.display = 'block';
+                document.getElementById('sms-content').style.display = 'none';
+                setTimeout(() => {
+                    document.getElementById('sms-placeholder').style.display = 'none';
+                    document.getElementById('sms-content').innerHTML = `<strong>WorldTech OTP:</strong><br><span style="color:var(--neon-success); font-size:1.4rem; letter-spacing:4px; display:block; margin-top:10px; font-family:var(--font-display);">${otp}</span>`;
+                    document.getElementById('sms-content').style.display = 'block';
+                }, 1500);
+                
+                // 3. Prep the Webmail Simulator Overlay
                 document.getElementById('webmail-email-display').innerText = email;
-                document.getElementById('webmail-content').innerHTML = `
-                    <strong style="display:block; margin-bottom: 5px;">system@worldtech.com</strong>
-                    <p style="color: #444; font-size: 0.95rem;">Your requested OTP is: <strong style="color:blue;">${otp}</strong></p>
-                `;
+                document.getElementById('webmail-placeholder').style.display = 'none';
+                document.getElementById('webmail-content').style.display = 'block';
+                document.getElementById('webmail-body-text').innerHTML = `Your requested authorization code is: <br><strong style="color:#2563eb; font-size:1.3rem; letter-spacing:2px; display:inline-block; margin-top:10px;">${otp}</strong><br><br><span style="font-size:0.8rem;">Do not share this code with anyone.</span>`;
             },
 
             verifyOTP: function() {
@@ -579,12 +690,12 @@
                     document.getElementById('login-screen').style.display = 'none';
                     document.getElementById('app-container').style.display = 'flex';
                     
-                    // Hide simulators if open
+                    // Cleanup Login UI
                     this.closeSimulator('sim-phone'); this.closeSimulator('sim-webmail');
                     
                     this.loadApp();
                 } else {
-                    alert("Invalid Authorization Code.");
+                    alert("Invalid Authorization Code. Access Denied.");
                     document.getElementById('login-otp').value = '';
                 }
             },
@@ -595,6 +706,7 @@
                 document.getElementById('login-step-2').style.display = 'none';
                 document.getElementById('sim-controls').style.display = 'none';
                 document.getElementById('login-otp').value = '';
+                document.getElementById('login-error').style.display = 'none';
                 this.closeSimulator('sim-phone'); this.closeSimulator('sim-webmail');
             },
 
@@ -620,54 +732,107 @@
                 }
             },
 
-            // --- Simulator Overlays ---
-            openSimulator: function(id) { document.getElementById(id).classList.add('active'); },
+            // --- Simulators ---
+            openSimulator: function(id) { 
+                document.getElementById('sim-phone').classList.remove('active');
+                document.getElementById('sim-webmail').classList.remove('active');
+                document.getElementById(id).classList.add('active'); 
+            },
             closeSimulator: function(id) { document.getElementById(id).classList.remove('active'); },
 
-            // --- App Core ---
+            // --- App Core & Role Based Access Control (RBAC) ---
             loadApp: function() {
                 document.getElementById('header-user-email').innerText = this.currentUser.email;
-                if(localStorage.getItem('wt_theme') === 'light') document.body.classList.add('light-mode');
+                document.getElementById('header-user-role').innerText = this.currentUser.role === 'admin' ? 'Master Admin' : 'Standard Operative';
+                
+                // Load Personal Data
                 document.getElementById('personal-notes').value = localStorage.getItem(`wt_notes_${this.currentUser.email}`) || '';
 
+                // RBAC logic: Reveal Admin Nav only for master
                 if(this.currentUser.email === 'armtechbridge@gmail.com' || this.currentUser.role === 'admin') {
-                    document.getElementById('admin-panel-section').style.display = 'block';
-                    this.renderAdmin();
+                    document.getElementById('nav-admin-group').style.display = 'block';
+                } else {
+                    document.getElementById('nav-admin-group').style.display = 'none';
                 }
 
                 this.navigate('dashboard');
                 this.checkUnreadMails();
-                this.showToast("Uplink established.", 'fa-check');
+                this.showToast("Secure Uplink Established.", 'fa-satellite-dish', 'var(--neon-success)');
             },
 
             navigate: function(viewId) {
+                // Highlight active nav
                 document.querySelectorAll('.nav-list li').forEach(li => li.classList.remove('active'));
                 const activeLi = Array.from(document.querySelectorAll('.nav-list li')).find(li => li.getAttribute('onclick').includes(viewId));
                 if(activeLi) {
                     activeLi.classList.add('active');
+                    // Clean text (remove html tags for title)
                     document.getElementById('view-title').innerText = activeLi.innerText.replace(/(<([^>]+)>)/gi, "").trim().toUpperCase();
                 }
                 
+                // Toggle sections
                 document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
                 document.getElementById('view-' + viewId).classList.add('active');
                 this.currentView = viewId;
 
+                // Fire section-specific logic
                 if(viewId === 'dashboard') this.renderDashboard();
                 if(viewId === 'tickets') this.renderTickets();
                 if(viewId === 'mailbox') { this.renderMailbox(); document.getElementById('nav-mail-badge').style.display = 'none'; }
                 if(viewId === 'calendar') this.initCalendar();
                 if(viewId === 'profile') this.renderProfile();
-            },
-
-            toggleTheme: function() {
-                document.body.classList.toggle('light-mode');
-                localStorage.setItem('wt_theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
+                if(viewId === 'admin-users') this.renderAdminUsers();
+                if(viewId === 'admin-theme') this.renderThemeSettings();
             },
 
             openModal: function(id) { document.getElementById(id).style.display = 'flex'; },
             closeModal: function(id) { 
                 document.getElementById(id).style.display = 'none'; 
                 if(id === 'modal-view-ticket') document.getElementById('ai-fix-result').style.display = 'none';
+            },
+
+            // --- Global Theming System ---
+            applyGlobalTheme: function() {
+                const saved = JSON.parse(localStorage.getItem('wt_theme_settings')) || { primary: '#00eaff', secondary: '#6366f1', glass: '0.65' };
+                document.documentElement.style.setProperty('--neon-primary', saved.primary);
+                document.documentElement.style.setProperty('--neon-secondary', saved.secondary);
+                document.documentElement.style.setProperty('--glass-bg', `rgba(18, 20, 35, ${saved.glass})`);
+            },
+
+            setThemeColor: function(type, hex) {
+                document.documentElement.style.setProperty(`--neon-${type}`, hex);
+                // Update active state in UI
+                document.querySelectorAll(`#swatch-${type} .color-swatch`).forEach(el => el.classList.remove('active'));
+                event.target.classList.add('active');
+            },
+
+            setThemeGlass: function(val) {
+                document.documentElement.style.setProperty('--glass-bg', `rgba(18, 20, 35, ${val})`);
+            },
+
+            renderThemeSettings: function() {
+                const saved = JSON.parse(localStorage.getItem('wt_theme_settings')) || { primary: '#00eaff', secondary: '#6366f1', glass: '0.65' };
+                document.getElementById('theme-glass').value = saved.glass;
+            },
+
+            saveThemeGlobally: function() {
+                const p = getComputedStyle(document.documentElement).getPropertyValue('--neon-primary').trim();
+                const s = getComputedStyle(document.documentElement).getPropertyValue('--neon-secondary').trim();
+                const g = document.getElementById('theme-glass').value;
+                
+                localStorage.setItem('wt_theme_settings', JSON.stringify({ primary: p, secondary: s, glass: g }));
+                this.showToast("Global visual overrides deployed.", "fa-palette", "var(--neon-success)");
+            },
+
+            resetThemeToDefault: function() {
+                localStorage.removeItem('wt_theme_settings');
+                this.applyGlobalTheme();
+                this.renderThemeSettings();
+                this.showToast("Restored visual parameters.");
+            },
+
+            toggleTheme: function() {
+                document.body.classList.toggle('light-mode');
             },
 
             // --- Dashboard & Tickets ---
@@ -684,7 +849,7 @@
                 tbody.innerHTML = '';
                 t.slice(-5).reverse().forEach(tk => {
                     tbody.innerHTML += `<tr style="cursor:pointer" onclick="app.viewTicket('${tk.id}')">
-                        <td style="color:var(--neon-cyan)">${tk.id}</td><td>${tk.title}</td>
+                        <td style="color:var(--neon-primary)">${tk.id}</td><td>${tk.title}</td>
                         <td><span class="badge ${this.getBadgeClass(tk.status)}">${tk.status}</span></td>
                         <td>${tk.author}</td></tr>`;
                 });
@@ -702,7 +867,7 @@
                 tbody.innerHTML = '';
                 tks.reverse().forEach(tk => {
                     tbody.innerHTML += `<tr>
-                        <td style="color:var(--neon-cyan); font-weight:bold;">${tk.id}</td><td>${tk.title}</td>
+                        <td style="color:var(--neon-primary); font-weight:bold;">${tk.id}</td><td>${tk.title}</td>
                         <td><span class="badge ${this.getBadgeClass(tk.priority)}">${tk.priority}</span></td>
                         <td>${tk.category}</td>
                         <td><span class="badge ${this.getBadgeClass(tk.status)}">${tk.status}</span></td>
@@ -721,7 +886,7 @@
             createTicket: function() {
                 const title = document.getElementById('nt-title').value;
                 const desc = document.getElementById('nt-desc').value;
-                if(!title || !desc) return this.showToast("Subject and Diagnostics required.", 'fa-triangle-exclamation');
+                if(!title || !desc) return this.showToast("Subject and Diagnostics are mandatory.", 'fa-triangle-exclamation', 'var(--neon-alert)');
 
                 const tickets = this.getTickets();
                 const id = 'WT-' + (1000 + tickets.length + 1);
@@ -737,11 +902,11 @@
                 document.getElementById('nt-title').value = ''; document.getElementById('nt-desc').value = '';
                 
                 this.renderTickets(); this.renderDashboard();
-                this.showToast(`Comm Link ${id} created.`);
+                this.showToast(`Comm Link ${id} generated.`, 'fa-check', 'var(--neon-success)');
                 
-                // System notification via internal mail
+                // Alert Master Admin via internal mail
                 if(this.currentUser.email !== 'armtechbridge@gmail.com') {
-                    this.internalMailSend('armtechbridge@gmail.com', 'system@worldtech.com', `New Ticket Logged: ${id}`, `Operative ${this.currentUser.email} initiated anomaly link ${id}.`);
+                    this.internalMailSend('armtechbridge@gmail.com', 'system@worldtech.com', `New Matrix Anomaly: ${id}`, `Operative ${this.currentUser.email} initiated link ${id}.\nPriority: ${document.getElementById('nt-priority').value}\n\nSubject: ${title}`);
                 }
             },
 
@@ -750,16 +915,23 @@
                 if(!tk) return;
                 this.currentTicketId = id;
 
-                document.getElementById('vt-title').innerText = tk.title; document.getElementById('vt-id').innerText = tk.id;
-                document.getElementById('vt-author').innerText = tk.author; document.getElementById('vt-desc').innerText = tk.desc;
+                document.getElementById('vt-title').innerText = tk.title; 
+                document.getElementById('vt-id').innerText = tk.id;
+                document.getElementById('vt-author').innerText = tk.author; 
+                document.getElementById('vt-date').innerText = new Date(tk.date).toLocaleString();
+                document.getElementById('vt-desc').innerText = tk.desc;
+                document.getElementById('vt-category').innerText = tk.category;
                 
                 document.getElementById('vt-status').innerText = tk.status; document.getElementById('vt-status').className = `badge ${this.getBadgeClass(tk.status)}`;
                 document.getElementById('vt-priority').innerText = tk.priority; document.getElementById('vt-priority').className = `badge ${this.getBadgeClass(tk.priority)}`;
 
-                // Master Admin specific controls
+                // RBAC: Admin Ticket Controls
                 if(this.currentUser.email === 'armtechbridge@gmail.com' || this.currentUser.role === 'admin') {
-                    document.getElementById('vt-admin-controls').style.display = 'block';
-                    document.getElementById('vt-edit-status').value = tk.status; document.getElementById('vt-edit-priority').value = tk.priority;
+                    document.getElementById('vt-admin-controls').style.display = 'flex';
+                    document.getElementById('vt-edit-status').value = tk.status; 
+                    document.getElementById('vt-edit-priority').value = tk.priority;
+                } else {
+                    document.getElementById('vt-admin-controls').style.display = 'none';
                 }
 
                 this.openModal('modal-view-ticket');
@@ -776,21 +948,43 @@
             },
 
             deleteTicket: function() {
-                if(confirm("Purge this record?")) {
+                if(confirm("CRITICAL WARNING: Purge this record permanently?")) {
                     let tickets = this.getTickets().filter(t => t.id !== this.currentTicketId);
                     localStorage.setItem('wt_tickets', JSON.stringify(tickets));
                     this.closeModal('modal-view-ticket'); this.renderTickets(); this.renderDashboard();
+                    this.showToast("Record purged.", 'fa-trash', 'var(--neon-alert)');
                 }
             },
 
             exportCSV: function() {
                 let csv = "data:text/csv;charset=utf-8,ID,Subject,Priority,Category,Status,Author,Date\n";
                 this.getTickets().forEach(t => csv += `${t.id},"${t.title}",${t.priority},${t.category},${t.status},${t.author},${t.date}\n`);
-                const link = document.createElement("a"); link.setAttribute("href", encodeURI(csv)); link.setAttribute("download", "matrix_tickets.csv");
+                const link = document.createElement("a"); link.setAttribute("href", encodeURI(csv)); link.setAttribute("download", "wt_matrix_tickets.csv");
                 document.body.appendChild(link); link.click(); document.body.removeChild(link);
             },
 
-            // --- Mail System ---
+            // --- Voice Input (Web Speech API) ---
+            startVoiceDictation: function(targetId) {
+                const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+                if(!SR) return this.showToast("Voice telemetry not supported by this browser.", 'fa-triangle-exclamation', 'var(--neon-alert)');
+                
+                const btn = document.getElementById('btn-voice'); 
+                btn.style.color = 'var(--neon-alert)';
+                btn.classList.add('fa-beat-fade');
+
+                const rec = new SR();
+                rec.onresult = (e) => { 
+                    const input = document.getElementById(targetId); 
+                    input.value = input.value ? input.value + " " + e.results[0][0].transcript : e.results[0][0].transcript; 
+                };
+                rec.onend = () => { 
+                    btn.style.color = 'var(--neon-primary)'; 
+                    btn.classList.remove('fa-beat-fade'); 
+                };
+                rec.start();
+            },
+
+            // --- Internal Mail System ---
             getMails: function() { return JSON.parse(localStorage.getItem('wt_mails')) || []; },
             saveMails: function(m) { localStorage.setItem('wt_mails', JSON.stringify(m)); },
 
@@ -799,16 +993,16 @@
                 const date = new Date().toISOString();
                 const id = 'M' + Date.now();
                 
-                mails.push({ id, to, from, subject, body, date, folder: 'inbox', read: false }); // To Recipient
+                mails.push({ id, to, from, subject, body, date, folder: 'inbox', read: false }); // Drop in recipient Inbox
                 if(from !== 'system@worldtech.com') {
-                    mails.push({ id: id+'_s', to, from, subject, body, date, folder: 'sent', owner: from }); // To Sender's Sent box
+                    mails.push({ id: id+'_s', to, from, subject, body, date, folder: 'sent', owner: from }); // Drop in sender Sent
                 }
                 
                 this.saveMails(mails);
                 
-                // Live visual alert if recipient is the active user
+                // Live UI update if recipient is online
                 if(this.currentUser && this.currentUser.email === to) {
-                    this.showToast(`New Mail: ${subject}`, 'fa-envelope');
+                    this.showToast(`Comms Received: ${subject}`, 'fa-envelope', 'var(--neon-primary)');
                     document.getElementById('nav-mail-badge').style.display = 'inline-block';
                     document.getElementById('notif-bell-badge').style.display = 'block';
                     if(this.currentView === 'mailbox') this.renderMailbox();
@@ -827,11 +1021,14 @@
             switchMailFolder: function(folder) {
                 this.currentMailFolder = folder;
                 ['inbox', 'sent'].forEach(f => {
-                    document.getElementById(`folder-${f}`).style.borderColor = 'var(--neon-indigo)';
-                    document.getElementById(`folder-${f}`).style.color = 'var(--neon-cyan)';
+                    document.getElementById(`folder-${f}`).style.borderColor = 'transparent';
+                    document.getElementById(`folder-${f}`).style.color = 'var(--text-main)';
+                    document.getElementById(`folder-${f}`).style.background = 'transparent';
                 });
-                document.getElementById(`folder-${folder}`).style.borderColor = 'var(--neon-cyan)';
-                document.getElementById(`folder-${folder}`).style.color = '#fff';
+                document.getElementById(`folder-${folder}`).style.borderColor = 'var(--neon-primary)';
+                document.getElementById(`folder-${folder}`).style.color = 'var(--neon-primary)';
+                document.getElementById(`folder-${folder}`).style.background = 'rgba(255,255,255,0.05)';
+                
                 document.getElementById('mail-read-pane').style.display = 'none';
                 this.renderMailbox();
             },
@@ -848,7 +1045,7 @@
 
                 filtered.reverse().forEach(m => {
                     const unread = (m.folder === 'inbox' && !m.read) ? 'unread' : '';
-                    const icon = m.from === 'system@worldtech.com' ? '<i class="fa-solid fa-server" style="color:var(--neon-alert)"></i>' : '<i class="fa-solid fa-user"></i>';
+                    const icon = m.from === 'system@worldtech.com' ? '<i class="fa-solid fa-server" style="color:var(--neon-alert)"></i>' : '<i class="fa-solid fa-user-secret"></i>';
                     c.innerHTML += `
                         <div class="mail-item ${unread}" onclick="app.readMail('${m.id}')">
                             <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 5px;">${icon} ${this.currentMailFolder === 'sent' ? 'To: '+m.to : 'From: '+m.from}</div>
@@ -867,7 +1064,7 @@
                     document.getElementById('read-subject').innerText = m.subject;
                     document.getElementById('read-from').innerText = m.from;
                     document.getElementById('read-date').innerText = new Date(m.date).toLocaleString();
-                    document.getElementById('read-body').innerText = m.body;
+                    document.getElementById('read-body').innerHTML = m.body.replace(/\n/g, '<br>'); // preserve linebreaks
                     document.getElementById('mail-read-pane').style.display = 'block';
 
                     if(!m.read && m.folder === 'inbox') {
@@ -875,7 +1072,7 @@
                         this.saveMails(mails);
                         this.renderMailbox();
                         
-                        // Check if all read to hide badge
+                        // Clear badge if no unread left
                         if(mails.filter(x => x.to === this.currentUser.email && x.folder === 'inbox' && !x.read).length === 0) {
                             document.getElementById('nav-mail-badge').style.display = 'none';
                             document.getElementById('notif-bell-badge').style.display = 'none';
@@ -888,24 +1085,28 @@
                 const to = document.getElementById('mail-to').value.trim();
                 const sub = document.getElementById('mail-subject').value.trim();
                 const body = document.getElementById('mail-body').value.trim();
-                if(!to || !sub) return this.showToast("Destination and Subject required.");
+                if(!to || !sub) return this.showToast("Destination and Subject required.", 'fa-triangle-exclamation', 'var(--neon-alert)');
                 
                 this.closeModal('modal-compose-mail');
+                this.showToast("Dispatching...", "fa-spinner fa-spin");
+
+                // Simulate processing delay
                 setTimeout(() => {
                     this.internalMailSend(to, this.currentUser.email, sub, body);
-                    this.showToast("Transmission successful.");
+                    this.showToast("Transmission delivered successfully.", "fa-check", "var(--neon-success)");
                     if(this.currentView === 'mailbox') this.renderMailbox();
+                    
                     document.getElementById('mail-to').value = ''; document.getElementById('mail-subject').value = ''; document.getElementById('mail-body').value = '';
-                }, 500);
+                }, 1000);
             },
 
-            // --- Groq AI (Llama3) ---
+            // --- Groq AI Architecture (Llama3) ---
             callAI: async function(prompt, sysMsg) {
-                if (GROQ_API_KEY === "YOUR_GROQ_API_KEY_HERE") return "ERROR: Neural net inactive. Insert Groq API Key into source.";
+                if (GROQ_API_KEY === "YOUR_GROQ_API_KEY_HERE") return "ERROR: Neural net inactive. Insert Groq API Key into source architecture.";
                 try {
                     const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
                         method: "POST", headers: { "Authorization": `Bearer ${GROQ_API_KEY}`, "Content-Type": "application/json" },
-                        body: JSON.stringify({ model: "llama3-8b-8192", messages: [{ role: "system", content: sysMsg }, { role: "user", content: prompt }], temperature: 0.4 })
+                        body: JSON.stringify({ model: "llama3-8b-8192", messages: [{ role: "system", content: sysMsg }, { role: "user", content: prompt }], temperature: 0.5 })
                     });
                     if(!res.ok) throw new Error("API Connection Failed");
                     const data = await res.json(); return data.choices[0].message.content;
@@ -914,11 +1115,12 @@
 
             aiSuggestPriority: async function() {
                 const t = document.getElementById('nt-title').value; const d = document.getElementById('nt-desc').value;
-                if(!t) return this.showToast("Subject required for AI.");
-                document.getElementById('ai-prio-loader').style.display = 'inline-block';
+                if(!t) return this.showToast("Subject required for AI analysis.", 'fa-triangle-exclamation', 'var(--neon-alert)');
                 
+                document.getElementById('ai-prio-loader').style.display = 'inline-block';
                 const res = await this.callAI(`Issue: ${t}. Desc: ${d}. Suggest priority (Low, Medium, High) and brief reason.`, "You are an IT triage AI. Reply format: 'Priority: [Level] - [Reason]'");
                 document.getElementById('ai-prio-loader').style.display = 'none';
+                
                 if(res.includes('ERROR')) return alert(res);
                 
                 alert("AI Triage Analysis:\n" + res);
@@ -931,11 +1133,11 @@
                 const desc = document.getElementById('vt-desc').innerText;
                 document.getElementById('ai-fix-loader').style.display = 'block'; document.getElementById('ai-fix-result').style.display = 'none';
 
-                let res = await this.callAI(`Provide a step-by-step fix for: ${desc}`, "You are an elite IT AI. Provide clear, numbered, technical steps.");
+                let res = await this.callAI(`Provide a step-by-step fix for this issue: ${desc}`, "You are an elite IT AI. Provide clear, numbered, technical steps.");
                 document.getElementById('ai-fix-loader').style.display = 'none'; document.getElementById('ai-fix-result').style.display = 'block';
                 
-                res = res.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong style="color:var(--neon-cyan)">$1</strong>');
-                document.getElementById('ai-fix-result').innerHTML = `<h4 style="color:var(--neon-indigo); margin-bottom:10px;"><i class="fa-solid fa-bolt"></i> Synthesized Protocol</h4>${res}`;
+                res = res.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong style="color:var(--neon-primary)">$1</strong>');
+                document.getElementById('ai-fix-result').innerHTML = `<h4 style="color:var(--neon-secondary); margin-bottom:15px;"><i class="fa-solid fa-bolt"></i> Synthesized Protocol</h4>${res}`;
             },
 
             sendChatMessage: async function() {
@@ -954,7 +1156,7 @@
                 hist.scrollTop = hist.scrollHeight;
             },
 
-            // --- Misc Features ---
+            // --- Miscellaneous Core Features ---
             initCalendar: function() {
                 if (this.calendarInstance) return;
                 const calEl = document.getElementById('calendar-view');
@@ -986,17 +1188,6 @@
                 this.calendarInstance.render();
             },
 
-            startVoiceDictation: function(targetId) {
-                const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-                if(!SR) return this.showToast("Voice API not supported here.", 'fa-triangle-exclamation');
-                
-                const btn = document.getElementById('btn-voice'); btn.style.color = 'var(--neon-alert)';
-                const rec = new SR();
-                rec.onresult = (e) => { const input = document.getElementById(targetId); input.value = input.value ? input.value + " " + e.results[0][0].transcript : e.results[0][0].transcript; };
-                rec.onend = () => { btn.style.color = 'var(--neon-cyan)'; };
-                rec.start();
-            },
-
             saveNotes: function() { localStorage.setItem(`wt_notes_${this.currentUser.email}`, document.getElementById('personal-notes').value); },
 
             renderProfile: function() {
@@ -1012,49 +1203,71 @@
                     users[idx].fullname = document.getElementById('prof-name').value;
                     users[idx].mobile = document.getElementById('prof-mobile').value;
                     localStorage.setItem('wt_users', JSON.stringify(users));
-                    this.showToast("Profile committed.");
+                    this.currentUser = users[idx]; // Update runtime
+                    this.showToast("Profile configuration saved.", 'fa-floppy-disk', 'var(--neon-success)');
                 }
             },
 
-            // --- Master Admin Specifics ---
-            renderAdmin: function() {
+            // --- Admin: Manage Users ---
+            renderAdminUsers: function() {
                 const users = JSON.parse(localStorage.getItem('wt_users'));
                 const tbody = document.getElementById('admin-user-table');
                 tbody.innerHTML = '';
                 users.forEach(u => {
+                    const actionBtn = u.email === 'armtechbridge@gmail.com' ? 
+                        `<span style="color:var(--neon-primary); font-size:0.8rem;">Master</span>` : 
+                        `<button style="padding:4px 8px; font-size:0.75rem; border-color:var(--neon-alert); color:var(--neon-alert);" onclick="app.adminDeleteUser('${u.email}')"><i class="fa-solid fa-ban"></i> Terminate</button>`;
+                    
                     tbody.innerHTML += `<tr>
-                        <td style="color:var(--neon-cyan)">${u.email}</td><td>${u.mobile || '--'}</td>
-                        <td>${u.role}</td>
-                        <td>${u.email !== 'armtechbridge@gmail.com' ? `<button style="padding:4px; font-size:0.7rem; color:var(--neon-alert); border-color:var(--neon-alert);" onclick="app.adminDeleteUser('${u.email}')"><i class="fa-solid fa-trash"></i></button>` : 'Master'}</td>
+                        <td style="color:var(--neon-primary)">${u.email}</td><td>${u.fullname || '--'}</td>
+                        <td>${u.mobile || '--'}</td><td><span class="badge ${u.role==='admin'?'bg-red':'bg-ind'}">${u.role.toUpperCase()}</span></td>
+                        <td>${actionBtn}</td>
                     </tr>`;
                 });
             },
 
             adminCreateUser: function() {
                 const email = document.getElementById('nu-email').value.trim().toLowerCase();
-                if(!email) return this.showToast("Email required.");
+                if(!email) return this.showToast("Email identifier required.", 'fa-triangle-exclamation', 'var(--neon-alert)');
+                
                 let users = JSON.parse(localStorage.getItem('wt_users'));
-                if(users.find(u => u.email === email)) return this.showToast("Operative exists.");
+                if(users.find(u => u.email === email)) return this.showToast("Operative already exists.", 'fa-triangle-exclamation', 'var(--neon-alert)');
 
-                users.push({ email, fullname: document.getElementById('nu-name').value, mobile: document.getElementById('nu-mobile').value, role: document.getElementById('nu-role').value });
+                users.push({ 
+                    email, 
+                    fullname: document.getElementById('nu-name').value, 
+                    mobile: document.getElementById('nu-mobile').value, 
+                    role: document.getElementById('nu-role').value 
+                });
+                
                 localStorage.setItem('wt_users', JSON.stringify(users));
-                this.closeModal('modal-add-user'); this.renderAdmin(); this.showToast("Operative registered.");
+                this.closeModal('modal-add-user'); 
+                this.renderAdminUsers(); 
+                this.showToast("Operative successfully registered.", 'fa-user-plus', 'var(--neon-success)');
+                
                 ['nu-email','nu-name','nu-mobile'].forEach(id => document.getElementById(id).value = '');
             },
 
             adminDeleteUser: function(email) {
-                if(confirm(`Purge Operative ${email}?`)) {
+                if(confirm(`CRITICAL: Terminate Operative ${email} from the Matrix?`)) {
                     let users = JSON.parse(localStorage.getItem('wt_users')).filter(u => u.email !== email);
-                    localStorage.setItem('wt_users', JSON.stringify(users)); this.renderAdmin();
+                    localStorage.setItem('wt_users', JSON.stringify(users)); 
+                    this.renderAdminUsers();
+                    this.showToast("Operative terminated.", 'fa-skull-crossbones', 'var(--neon-alert)');
                 }
             }
         };
 
-        // Live Clock
-        setInterval(() => { document.getElementById('live-clock').innerText = new Date().toLocaleTimeString('en-US', { hour12: false }); }, 1000);
+        // --- Live Clock Loop (12-Hour format AM/PM) ---
+        setInterval(() => { 
+            document.getElementById('live-clock').innerText = new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', second: '2-digit', hour12: true }); 
+        }, 1000);
 
-        // Bootstrap
-        window.onload = function() { app.initData(); app.checkAuth(); };
+        // --- Bootstrap Matrix ---
+        window.onload = function() { 
+            app.initData(); 
+            app.checkAuth(); 
+        };
     </script>
 </body>
 </html>
