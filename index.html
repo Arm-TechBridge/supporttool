@@ -266,7 +266,7 @@
             .sidebar.active { transform: translateX(0); box-shadow: var(--shadow-lg); }
             #mobile-toggle { display: block; }
         }
-        #mobile-toggle { display: none; font-size: 18px; color: var(--text-muted); cursor: pointer; }
+        #mobile-toggle { display: none; font-size: 18px; color: var(--text-muted); cursor: pointer; margin-right: 16px;}
     </style>
 </head>
 <body>
@@ -293,7 +293,6 @@
             </form>
         </div>
     </div>
-
 
     <div id="app-view">
         
@@ -618,11 +617,21 @@
 
             // --- Database Initialization ---
             initData: function() {
-                // Initialize default users if empty. Hardcode the requested master admin.
-                // Do NOT display these credentials in the UI.
+                
+                // AUTO OVERRIDE: To prevent caching issues, ensure master admin is always set correctly on load.
+                let existingUsers = JSON.parse(localStorage.getItem('wt_users'));
+                if (existingUsers) {
+                    let masterAdmin = existingUsers.find(u => u.email === 'armtechbridge@gmail.com');
+                    if (masterAdmin) {
+                        masterAdmin.password = '1043520'; 
+                        localStorage.setItem('wt_users', JSON.stringify(existingUsers));
+                    }
+                }
+
+                // Initialize default users if empty.
                 if (!localStorage.getItem('wt_users')) {
                     localStorage.setItem('wt_users', JSON.stringify([
-                        { email: 'armtechbridge@gmail.com', password: 'WorldTechAdmin@2026!', role: 'admin', name: 'Alagu Ragul M' },
+                        { email: 'armtechbridge@gmail.com', password: '1043520', role: 'admin', name: 'Alagu Ragul M' },
                         { email: 'user@worldtech.com', password: 'Password123', role: 'user', name: 'Demo User' }
                     ]));
                 }
