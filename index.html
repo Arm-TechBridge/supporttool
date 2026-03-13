@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <title>WorldTech ServiceDesk</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
 <!-- Google Fonts -->
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 
 <!-- Font Awesome -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -16,21 +16,60 @@
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
 
 <style>
-
 :root{
---bg:#0f172a;
---card:#1e293b;
---accent:#3b82f6;
---text:#e5e7eb;
---border:#334155;
+--bg:#f6f8fb;
+--sidebar:#ffffff;
+--card:#ffffff;
+--border:#e5e7eb;
+--accent:#2563eb;
+--text:#111827;
+--muted:#6b7280;
 }
 
-*{box-sizing:border-box;font-family:'Inter',sans-serif}
+*{box-sizing:border-box;font-family:Inter}
 
 body{
 margin:0;
 background:var(--bg);
 color:var(--text);
+}
+
+.login-container{
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+}
+
+.login-box{
+background:white;
+padding:40px;
+border-radius:10px;
+box-shadow:0 10px 30px rgba(0,0,0,.1);
+width:320px;
+}
+
+.login-box h2{
+margin-top:0;
+}
+
+input,select,textarea{
+width:100%;
+padding:10px;
+margin-top:8px;
+margin-bottom:12px;
+border-radius:6px;
+border:1px solid var(--border);
+font-size:14px;
+}
+
+button{
+background:var(--accent);
+color:white;
+border:none;
+padding:10px 14px;
+border-radius:6px;
+cursor:pointer;
 }
 
 header{
@@ -39,18 +78,13 @@ display:flex;
 align-items:center;
 justify-content:space-between;
 padding:0 20px;
-background:rgba(30,41,59,.8);
-backdrop-filter:blur(8px);
+background:white;
 border-bottom:1px solid var(--border);
 }
 
 .logo{
 font-weight:600;
 font-size:18px;
-}
-
-.clock{
-font-size:14px;
 }
 
 .container{
@@ -60,21 +94,22 @@ height:calc(100vh - 60px);
 
 .sidebar{
 width:240px;
-background:var(--card);
+background:var(--sidebar);
 border-right:1px solid var(--border);
-padding-top:20px;
+padding-top:10px;
 }
 
 .sidebar a{
 display:block;
 padding:12px 20px;
-color:var(--text);
 text-decoration:none;
+color:var(--text);
 font-size:14px;
 }
 
+.sidebar a.active,
 .sidebar a:hover{
-background:rgba(255,255,255,.05);
+background:#eef2ff;
 }
 
 .main{
@@ -83,49 +118,23 @@ padding:20px;
 overflow:auto;
 }
 
-.card{
-background:var(--card);
-border-radius:10px;
-padding:20px;
-margin-bottom:20px;
-box-shadow:0 4px 20px rgba(0,0,0,.2);
-}
-
-.stats{
+.cards{
 display:grid;
 grid-template-columns:repeat(4,1fr);
 gap:15px;
 }
 
-.stat{
-background:var(--card);
-padding:20px;
+.card{
+background:white;
 border-radius:10px;
-text-align:center;
-}
-
-button{
-background:var(--accent);
-border:none;
-padding:10px 14px;
-border-radius:6px;
-color:white;
-cursor:pointer;
-}
-
-input,textarea,select{
-width:100%;
-padding:8px;
-margin:5px 0 10px;
-border-radius:6px;
-border:1px solid var(--border);
-background:#020617;
-color:white;
+padding:20px;
+box-shadow:0 5px 15px rgba(0,0,0,.05);
 }
 
 .table{
 width:100%;
 border-collapse:collapse;
+font-size:14px;
 }
 
 .table th,.table td{
@@ -134,37 +143,29 @@ padding:10px;
 text-align:left;
 }
 
-.login{
-display:flex;
-align-items:center;
-justify-content:center;
-height:100vh;
+.badge{
+padding:4px 8px;
+border-radius:4px;
+font-size:12px;
 }
 
-.login-box{
-background:var(--card);
-padding:40px;
-border-radius:10px;
-width:300px;
-}
-
-.mail{
-border-bottom:1px solid var(--border);
-padding:10px;
-cursor:pointer;
-}
+.open{background:#dbeafe}
+.progress{background:#fde68a}
+.closed{background:#bbf7d0}
 
 .chatbox{
 height:300px;
 overflow:auto;
-background:#020617;
-padding:10px;
+border:1px solid var(--border);
 border-radius:6px;
+padding:10px;
 margin-bottom:10px;
+background:white;
 }
 
 .note{
-background:#020617;
+background:white;
+border:1px solid var(--border);
 padding:10px;
 margin-bottom:10px;
 border-radius:6px;
@@ -175,22 +176,18 @@ border-radius:6px;
 
 <body>
 
-<div id="loginPage" class="login">
-
+<div id="loginPage" class="login-container">
 <div class="login-box">
-<h3>WorldTech ServiceDesk</h3>
+<h2>WorldTech ServiceDesk</h2>
 
-<input id="emailInput" placeholder="Enter Master Email">
+<input id="loginEmail" placeholder="Email">
+<input id="loginPassword" type="password" placeholder="Password">
 
-<button onclick="sendOTP()">Send OTP</button>
+<button onclick="login()">Sign in</button>
 
-<div id="otpArea" style="display:none">
-<input id="otpInput" placeholder="Enter OTP">
-<button onclick="verifyOTP()">Login</button>
-</div>
+<div id="loginError" style="color:red;font-size:13px;margin-top:8px"></div>
 
 </div>
-
 </div>
 
 <div id="app" style="display:none">
@@ -199,40 +196,41 @@ border-radius:6px;
 <div class="logo">WorldTech ServiceDesk</div>
 <div>
 <span id="clock"></span>
-<i class="fa fa-bell"></i>
+<i class="fa fa-bell" onclick="fakeAlert()" style="margin-left:15px;cursor:pointer"></i>
 </div>
 </header>
 
 <div class="container">
 
 <div class="sidebar">
-<a onclick="showPage('dashboard')">Dashboard</a>
+
+<a onclick="showPage('dashboard')" class="active">Dashboard</a>
 <a onclick="showPage('tickets')">Tickets</a>
 <a onclick="showPage('create')">Create Ticket</a>
-<a onclick="showPage('mail')">Inbox</a>
-<a onclick="showPage('ai')">AI Support</a>
+<a onclick="showPage('kb')">Knowledge Base</a>
 <a onclick="showPage('calendar')">Calendar</a>
 <a onclick="showPage('notes')">Notes</a>
+<a onclick="showPage('users')" id="usersLink">User Management</a>
 <a onclick="exportCSV()">Export CSV</a>
+
 </div>
 
 <div class="main">
 
 <div id="dashboardPage">
 
-<div class="stats">
-<div class="stat"><h2 id="totalCount">0</h2>Total</div>
-<div class="stat"><h2 id="openCount">0</h2>Open</div>
-<div class="stat"><h2 id="progressCount">0</h2>Progress</div>
-<div class="stat"><h2 id="closedCount">0</h2>Closed</div>
+<div class="cards">
+<div class="card"><h2 id="totalCount">0</h2>Total</div>
+<div class="card"><h2 id="openCount">0</h2>Open</div>
+<div class="card"><h2 id="progressCount">0</h2>In Progress</div>
+<div class="card"><h2 id="closedCount">0</h2>Closed</div>
 </div>
 
 </div>
 
 <div id="ticketsPage" style="display:none">
 
-<div class="card">
-<input id="searchTicket" placeholder="Search ticket" onkeyup="renderTickets()">
+<input id="searchTicket" placeholder="Search ticket..." onkeyup="renderTickets()">
 
 <table class="table">
 <thead>
@@ -248,17 +246,13 @@ border-radius:6px;
 
 </div>
 
-</div>
-
 <div id="createPage" style="display:none">
 
-<div class="card">
-
-<input id="title" placeholder="Title">
+<input id="title" placeholder="Ticket title">
 
 <textarea id="desc" placeholder="Description"></textarea>
 
-<button onclick="voiceInput()"><i class="fa fa-microphone"></i></button>
+<button onclick="voiceInput()"><i class="fa fa-microphone"></i> Voice</button>
 
 <select id="priority">
 <option>Low</option>
@@ -273,33 +267,17 @@ border-radius:6px;
 </select>
 
 <button onclick="aiSuggest()">AI Suggest Priority</button>
-
 <button onclick="createTicket()">Create Ticket</button>
 
 </div>
 
-</div>
-
-<div id="mailPage" style="display:none">
-
-<div class="card">
-<h3>Inbox</h3>
-<div id="mailList"></div>
-</div>
-
-</div>
-
-<div id="aiPage" style="display:none">
-
-<div class="card">
+<div id="kbPage" style="display:none">
 
 <div class="chatbox" id="chat"></div>
 
 <input id="aiInput" placeholder="Ask IT issue">
 
-<button onclick="askAI()">Send</button>
-
-</div>
+<button onclick="askAI()">Ask AI</button>
 
 </div>
 
@@ -309,15 +287,36 @@ border-radius:6px;
 
 <div id="notesPage" style="display:none">
 
-<div class="card">
-
 <textarea id="noteText"></textarea>
-
-<button onclick="saveNote()">Save Note</button>
+<button onclick="saveNote()">Save</button>
 
 <div id="noteList"></div>
 
 </div>
+
+<div id="usersPage" style="display:none">
+
+<h3>User Management</h3>
+
+<input id="newUser" placeholder="Username">
+<input id="newPass" placeholder="Password">
+<select id="newRole">
+<option>user</option>
+<option>admin</option>
+</select>
+
+<button onclick="addUser()">Add User</button>
+
+<table class="table">
+<thead>
+<tr>
+<th>User</th>
+<th>Role</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody id="userTable"></tbody>
+</table>
 
 </div>
 
@@ -328,64 +327,60 @@ border-radius:6px;
 
 <script>
 
-/* MASTER ADMIN EMAIL */
-const masterEmail="armtechbridge@gmail.com";
-
-/* GROQ API PLACEHOLDER */
+/* GROQ API KEY PLACEHOLDER */
 const GROQ_API_KEY="PASTE_GROQ_API_KEY_HERE";
 
-/* OTP LOGIN */
+/* HARD-CODED ADMIN ACCOUNT */
 
-let generatedOTP="";
+const ADMIN_EMAIL="armtechbridge@gmail.com";
+const ADMIN_PASSWORD="A$tr0Secure#9481";
 
-function sendOTP(){
+/* SESSION */
+let currentUser=null;
 
-const email=document.getElementById("emailInput").value;
+/* INIT STORAGE */
 
-if(email!==masterEmail){alert("Invalid email");return}
-
-generatedOTP=Math.floor(100000+Math.random()*900000).toString();
-
-let mails=JSON.parse(localStorage.getItem("mails")||"[]");
-
-mails.unshift({subject:"OTP Login",body:"Your OTP is "+generatedOTP});
-
-localStorage.setItem("mails",JSON.stringify(mails));
-
-alert("OTP sent to Inbox & SMS");
-
-document.getElementById("otpArea").style.display="block";
-
+if(!localStorage.users){
+localStorage.users=JSON.stringify([
+{email:ADMIN_EMAIL,password:ADMIN_PASSWORD,role:"admin"}
+]);
 }
 
-function verifyOTP(){
+/* LOGIN */
 
-if(document.getElementById("otpInput").value===generatedOTP){
+function login(){
 
-document.getElementById("loginPage").style.display="none";
+let email=loginEmail.value;
+let pass=loginPassword.value;
 
-document.getElementById("app").style.display="block";
+let users=JSON.parse(localStorage.users);
+
+let u=users.find(x=>x.email==email && x.password==pass);
+
+if(!u){
+loginError.innerText="Invalid login";
+return;
+}
+
+currentUser=u;
+
+loginPage.style.display="none";
+app.style.display="block";
+
+if(u.role!="admin") usersLink.style.display="none";
 
 init();
-
-}else alert("Wrong OTP")
 
 }
 
 /* INIT */
 
 function init(){
-
 renderTickets();
-
-renderMail();
-
-loadNotes();
-
-initCalendar();
-
+renderUsers();
 updateStats();
-
+loadNotes();
+initCalendar();
 }
 
 /* CLOCK */
@@ -393,25 +388,22 @@ updateStats();
 setInterval(()=>{
 
 let d=new Date();
+let h=d.getHours()%12||12;
+let m=d.getMinutes().toString().padStart(2,"0");
+let ampm=d.getHours()>=12?"PM":"AM";
 
-let h=d.getHours();
-
-let m=d.getMinutes();
-
-let ampm=h>=12?"PM":"AM";
-
-h=h%12||12;
-
-document.getElementById("clock").innerText=
-h+":"+m.toString().padStart(2,"0")+" "+ampm;
+clock.innerText=h+":"+m+" "+ampm;
 
 },1000)
 
-/* PAGE NAV */
+/* NAV */
 
 function showPage(p){
 
-["dashboard","tickets","create","mail","ai","calendar","notes"].forEach(x=>{
+document.querySelectorAll(".sidebar a").forEach(x=>x.classList.remove("active"));
+event.target.classList.add("active");
+
+["dashboard","tickets","create","kb","calendar","notes","users"].forEach(x=>{
 document.getElementById(x+"Page").style.display="none";
 });
 
@@ -423,74 +415,80 @@ document.getElementById(p+"Page").style.display="block";
 
 function createTicket(){
 
-let tickets=JSON.parse(localStorage.getItem("tickets")||"[]");
+let tickets=JSON.parse(localStorage.tickets||"[]");
 
 tickets.push({
 title:title.value,
 desc:desc.value,
 priority:priority.value,
-status:"Open"
+status:"Open",
+owner:currentUser.email
 });
 
-localStorage.setItem("tickets",JSON.stringify(tickets));
+localStorage.tickets=JSON.stringify(tickets);
 
 renderTickets();
 updateStats();
-
-alert("Ticket created");
 
 }
 
 function renderTickets(){
 
-let tickets=JSON.parse(localStorage.getItem("tickets")||"[]");
+let tickets=JSON.parse(localStorage.tickets||"[]");
+let q=searchTicket.value?.toLowerCase()||"";
 
-let html="";
+ticketTable.innerHTML="";
 
-tickets.forEach((t,i)=>{
+tickets
+.filter(t=>t.title.toLowerCase().includes(q))
+.forEach((t,i)=>{
 
-html+=`
-<tr>
+let tr=document.createElement("tr");
+
+tr.innerHTML=`
 <td>${t.title}</td>
 <td>${t.priority}</td>
-<td>${t.status}</td>
+<td><span class="badge ${t.status.toLowerCase()}">${t.status}</span></td>
 <td>
-<button onclick="closeTicket(${i})">Close</button>
+<button onclick="changeStatus(${i})">Status</button>
 <button onclick="deleteTicket(${i})">Delete</button>
+<button onclick="fixAI(${i})">AI Fix</button>
 </td>
-</tr>`
+`;
 
-})
+ticketTable.appendChild(tr);
 
-ticketTable.innerHTML=html;
+});
 
 }
 
-function closeTicket(i){
+/* STATUS */
 
-let t=JSON.parse(localStorage.getItem("tickets"));
+function changeStatus(i){
 
-t[i].status="Closed";
+let tickets=JSON.parse(localStorage.tickets);
 
-localStorage.setItem("tickets",JSON.stringify(t));
+let s=prompt("Open / In Progress / Closed");
+
+tickets[i].status=s;
+
+localStorage.tickets=JSON.stringify(tickets);
 
 renderTickets();
 updateStats();
 
 }
+
+/* DELETE */
 
 function deleteTicket(i){
 
 if(confirm("Delete ticket?")){
 
-let t=JSON.parse(localStorage.getItem("tickets"));
-
+let t=JSON.parse(localStorage.tickets);
 t.splice(i,1);
-
-localStorage.setItem("tickets",JSON.stringify(t));
-
+localStorage.tickets=JSON.stringify(t);
 renderTickets();
-updateStats();
 
 }
 
@@ -500,36 +498,93 @@ updateStats();
 
 function updateStats(){
 
-let t=JSON.parse(localStorage.getItem("tickets")||"[]");
+let t=JSON.parse(localStorage.tickets||"[]");
 
 totalCount.innerText=t.length;
 openCount.innerText=t.filter(x=>x.status=="Open").length;
-closedCount.innerText=t.filter(x=>x.status=="Closed").length;
 progressCount.innerText=t.filter(x=>x.status=="In Progress").length;
+closedCount.innerText=t.filter(x=>x.status=="Closed").length;
 
 }
 
-/* MAIL */
+/* USER MANAGEMENT */
 
-function renderMail(){
+function renderUsers(){
 
-let mails=JSON.parse(localStorage.getItem("mails")||"[]");
+let users=JSON.parse(localStorage.users);
 
-mailList.innerHTML=mails.map(m=>`
-<div class="mail">
-<b>${m.subject}</b><br>${m.body}
-</div>
-`).join("");
+userTable.innerHTML="";
+
+users.forEach((u,i)=>{
+
+let tr=document.createElement("tr");
+
+tr.innerHTML=`
+<td>${u.email}</td>
+<td>${u.role}</td>
+<td>
+<button onclick="editUser(${i})">Edit</button>
+<button onclick="deleteUser(${i})">Delete</button>
+</td>
+`;
+
+userTable.appendChild(tr);
+
+});
 
 }
 
-/* AI */
+function addUser(){
+
+let users=JSON.parse(localStorage.users);
+
+users.push({
+email:newUser.value,
+password:newPass.value,
+role:newRole.value
+});
+
+localStorage.users=JSON.stringify(users);
+
+renderUsers();
+
+}
+
+function editUser(i){
+
+let users=JSON.parse(localStorage.users);
+
+let p=prompt("New password");
+let r=prompt("Role admin/user");
+
+users[i].password=p;
+users[i].role=r;
+
+localStorage.users=JSON.stringify(users);
+
+renderUsers();
+
+}
+
+function deleteUser(i){
+
+let users=JSON.parse(localStorage.users);
+
+users.splice(i,1);
+
+localStorage.users=JSON.stringify(users);
+
+renderUsers();
+
+}
+
+/* AI CHAT */
 
 async function askAI(){
 
 let q=aiInput.value;
 
-chat.innerHTML+=`<div>You: ${q}</div>`;
+chat.innerHTML+="<div><b>You:</b> "+q+"</div>";
 
 let res=await fetch("https://api.groq.com/openai/v1/chat/completions",{
 method:"POST",
@@ -545,17 +600,25 @@ messages:[{role:"user",content:q}]
 
 let data=await res.json();
 
-let ans=data.choices[0].message.content;
-
-chat.innerHTML+=`<div>AI: ${ans}</div>`;
+chat.innerHTML+="<div><b>AI:</b>"+data.choices[0].message.content+"</div>";
 
 }
 
 /* AI PRIORITY */
 
 function aiSuggest(){
+alert("AI suggestion will analyze description using Groq.");
+}
 
-alert("AI Suggestion feature will use Groq to analyze description.");
+/* AI FIX */
+
+function fixAI(i){
+
+let tickets=JSON.parse(localStorage.tickets);
+
+aiInput.value="How to fix: "+tickets[i].title;
+
+showPage("kb");
 
 }
 
@@ -577,23 +640,25 @@ r.start();
 
 function initCalendar(){
 
-let calendarEl=document.getElementById('calendar');
+let el=document.getElementById("calendar");
 
-let calendar=new FullCalendar.Calendar(calendarEl,{
-initialView:'dayGridMonth',
-editable:true,
-events:JSON.parse(localStorage.getItem("events")||"[]"),
-dateClick:function(info){
+let calendar=new FullCalendar.Calendar(el,{
+initialView:"dayGridMonth",
+events:JSON.parse(localStorage.events||"[]"),
+dateClick(info){
 
 let title=prompt("Event title");
 
 if(title){
 
-calendar.addEvent({title:title,start:info.dateStr});
+calendar.addEvent({title,start:info.dateStr});
 
-let e=calendar.getEvents().map(ev=>({title:ev.title,start:ev.start}));
+let events=calendar.getEvents().map(e=>({
+title:e.title,
+start:e.start
+}));
 
-localStorage.setItem("events",JSON.stringify(e));
+localStorage.events=JSON.stringify(events);
 
 }
 
@@ -608,11 +673,11 @@ calendar.render();
 
 function saveNote(){
 
-let notes=JSON.parse(localStorage.getItem("notes")||"[]");
+let notes=JSON.parse(localStorage.notes||"[]");
 
 notes.push(noteText.value);
 
-localStorage.setItem("notes",JSON.stringify(notes));
+localStorage.notes=JSON.stringify(notes);
 
 loadNotes();
 
@@ -620,9 +685,16 @@ loadNotes();
 
 function loadNotes(){
 
-let notes=JSON.parse(localStorage.getItem("notes")||"[]");
+let notes=JSON.parse(localStorage.notes||"[]");
 
-noteList.innerHTML=notes.map(n=>`<div class="note">${n}</div>`).join("");
+noteList.innerHTML="";
+
+notes.forEach(n=>{
+let d=document.createElement("div");
+d.className="note";
+d.innerText=n;
+noteList.appendChild(d);
+});
 
 }
 
@@ -630,7 +702,7 @@ noteList.innerHTML=notes.map(n=>`<div class="note">${n}</div>`).join("");
 
 function exportCSV(){
 
-let t=JSON.parse(localStorage.getItem("tickets")||"[]");
+let t=JSON.parse(localStorage.tickets||"[]");
 
 let csv="Title,Priority,Status\n";
 
@@ -639,13 +711,16 @@ t.forEach(x=>csv+=`${x.title},${x.priority},${x.status}\n`);
 let blob=new Blob([csv]);
 
 let a=document.createElement("a");
-
 a.href=URL.createObjectURL(blob);
-
 a.download="tickets.csv";
-
 a.click();
 
+}
+
+/* FAKE ALERT */
+
+function fakeAlert(){
+alert("New ticket assigned!");
 }
 
 </script>
