@@ -428,7 +428,7 @@
                         <div class="ai-header">
                             <div style="width: 32px; height: 32px; background: var(--primary-light); color: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center;"><i class="fa-solid fa-robot"></i></div>
                             <div>
-                                <h3 style="font-size: 14px; margin: 0;">Support AI (Llama3)</h3>
+                                <h3 style="font-size: 14px; margin: 0;">Support AI (Gemini 1.5)</h3>
                                 <div style="font-size: 11px; color: var(--success);"><i class="fa-solid fa-circle" style="font-size: 8px;"></i> Online</div>
                             </div>
                         </div>
@@ -604,10 +604,9 @@
 
     <script>
         // ==========================================
-        // CONFIGURATION: GROQ API KEY
+        // CONFIGURATION: GOOGLE GEMINI API KEY
         // ==========================================
-        // ENTER YOUR REAL GROQ API KEY HERE TO ENABLE AI FEATURES
-        const GROQ_API_KEY = "AIzaSyCeHOtO9A5nI-dtwmF366b-5fRWcCCP7fk"; 
+        const GOOGLE_API_KEY = "AIzaSyCeHOtO9A5nI-dtwmF366b-5fRWcCCP7fk"; 
         
         const app = {
             currentUser: null,
@@ -617,7 +616,6 @@
 
             // --- Database Initialization ---
             initData: function() {
-                
                 // AUTO OVERRIDE: To prevent caching issues, ensure master admin is always set correctly on load.
                 let existingUsers = JSON.parse(localStorage.getItem('wt_users'));
                 if (existingUsers) {
@@ -886,17 +884,26 @@
                 rec.start();
             },
 
-            // --- Groq AI (Llama3) ---
+            // --- Google Gemini AI (Replaced Groq) ---
             callAI: async function(prompt, sysMsg) {
-                if (GROQ_API_KEY === "YOUR_GROQ_API_KEY_HERE") return "System Error: Groq API Key missing in configuration.";
+                if (!GOOGLE_API_KEY || GOOGLE_API_KEY === "YOUR_GOOGLE_API_KEY_HERE") return "System Error: Google API Key missing.";
                 try {
-                    const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-                        method: "POST", headers: { "Authorization": `Bearer ${GROQ_API_KEY}`, "Content-Type": "application/json" },
-                        body: JSON.stringify({ model: "llama3-8b-8192", messages: [{ role: "system", content: sysMsg }, { role: "user", content: prompt }], temperature: 0.4 })
+                    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GOOGLE_API_KEY}`, {
+                        method: "POST", 
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ 
+                            contents: [{ 
+                                parts: [{ text: "System Instructions: " + sysMsg + "\n\nUser Prompt: " + prompt }] 
+                            }] 
+                        })
                     });
                     if(!res.ok) throw new Error("API Failure");
-                    const data = await res.json(); return data.choices[0].message.content;
-                } catch (e) { return "Error: Unable to connect to AI Inference Engine."; }
+                    const data = await res.json(); 
+                    return data.candidates[0].content.parts[0].text;
+                } catch (e) { 
+                    console.error(e);
+                    return "Error: Unable to connect to AI Inference Engine. Please check your API key."; 
+                }
             },
 
             aiSuggestPriority: async function() {
