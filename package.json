@@ -1,0 +1,11 @@
+{
+  "name": "arm-techbridge-ai",
+  "version": "1.0.0",
+  "description": "ARM TechBridge AI Workspace - Master Repository",
+  "author": "Alagu Ragul M.",
+  "private": true,
+  "scripts": {
+    "start:backend": "cd backend && npm run dev",
+    "start:frontend": "cd frontend && npm run dev"
+  }
+}
